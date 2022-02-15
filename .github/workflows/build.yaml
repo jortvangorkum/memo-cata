@@ -1,0 +1,42 @@
+name: Memo Cata GitHub Actions
+on: [push]
+jobs:
+  linting-haskell:
+    name: Linting Haskell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check stylish-haskell and hlint
+        run: |
+          curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s .
+          curl -sSL https://raw.github.com/jaspervdj/stylish-haskell/master/scripts/latest.sh | sh -s $(find . -type f -name "*.hs" ! -path "*.stack-work*" ! -path "*executable*") -i
+          if [ -z "$(git status --porcelain)" ]; then
+              echo "No style errors detected."
+          else
+              echo "Style errors detected:"
+              git --no-pager diff
+              exit 1
+          fi
+
+  run-haskell:
+    name: Build Haskell
+    needs: linting-haskell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: haskell/actions/setup@v1
+        with:
+          enable-stack: true
+          ghc-version: 8.10.7 # =18.25
+          cabal-version: "latest"
+          stack-version: "latest"
+      - name: Cache Stack
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.stack
+            .stack-work
+          key: ${{ runner.os }}-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
+      - name: Stack build
+        run: |
+          stack build
