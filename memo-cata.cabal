@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c104bdbc134ed1a5489ac29607a1e58f525a2b90f03a7dc850dc8dc5ceb74e1d
+-- hash: 5e4870d42cfc99367bab63c978a3ebf197c349a9b96dc75e5d77c3476911db25
 
 name:           memo-cata
 version:        0.1.0.0
@@ -39,6 +39,7 @@ library
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , bytestring-trie
     , containers
     , deepseq
     , digest
@@ -55,6 +56,7 @@ executable memo-cata-exe
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , bytestring-trie
     , containers
     , criterion
     , deepseq
@@ -74,6 +76,7 @@ test-suite memo-cata-test
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , bytestring-trie
     , containers
     , deepseq
     , digest

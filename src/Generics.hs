@@ -7,7 +7,9 @@
 module Generics where
 
 import           Control.DeepSeq
+import           Data.ByteString            (ByteString)
 import qualified Data.Map                   as M
+import qualified Data.Trie                  as T
 import           Generics.Data.Digest.CRC32
 
 newtype Fix f = In { unFix :: f (Fix f) }
@@ -150,3 +152,8 @@ instance Ord a => Container M.Map a where
   empty  = M.empty
   insert = M.insert
   lookup = M.lookup
+
+instance Container T.Trie ByteString where
+  empty  = T.empty
+  insert = T.insert
+  lookup = T.lookup
