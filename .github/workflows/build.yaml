@@ -24,12 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: haskell/actions/setup@v1
-        with:
-          enable-stack: true
-          ghc-version: 8.10.7 # =18.25
-          cabal-version: "latest"
-          stack-version: "latest"
       - name: Cache Stack
         uses: actions/cache@v2
         with:
@@ -37,6 +31,12 @@ jobs:
             ~/.stack
             .stack-work
           key: ${{ runner.os }}-${{ hashFiles('stack.yaml.lock', 'package.yaml') }}
+      - uses: haskell/actions/setup@v1
+        with:
+          enable-stack: true
+          ghc-version: 8.10.7 # =18.25
+          cabal-version: "latest"
+          stack-version: "latest"
       - name: Stack build
         run: |
           stack build
