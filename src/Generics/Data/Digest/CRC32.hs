@@ -28,6 +28,12 @@ class Digestible v where
 instance Show a => Digestible a where
   digest = hashStr . show
 
+instance Ord Digest where
+  compare x y = compare (debugHash x) (debugHash y)
+
+debugHash :: Digest -> String
+debugHash h = take 5 (show (getCRC32 h))
+
 encodeWord32 :: Word32 -> [Word8]
 encodeWord32 = unpack . toLazyByteString . word32LE
 

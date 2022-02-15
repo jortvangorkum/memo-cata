@@ -7,9 +7,7 @@
 module Generics where
 
 import           Control.DeepSeq
-import           Control.Monad.State
 import qualified Data.Map                   as M
-import           Debug.Trace                (trace)
 import           Generics.Data.Digest.CRC32
 
 newtype Fix f = In { unFix :: f (Fix f) }
@@ -19,9 +17,6 @@ instance Eq (f (Fix f)) => Eq (Fix f) where
 
 instance Show (f (Fix f)) => Show (Fix f) where
   show = show . unFix
-
-cata :: Functor f => (f a -> a) -> Fix f -> a
-cata alg t = alg (fmap (cata alg) (unFix t))
 
 newtype I r         = I r                   deriving (Show, Eq)
 newtype K a r       = K a                   deriving (Show, Eq)
@@ -142,42 +137,16 @@ instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
       (Pair (prevY, K phy)) = merkleG y
       h = digestConcat [digest "Pair", phx, phy]
 
-{-
-  GENERIC CATA
--}
-
-debugHash :: Digest -> String
-debugHash h = take 5 (show (getCRC32 h))
-
 merkle :: Merkelize f => Fix f -> Fix (f :*: K Digest)
 merkle = In . merkleG . unFix
 
-cataMerkle :: Functor f => (f a -> a) -> M.Map String a -> Fix (f :*: K Digest) -> a
-cataMerkle alg m (In (Pair (x, K h))) = case M.lookup (debugHash h) m of
-  Just a  -> a
-  Nothing -> alg (fmap (cataMerkle alg m) x)
+-- Generic Container
+class Container c k where
+  empty  :: c k a
+  insert :: k -> a -> c k a -> c k a
+  lookup :: k -> c k a -> Maybe a
 
-cataMerkleState :: (Functor f, Traversable f, Show a) => (f a -> a) -> Fix (f :*: K Digest) -> State (M.Map String a) a
-cataMerkleState alg (In (Pair (x, K h)))
-  = do m <- get
-       case M.lookup (debugHash h) m of
-        Just a  -> trace ("LOOKUP: " ++ show a) return a
-        Nothing -> trace ("CALCULATE: " ++ show m)
-                 $ do y <- mapM (cataMerkleState alg) x
-                      let r = alg y
-                      trace ("VALUE: " ++ show r) modify (M.insert (debugHash h) r) >> return r
-
-cataMerkleMap :: (Merkelize f, Functor f, Traversable f, Show a) => (f a -> a) -> M.Map String a -> Fix f -> (a, M.Map String a)
-cataMerkleMap alg m t = runState (cataMerkleState alg (merkle t)) m
-
-{-
-  Nothing -> let resultaat = ... in modify (insert resultaat h) >> return resultaat
-
-  modify :: (s -> s) -> State s ()
-
-  cataMerkle2 :: ... -> State (M.Map String a) a
-
-  sequence :: f (State Map a) -> State Map (f a)
-
-  cataMerkle2 :: (Functor f, Traversable f) => (f a -> a) -> Fix (f :*: K Digest) -> State (M.Map String a) a
--}
+instance Ord a => Container M.Map a where
+  empty  = M.empty
+  insert = M.insert
+  lookup = M.lookup

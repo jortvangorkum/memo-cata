@@ -4,6 +4,7 @@
 module Tree where
 
 import           Generics
+import           Generics.Cata              (cata)
 import           Generics.Data.Digest.CRC32
 
 type TreeF a = Fix (TreeFr a)

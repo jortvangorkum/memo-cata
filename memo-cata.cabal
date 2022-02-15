@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f6d83bdc4b8bd40cb031f6e13a76e79fabb9e701578a62805be0dfcb7099f785
+-- hash: c104bdbc134ed1a5489ac29607a1e58f525a2b90f03a7dc850dc8dc5ceb74e1d
 
 name:           memo-cata
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 library
   exposed-modules:
       Generics
+      Generics.Cata
       Generics.Data.Digest.CRC32
       GenericTree
       Lib

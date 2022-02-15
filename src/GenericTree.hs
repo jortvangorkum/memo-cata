@@ -5,6 +5,7 @@ module GenericTree where
 import qualified Data.Map                   as M
 import           Debug.Trace                (trace)
 import           Generics
+import           Generics.Cata
 import           Generics.Data.Digest.CRC32
 import           Tree
 
@@ -17,20 +18,21 @@ type TreeG  a = Fix (TreeGr a)
 type TreeGr a = K a
              :+: ((I :*: K a) :*: I)
 
-cataSum2 :: TreeG Int -> (Int, M.Map String Int)
-cataSum2 = cataMerkleMap cataSum M.empty
+
+cataSum2 :: TreeG Int -> (Int, M.Map Digest Int)
+cataSum2 = cataMerkleMap cataSum M.empty . merkle
   where
     cataSum = \case
       Inl (K x)                         -> x
       Inr (Pair (Pair (I l, K x), I r)) -> l + x + r
 
-cataSum2WithMap :: M.Map String Int -> TreeG Int -> (Int, M.Map String Int)
-cataSum2WithMap = cataMerkleMap cataSum
+cataSum2WithMap :: M.Map Digest Int -> TreeG Int -> (Int, M.Map Digest Int)
+cataSum2WithMap m x = cataMerkleMap cataSum m t
   where
+    t = merkle x
     cataSum = \case
       Inl (K x)                         -> x
       Inr (Pair (Pair (I l, K x), I r)) -> l + x + r
-
 
 from :: TreeF a -> TreeG a
 from = cata f
