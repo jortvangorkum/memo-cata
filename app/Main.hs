@@ -1,11 +1,11 @@
-{-# LANGUAGE LambdaCase    #-}
+{-# LANGUAGE LambdaCase #-}
 module Main where
 
 import           Criterion.Main
 import qualified Data.Map       as M
+import           GenericTree
 import           Generics
-import GenericTree
-import Tree
+import           Tree
 
 -- Generates Tree of size 2n + 1
 generateTreeG :: Int -> TreeG Int
