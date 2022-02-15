@@ -9,7 +9,6 @@ import           Control.DeepSeq
 import           Control.Monad.State
 import qualified Data.Map                   as M
 import           Debug.Trace                (trace)
-import           GHC.Generics               (Generic, Generic1)
 import           Generics.Data.Digest.CRC32
 
 newtype Fix f = In { unFix :: f (Fix f) }
@@ -129,32 +128,27 @@ class (Functor f) => MerkelizeG f where
 instance (Show a) => MerkelizeG (K a) where
   merkleG (K x) = Pair (K x, K h)
     where
-      debug = trace ("Digest K: " ++ debugHash h)
       h = digestConcat [digest "K", digest x]
 
 instance MerkelizeG I where
   merkleG (I x) = Pair (I prevX, K h)
     where
-      debug = trace ("Digest I: " ++ debugHash h)
       prevX@(In (Pair (_, K ph))) = merkle x
       h = digestConcat [digest "I", ph]
 
 instance (MerkelizeG f, MerkelizeG g) => MerkelizeG (f :+: g) where
   merkleG (Inl x) = Pair (Inl prevX, K h)
     where
-      debug = trace ("Digest Inl: " ++ debugHash h)
       (Pair (prevX, K ph)) = merkleG x
       h = digestConcat [digest "Inl", ph]
   merkleG (Inr x) = Pair (Inr prevX, K h)
     where
-      debug = trace ("Digest Inr: " ++ debugHash h)
       (Pair (prevX, K ph)) = merkleG x
       h = digestConcat [digest "Inr", ph]
 
 instance (MerkelizeG f, MerkelizeG g) => MerkelizeG (f :*: g) where
   merkleG (Pair (x, y)) = Pair (Pair (prevX, prevY), K h)
     where
-      debug = trace ("Digest Pair: " ++ debugHash h)
       (Pair (prevX, K phx)) = merkleG x
       (Pair (prevY, K phy)) = merkleG y
       h = digestConcat [digest "Pair", phx, phy]
@@ -164,18 +158,18 @@ cataMerkle alg m (In (Pair (x, K h))) = case M.lookup (debugHash h) m of
   Just a  -> a
   Nothing -> alg (fmap (cataMerkle alg m) x)
 
-cataMerkle2 :: (Functor f, Traversable f, Show a) => (f a -> a) -> Fix (f :*: K Digest) -> State (M.Map String a) a
-cataMerkle2 alg (In (Pair (x, K h)))
+cataMerkleState :: (Functor f, Traversable f, Show a) => (f a -> a) -> Fix (f :*: K Digest) -> State (M.Map String a) a
+cataMerkleState alg (In (Pair (x, K h)))
   = do m <- get
        case M.lookup (debugHash h) m of
         Just a  -> trace ("LOOKUP: " ++ show a) return a
         Nothing -> trace ("CALCULATE: " ++ show m)
-                 $ do y <- mapM (cataMerkle2 alg) x
+                 $ do y <- mapM (cataMerkleState alg) x
                       let r = alg y
                       trace ("VALUE: " ++ show r) modify (M.insert (debugHash h) r) >> return r
 
-cataMerkle3 :: (MerkelizeG f, Functor f, Traversable f, Show a) => (f a -> a) -> M.Map String a -> Fix f -> (a, M.Map String a)
-cataMerkle3 alg m t = runState (cataMerkle2 alg (merkle t)) m
+cataMerkleMap :: (MerkelizeG f, Functor f, Traversable f, Show a) => (f a -> a) -> M.Map String a -> Fix f -> (a, M.Map String a)
+cataMerkleMap alg m t = runState (cataMerkleState alg (merkle t)) m
 
 {-
   Nothing -> let resultaat = ... in modify (insert resultaat h) >> return resultaat

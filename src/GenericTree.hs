@@ -16,14 +16,14 @@ type TreeGr a = K a
              :+: ((I :*: K a) :*: I)
 
 cataSum2 :: TreeG Int -> (Int, M.Map String Int)
-cataSum2 = cataMerkle3 cataSum M.empty
+cataSum2 = cataMerkleMap cataSum M.empty
   where
     cataSum = \case
       Inl (K x)                         -> x
       Inr (Pair (Pair (I l, K x), I r)) -> l + x + r
 
 cataSum2WithMap :: M.Map String Int -> TreeG Int -> (Int, M.Map String Int)
-cataSum2WithMap = cataMerkle3 cataSum
+cataSum2WithMap = cataMerkleMap cataSum
   where
     cataSum = \case
       Inl (K x)                         -> x
@@ -53,34 +53,6 @@ cataMerkleInt x = cata f mt
     f (Pair (px, _)) = case px of
       Inl (K x)                         -> x
       Inr (Pair (Pair (I l, K x), I r)) -> l + x + r
-
-cataMerkleHash :: Show a => TreeG a -> [Digest]
-cataMerkleHash x = cata f mt
-  where
-    mt = merkle x
-    f :: (:*:) (TreeGr a) (K Digest) [Digest] -> [Digest]
-    f (Pair (px, K h)) = case px of
-      Inl (K x)                         -> [h]
-      Inr (Pair (Pair (I l, K x), I r)) -> h : (l ++ r)
-    debug h = trace ("\nDigest Cata: " ++ debugHash h)
-
-cataMerkleMapInt :: TreeG Int -> M.Map String Int
-cataMerkleMapInt x = cata f mt
-  where
-    mt = merkle x
-    f :: (:*:) (TreeGr Int) (K Digest) (M.Map String Int) -> M.Map String Int
-    f (Pair (px, K h)) = case px of
-      Inl (K x)                         -> M.insert (debugHash h) x M.empty
-      Inr (Pair (Pair (I l, K x), I r)) -> M.insert (debugHash h) x (l <> r)
-
-cataMerkleMapValue :: Show a => TreeG a -> M.Map String a
-cataMerkleMapValue x = cata f mt
-  where
-    mt = merkle x
-    f :: (:*:) (TreeGr a) (K Digest) (M.Map String a) -> M.Map String a
-    f (Pair (px, K h)) = case px of
-      Inl (K x)                         -> M.insert (debugHash h) x M.empty
-      Inr (Pair (Pair (I l, K x), I r)) -> M.insert (debugHash h) x (l <> r)
 
 cataMerkleTree :: (Show a) => (a -> Digest -> b) -> (b -> a -> b -> Digest -> b) -> MerkleTree a -> b
 cataMerkleTree leaf node = cata f
@@ -115,8 +87,8 @@ cataMerkleMapFibWithMap m = cataMerkleTree leaf node
       Nothing -> let n = fib x + xl + xr in (n, M.insert (debugHash h) n (ml <> mr))
       Just n -> (n, m)
 
-cataMerkleMap :: MerkleTree Int -> (Int, M.Map String Int)
-cataMerkleMap = cataMerkleTree leaf node
+cataMerkleToMap :: MerkleTree Int -> (Int, M.Map String Int)
+cataMerkleToMap = cataMerkleTree leaf node
   where
     leaf x h = (x, M.insert (debugHash h) x M.empty)
     node (xl, ml) x (xr, mr) h = let x' = x + xl + xr
