@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f9fe3c1185b457639c9b40135d9eb185558f54ab436f25c8a8d5d69f84b0b163
+-- hash: f6d83bdc4b8bd40cb031f6e13a76e79fabb9e701578a62805be0dfcb7099f785
 
 name:           memo-cata
 version:        0.1.0.0
@@ -19,7 +19,6 @@ license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
-    ChangeLog.md
 
 source-repository head
   type: git
@@ -56,6 +55,7 @@ executable memo-cata-exe
       base >=4.7 && <5
     , bytestring
     , containers
+    , criterion
     , deepseq
     , digest
     , memo-cata

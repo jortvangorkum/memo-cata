@@ -38,5 +38,4 @@ jobs:
           cabal-version: "latest"
           stack-version: "latest"
       - name: Stack build
-        run: |
-          stack build
+        run: stack build
