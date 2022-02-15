@@ -8,6 +8,8 @@ import           Generics
 import           Generics.Data.Digest.CRC32
 import           Tree
 
+
+type MerkleFix f = Fix (f :*: K Digest)
 type MerkleTree a = MerkleFix (TreeGr a)
 
 type TreeG  a = Fix (TreeGr a)

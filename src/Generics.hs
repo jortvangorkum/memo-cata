@@ -1,10 +1,11 @@
-{-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE RankNTypes           #-}
-{-# LANGUAGE TypeOperators        #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 module Generics where
 
-import           Control.Applicative        (liftA2)
 import           Control.DeepSeq
 import           Control.Monad.State
 import qualified Data.Map                   as M
@@ -81,7 +82,6 @@ instance NFData Digest where
 
 -- Generic NFData
 -- https://hackage.haskell.org/package/deepseq-1.4.6.1/docs/src/Control.DeepSeq.html#line-535
-
 instance NFData (f (Fix f)) => NFData (Fix f) where
   rnf (In x) = rnf x
 
@@ -110,33 +110,22 @@ instance (NFData1 f, NFData1 g) => NFData1 (f :*: g) where
 instance (NFData1 f, NFData1 g, NFData r) => NFData ((:*:) f g r) where
   rnf = rnf1
 
-{-
-  GENERIC TREE
--}
+-- Generic Merkelize
+class (Functor f) => Merkelize f where
+  merkleG :: (Merkelize g) => f (Fix g) -> (f :*: K Digest) (Fix (g :*: K Digest))
 
-debugHash :: Digest -> String
-debugHash h = take 5 (show (getCRC32 h))
-
-type MerkleFix f = Fix (f :*: K Digest)
-
-merkle :: MerkelizeG f => Fix f -> MerkleFix f
-merkle = In . merkleG . unFix
-
-class (Functor f) => MerkelizeG f where
-  merkleG :: (MerkelizeG g) => f (Fix g) -> (f :*: K Digest) (Fix (g :*: K Digest))
-
-instance (Show a) => MerkelizeG (K a) where
+instance (Show a) => Merkelize (K a) where
   merkleG (K x) = Pair (K x, K h)
     where
       h = digestConcat [digest "K", digest x]
 
-instance MerkelizeG I where
+instance Merkelize I where
   merkleG (I x) = Pair (I prevX, K h)
     where
       prevX@(In (Pair (_, K ph))) = merkle x
       h = digestConcat [digest "I", ph]
 
-instance (MerkelizeG f, MerkelizeG g) => MerkelizeG (f :+: g) where
+instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
   merkleG (Inl x) = Pair (Inl prevX, K h)
     where
       (Pair (prevX, K ph)) = merkleG x
@@ -146,12 +135,22 @@ instance (MerkelizeG f, MerkelizeG g) => MerkelizeG (f :+: g) where
       (Pair (prevX, K ph)) = merkleG x
       h = digestConcat [digest "Inr", ph]
 
-instance (MerkelizeG f, MerkelizeG g) => MerkelizeG (f :*: g) where
+instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
   merkleG (Pair (x, y)) = Pair (Pair (prevX, prevY), K h)
     where
       (Pair (prevX, K phx)) = merkleG x
       (Pair (prevY, K phy)) = merkleG y
       h = digestConcat [digest "Pair", phx, phy]
+
+{-
+  GENERIC CATA
+-}
+
+debugHash :: Digest -> String
+debugHash h = take 5 (show (getCRC32 h))
+
+merkle :: Merkelize f => Fix f -> Fix (f :*: K Digest)
+merkle = In . merkleG . unFix
 
 cataMerkle :: Functor f => (f a -> a) -> M.Map String a -> Fix (f :*: K Digest) -> a
 cataMerkle alg m (In (Pair (x, K h))) = case M.lookup (debugHash h) m of
@@ -168,7 +167,7 @@ cataMerkleState alg (In (Pair (x, K h)))
                       let r = alg y
                       trace ("VALUE: " ++ show r) modify (M.insert (debugHash h) r) >> return r
 
-cataMerkleMap :: (MerkelizeG f, Functor f, Traversable f, Show a) => (f a -> a) -> M.Map String a -> Fix f -> (a, M.Map String a)
+cataMerkleMap :: (Merkelize f, Functor f, Traversable f, Show a) => (f a -> a) -> M.Map String a -> Fix f -> (a, M.Map String a)
 cataMerkleMap alg m t = runState (cataMerkleState alg (merkle t)) m
 
 {-
