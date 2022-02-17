@@ -18,6 +18,13 @@ packages:
       sha256: 92034e3e490c5fe0eab10277f6e35534b37dc0962347025630380c7d37d99ca1
   original:
     hackage: criterion-1.5.12.0
+- completed:
+    hackage: bytestring-trie-0.2.6@sha256:ba9907193f2ef0c2bd3d83dbf5a10182d456acb6127d33cc9931d6b55b1a3e0e,4698
+    pantry-tree:
+      size: 814
+      sha256: bab255b3ec340550f7d4fc1e1ef6a7bc61768288cfdd4620e76640d0b6bc0472
+  original:
+    hackage: bytestring-trie-0.2.6
 snapshots:
 - completed:
     size: 587393

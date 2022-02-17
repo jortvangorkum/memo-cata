@@ -25,6 +25,7 @@ dependencies:
   - digest
   - deepseq
   - bytestring
+  - bytestring-trie
 
 library:
   source-dirs: src

@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 module Main where
 
 import           Criterion.Main
@@ -18,6 +17,9 @@ generateTreeG = from . generateTreeF
       then In $ LeafF l
       else let i = (l + u) `div` 2
            in In $ NodeF (generateBinTree l (i - 1)) i (generateBinTree (i + 1) u)
+
+
+
 
 -- sizeTree :: TreeG Int -> Int
 -- sizeTree = cata (\case

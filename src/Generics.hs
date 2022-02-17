@@ -7,7 +7,9 @@
 module Generics where
 
 import           Control.DeepSeq
+import           Data.ByteString            (ByteString)
 import qualified Data.Map                   as M
+import qualified Data.Trie                  as T
 import           Generics.Data.Digest.CRC32
 
 newtype Fix f = In { unFix :: f (Fix f) }
