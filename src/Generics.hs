@@ -152,8 +152,3 @@ instance Ord a => Container M.Map a where
   empty  = M.empty
   insert = M.insert
   lookup = M.lookup
-
-instance Container T.Trie ByteString where
-  empty  = T.empty
-  insert = T.insert
-  lookup = T.lookup

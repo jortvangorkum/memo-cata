@@ -18,6 +18,9 @@ generateTreeG = from . generateTreeF
       else let i = (l + u) `div` 2
            in In $ NodeF (generateBinTree l (i - 1)) i (generateBinTree (i + 1) u)
 
+
+
+
 -- sizeTree :: TreeG Int -> Int
 -- sizeTree = cata (\case
 --   Inl _                           -> 1
