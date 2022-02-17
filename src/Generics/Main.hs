@@ -4,7 +4,7 @@
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
-module Generics where
+module Generics.Main where
 
 import           Control.DeepSeq
 import           Data.ByteString            (ByteString)

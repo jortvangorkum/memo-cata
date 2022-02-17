@@ -8,9 +8,8 @@ module Generics.Cata
 
 import           Control.Monad.State
 import qualified Data.Map                   as M
-import           Debug.Trace                (trace)
-import           Generics
 import           Generics.Data.Digest.CRC32 (Digest (getCRC32), debugHash)
+import           Generics.Main
 import           Prelude                    hiding (lookup)
 
 cata :: Functor f => (f a -> a) -> Fix f -> a
@@ -21,11 +20,10 @@ cataMerkleState :: (Functor f, Traversable f, Container c k, Show (c k a), Show 
 cataMerkleState alg (In (Pair (x, K h)))
   = do m <- get
        case lookup h m of
-        Just a  -> trace ("LOOKUP: " ++ show a) return a
-        Nothing -> trace ("CALCULATE: " ++ show m)
-                 $ do y <- mapM (cataMerkleState alg) x
+        Just a  -> return a
+        Nothing -> do y <- mapM (cataMerkleState alg) x
                       let r = alg y
-                      trace ("VALUE: " ++ show r) modify (insert h r) >> return r
+                      modify (insert h r) >> return r
 
 cataMerkle :: (Merkelize f, Functor f, Traversable f, Container c k, Show (c k a), Show a, Show k)
            => (f a -> a) -> Fix (f :*: K k) -> (a, c k a)

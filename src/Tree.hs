@@ -3,9 +3,9 @@
 {-# LANGUAGE TypeOperators #-}
 module Tree where
 
-import           Generics
 import           Generics.Cata              (cata)
 import           Generics.Data.Digest.CRC32
+import           Generics.Main
 
 type TreeF a = Fix (TreeFr a)
 
