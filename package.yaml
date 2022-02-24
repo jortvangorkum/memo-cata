@@ -26,6 +26,9 @@ dependencies:
   - deepseq
   - bytestring
   - bytestring-trie
+  - utf8-string
+  - bytestring-conversion
+  - text
 
 library:
   source-dirs: src

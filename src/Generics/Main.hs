@@ -143,12 +143,17 @@ merkle :: Merkelize f => Fix f -> Fix (f :*: K Digest)
 merkle = In . merkleG . unFix
 
 -- Generic Container
-class Container c k where
-  empty  :: c k a
-  insert :: k -> a -> c k a -> c k a
-  lookup :: k -> c k a -> Maybe a
+class Container c where
+  empty  :: c a
+  insert :: Digest -> a -> c a -> c a
+  lookup :: Digest -> c a -> Maybe a
 
-instance Ord a => Container M.Map a where
+instance Container (M.Map Digest) where
   empty  = M.empty
   insert = M.insert
   lookup = M.lookup
+
+instance Container T.Trie where
+  empty = T.empty
+  insert = T.insert
+  lookup = T.lookup
