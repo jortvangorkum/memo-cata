@@ -1,6 +1,7 @@
 module Main where
 
 import           Criterion.Main
+import           Data.ByteString            (ByteString)
 import qualified Data.Map                   as M
 import qualified Data.Trie                  as T
 import qualified GenericTree.GenericCata    as G
@@ -45,7 +46,7 @@ benchSpecCataSumMapChange n = env (setupMapIntChange n) (bench (show n) . nf (un
 setupMerkleTree :: Int -> IO (MerkleTree Int)
 setupMerkleTree = return . merkle . generateTreeG
 
-setupMapInt :: Int -> IO (M.Map Digest Int, MerkleTree Int)
+setupMapInt :: Int -> IO (M.Map ByteString Int, MerkleTree Int)
 setupMapInt n = return (m, t)
   where
     m = snd . G.cataSum empty . merkle . generateTreeG $ n
@@ -60,7 +61,7 @@ setupTrieInt n = return (m, t)
     m = snd . G.cataSumTrie empty . merkle . generateTreeG $ n
     t = merkle . generateTreeG $ n
 
-setupMapIntChange :: Int -> IO (M.Map Digest Int, MerkleTree Int)
+setupMapIntChange :: Int -> IO (M.Map ByteString Int, MerkleTree Int)
 setupMapIntChange n = return (m, t)
   where
     m = snd . G.cataSum empty . merkle . changeSingleLeaf . generateTreeG $ n

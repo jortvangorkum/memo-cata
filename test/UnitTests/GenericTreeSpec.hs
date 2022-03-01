@@ -1,9 +1,13 @@
 {-# LANGUAGE FlexibleInstances   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module UnitTests.GenericTreeSpec where
-import qualified GenericTree.GenericCata  as G
+import           Data.Bifunctor             (first)
+import qualified Data.Map                   as M
+import qualified Data.Trie                  as T
+import qualified GenericTree.GenericCata    as G
 import           GenericTree.Main
-import qualified GenericTree.SpecificCata as S
+import qualified GenericTree.SpecificCata   as S
+import           Generics.Data.Digest.CRC32
 import           Generics.Main
 import           Test.Hspec
 import           Test.QuickCheck
@@ -30,3 +34,5 @@ spec = describe "Generic Tree Unit Tests" $ do
     \t -> G.cataSum empty t `shouldBe` S.cataSum t
   it "Generic Cata Map Result equals Generic Cata Trie Result" $ property $
     \t -> fst (G.cataSum empty t) `shouldBe` fst (G.cataSumTrie empty t)
+  it "Generic Cata Map Intermediate Results equals Generic Cata Trie Intermediate Results" $ property $
+    \t -> M.toList (snd (G.cataSum empty t)) `shouldBe` T.toList (snd (G.cataSumTrie empty t))
