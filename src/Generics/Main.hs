@@ -10,6 +10,7 @@ import           Control.DeepSeq
 import           Data.ByteString            (ByteString)
 import qualified Data.Map                   as M
 import qualified Data.Trie                  as T
+import qualified Data.Trie.Internal         as TI
 import           Generics.Data.Digest.CRC32
 
 newtype Fix f = In { unFix :: f (Fix f) }
@@ -157,3 +158,11 @@ instance Container T.Trie where
   empty = T.empty
   insert = T.insert . getByteString
   lookup = T.lookup . getByteString
+
+instance NFData a => NFData (T.Trie a) where
+  rnf = rnf . f
+    where
+      f = TI.cata arc br em
+      arc _ x _ = rnf x
+      br _ _ = ()
+      em = ()

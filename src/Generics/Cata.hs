@@ -8,7 +8,7 @@ module Generics.Cata
 
 import           Control.Monad.State
 import qualified Data.Map                   as M
-import           Generics.Data.Digest.CRC32 (Digest (getCRC32), debugHash)
+import           Generics.Data.Digest.CRC32 (Digest (getCRC32))
 import           Generics.Main
 import           Prelude                    hiding (lookup)
 
