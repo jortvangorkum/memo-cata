@@ -15,8 +15,8 @@ import           Prelude                    hiding (lookup)
 cata :: Functor f => (f a -> a) -> Fix f -> a
 cata alg t = alg (fmap (cata alg) (unFix t))
 
-cataMerkleState :: (Functor f, Traversable f, Container c k, Show (c k a), Show a, Show k)
-                => (f a -> a) -> Fix (f :*: K k) -> State (c k a) a
+cataMerkleState :: (Functor f, Traversable f, Container c, Show (c a), Show a)
+                => (f a -> a) -> Fix (f :*: K Digest) -> State (c a) a
 cataMerkleState alg (In (Pair (x, K h)))
   = do m <- get
        case lookup h m of
@@ -25,10 +25,10 @@ cataMerkleState alg (In (Pair (x, K h)))
                       let r = alg y
                       modify (insert h r) >> return r
 
-cataMerkle :: (Merkelize f, Functor f, Traversable f, Container c k, Show (c k a), Show a, Show k)
-           => (f a -> a) -> Fix (f :*: K k) -> (a, c k a)
+cataMerkle :: (Traversable f, Container c, Show (c a), Show a)
+           => (f a -> a) -> Fix (f :*: K Digest) -> (a, c a)
 cataMerkle alg t = runState (cataMerkleState alg t) empty
 
-cataMerkleMap :: (Merkelize f, Functor f, Traversable f, Container c k, Show (c k a), Show a, Show k)
-              => (f a -> a) -> c k a -> Fix (f :*: K k) -> (a, c k a)
+cataMerkleMap :: (Merkelize f, Functor f, Traversable f, Container c, Show (c a), Show a)
+              => (f a -> a) -> c a -> Fix (f :*: K Digest) -> (a, c a)
 cataMerkleMap alg m t = runState (cataMerkleState alg t) m

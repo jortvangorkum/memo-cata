@@ -32,20 +32,6 @@ packages:
       sha256: 0863c3c9b6ee24dd38873c62e38ac46dd50aff2ea6b362beadf7f9b4a273c75f
   original:
     hackage: utf8-string-1.0.2
-- completed:
-    hackage: bytestring-conversion-0.3.1@sha256:c3a83596c9955edb5558503dfd698d9a99e0da65bdf53edf6eceacef98200cf5,2602
-    pantry-tree:
-      size: 745
-      sha256: bc85d2c9d96061c4ca4028a257c985e995bbcbd353e44e7ce07013bdf15e8ecf
-  original:
-    hackage: bytestring-conversion-0.3.1
-- completed:
-    hackage: text-2.0@sha256:86e64bc76fefb8f0f6529d28ddf24b2a29d43591a8b9b7c7094f481a0db2fb7d,7788
-    pantry-tree:
-      size: 7364
-      sha256: 894b84358fbad3cb8c16f224d3d8b7a1d7b6bcae68cda5a9998dd964904a6560
-  original:
-    hackage: text-2.0
 snapshots:
 - completed:
     size: 587393

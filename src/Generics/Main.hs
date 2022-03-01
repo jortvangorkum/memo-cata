@@ -155,5 +155,5 @@ instance Container (M.Map Digest) where
 
 instance Container T.Trie where
   empty = T.empty
-  insert = T.insert
-  lookup = T.lookup
+  insert = T.insert . getByteString
+  lookup = T.lookup . getByteString

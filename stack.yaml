@@ -45,8 +45,6 @@ extra-deps:
   - criterion-1.5.12.0
   - bytestring-trie-0.2.6
   - utf8-string-1.0.2
-  - bytestring-conversion-0.3.1
-  - text-2.0
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

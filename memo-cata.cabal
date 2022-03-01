@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 87f56869acfc64a8f867427aff6b8531127ca690c9dc99b5dcf846b88c86d23f
+-- hash: 68ca2ff9c7d9b3c0e7d98264a2c5eec258daa52257e7def4371b088e977b0ad6
 
 name:           memo-cata
 version:        0.1.0.0
@@ -41,13 +41,11 @@ library
   build-depends:
       base >=4.7 && <5
     , bytestring
-    , bytestring-conversion
     , bytestring-trie
     , containers
     , deepseq
     , digest
     , mtl
-    , text
     , utf8-string
   default-language: Haskell2010
 
@@ -61,7 +59,6 @@ executable memo-cata-exe
   build-depends:
       base >=4.7 && <5
     , bytestring
-    , bytestring-conversion
     , bytestring-trie
     , containers
     , criterion
@@ -69,7 +66,6 @@ executable memo-cata-exe
     , digest
     , memo-cata
     , mtl
-    , text
     , utf8-string
   default-language: Haskell2010
 
@@ -84,13 +80,11 @@ test-suite memo-cata-test
   build-depends:
       base >=4.7 && <5
     , bytestring
-    , bytestring-conversion
     , bytestring-trie
     , containers
     , deepseq
     , digest
     , memo-cata
     , mtl
-    , text
     , utf8-string
   default-language: Haskell2010
