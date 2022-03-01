@@ -52,3 +52,5 @@ tests:
       - -with-rtsopts=-N
     dependencies:
       - memo-cata
+      - hspec
+      - QuickCheck

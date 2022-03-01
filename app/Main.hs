@@ -10,18 +10,6 @@ import           Generics.Data.Digest.CRC32
 import           Generics.Main
 import           Tree
 
--- Generates Tree of size 2n + 1
-generateTreeG :: Int -> TreeG Int
-generateTreeG = from . generateTreeF
-  where
-    generateTreeF n = generateBinTree 0 (n - 1)
-    generateBinTree :: Int -> Int -> TreeF Int
-    generateBinTree l u =
-      if u < l
-      then In $ LeafF l
-      else let i = (l + u) `div` 2
-           in In $ NodeF (generateBinTree l (i - 1)) i (generateBinTree (i + 1) u)
-
 -- BENCHMARKS
 benchCataInt :: Int -> Benchmark
 benchCataInt n = env (return . generateTreeG $ n) (bench (show n) . nf S.cataInt)
@@ -90,25 +78,25 @@ changeSingleLeaf (In (Inr (Pair (Pair (I l, x), r)))) = In $ Inr $ Pair (Pair (I
 
 main :: IO ()
 main = defaultMain
-  [ bgroup "Cata Sum" $
+  [ bgroup "Cata Sum"
     [benchCataInt (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum" $
+  , bgroup "Generic Cata Sum"
     [benchGenCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Specific Cata Sum" $
+  , bgroup "Specific Cata Sum"
     [benchSpecCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Map" $
+  , bgroup "Generic Cata Sum with Map"
     [benchGenCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Evaluate Trie" $
+  , bgroup "Evaluate Trie"
     [benchEvaluateTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Trie" $
+  , bgroup "Generic Cata Sum with Trie"
     [benchGenCataSumTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Specific Cata Sum with Map" $
+  , bgroup "Specific Cata Sum with Map"
     [benchSpecCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Single Change Map" $
+  , bgroup "Generic Cata Sum with Single Change Map"
     [benchGenCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Single Change Trie" $
+  , bgroup "Generic Cata Sum with Single Change Trie"
     [benchGenCataSumTrieChange (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Specific Cata Sum with Single Change Map" $
+  , bgroup "Specific Cata Sum with Single Change Map"
     [benchSpecCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   ]
 

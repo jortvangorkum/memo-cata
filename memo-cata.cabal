@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c198ffdf4fdfb7fd052eb1e54d21f80fc087faeb9554a3b070fe40eac0b184ad
+-- hash: b660e5d81c0cd964c420f4438b8d55ad1f32a93f3f1e258e6789df5dfc123d1b
 
 name:           memo-cata
 version:        0.1.0.0
@@ -71,17 +71,20 @@ test-suite memo-cata-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      UnitTests.GenericTreeSpec
       Paths_memo_cata
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , bytestring
     , bytestring-trie
     , containers
     , deepseq
     , digest
+    , hspec
     , memo-cata
     , mtl
   default-language: Haskell2010

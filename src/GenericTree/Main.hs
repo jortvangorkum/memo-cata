@@ -37,3 +37,15 @@ fib :: Int -> Int
 fib 0 = 0
 fib 1 = 1
 fib n = fib (n - 1) + fib (n - 2)
+
+-- Generates Tree of size 2n + 1
+generateTreeG :: Int -> TreeG Int
+generateTreeG = from . generateTreeF
+  where
+    generateTreeF n = generateBinTree 0 (n - 1)
+    generateBinTree :: Int -> Int -> TreeF Int
+    generateBinTree l u =
+      if u < l
+      then In $ LeafF l
+      else let i = (l + u) `div` 2
+           in In $ NodeF (generateBinTree l (i - 1)) i (generateBinTree (i + 1) u)
