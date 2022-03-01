@@ -1,4 +1,3 @@
-
 {-# LANGUAGE FlexibleInstances    #-}
 {-# LANGUAGE GADTs                #-}
 {-# LANGUAGE PolyKinds            #-}
@@ -6,56 +5,63 @@
 {-# LANGUAGE ScopedTypeVariables  #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-module Generics.Data.Digest.CRC32 where
+module Generics.Data.Digest.CRC32
+  ( Digest(..)
+  , digest
+  , digestConcat
+  ) where
 
-import qualified Data.ByteString         as BS
-import           Data.ByteString.Builder (toLazyByteString, word32LE)
-import qualified Data.ByteString.Char8   as BS8
-import           Data.ByteString.Lazy    (unpack)
-import           Data.Digest.CRC32
+import           Data.ByteString         (ByteString)
+import           Data.ByteString.Builder (stringUtf8, toLazyByteString,
+                                          word32LE)
+import           Data.ByteString.Lazy    (toStrict)
+import           Data.Digest.CRC32       (CRC32 (..))
 import           Data.List               (foldl', splitAt)
-import           Data.Word               (Word32, Word64, Word8)
+import           Data.Maybe              (fromJust, fromMaybe)
+import           Data.Word               (Word32)
 
 -- TYPES / INSTANCES
 
-newtype Digest
-  = Digest { getCRC32 :: Word32 }
-  deriving (Eq , Show)
+data Digest = Digest { getCRC32 :: Word32, getByteString :: ByteString }
+  deriving (Eq)
 
-class Digestible v where
-  digest :: v -> Digest
-
-instance Show a => Digestible a where
-  digest = hashStr . show
+instance Show Digest where
+  show = show . getByteString
 
 instance Ord Digest where
-  compare x y = compare (debugHash x) (debugHash y)
+  compare x y = compare (getByteString x) (getByteString y)
 
 debugHash :: Digest -> String
-debugHash h = take 5 (show (getCRC32 h))
+debugHash = take 5 . show
 
-encodeWord32 :: Word32 -> [Word8]
-encodeWord32 = unpack . toLazyByteString . word32LE
-
-instance CRC32 Digest where
-  crc32Update w = crc32Update w . encodeWord32 . getCRC32
-
--- UTILITY FUNCTIONS
-
-hashCRC32 :: BS.ByteString -> Digest
-hashCRC32 = Digest . crc32
-
--- | Auxiliar hash functions for strings
 hashStr :: String -> Digest
-hashStr = hashCRC32 . BS8.pack
-
-combineCRC32 :: CRC32 a => Digest -> a -> Digest
-combineCRC32 dig x = dig'
+hashStr s = Digest w32 bs
   where
-    h = getCRC32 dig
-    dig' = Digest $ crc32Update h x
+    bs  = toStrict $ toLazyByteString $ stringUtf8 s
+    w32 = crc32 bs
 
 -- | Concatenates digests together and hashes the result.
 digestConcat :: [Digest] -> Digest
 digestConcat []     = error "No Empty List for digestConcat"
-digestConcat (x:xs) = foldl' (flip combineCRC32) x xs
+digestConcat [x]    = x
+digestConcat (x:xs) = foldl' (flip combineDigest) x xs
+
+combineDigest :: Digest -> Digest -> Digest
+combineDigest x y = dig'
+  where
+    w32' = crc32Update (getCRC32 x) (getByteString y)
+    bs'  = toStrict $ toLazyByteString $ word32LE w32'
+    dig' = Digest w32' bs'
+
+-- Digestible
+
+class Digestible a where
+  digest :: a -> Digest
+
+instance Show a => Digestible a where
+  digest = hashStr . show
+
+-- CRC32
+
+instance CRC32 Digest where
+  crc32Update w = crc32Update w . getByteString

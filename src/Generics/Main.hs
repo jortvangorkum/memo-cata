@@ -10,6 +10,7 @@ import           Control.DeepSeq
 import           Data.ByteString            (ByteString)
 import qualified Data.Map                   as M
 import qualified Data.Trie                  as T
+import qualified Data.Trie.Internal         as TI
 import           Generics.Data.Digest.CRC32
 
 newtype Fix f = In { unFix :: f (Fix f) }
@@ -143,12 +144,25 @@ merkle :: Merkelize f => Fix f -> Fix (f :*: K Digest)
 merkle = In . merkleG . unFix
 
 -- Generic Container
-class Container c k where
-  empty  :: c k a
-  insert :: k -> a -> c k a -> c k a
-  lookup :: k -> c k a -> Maybe a
+class Container c where
+  empty  :: c a
+  insert :: Digest -> a -> c a -> c a
+  lookup :: Digest -> c a -> Maybe a
 
-instance Ord a => Container M.Map a where
+instance Container (M.Map Digest) where
   empty  = M.empty
   insert = M.insert
   lookup = M.lookup
+
+instance Container T.Trie where
+  empty = T.empty
+  insert = T.insert . getByteString
+  lookup = T.lookup . getByteString
+
+instance NFData a => NFData (T.Trie a) where
+  rnf = rnf . f
+    where
+      f = TI.cata arc br em
+      arc _ x _ = rnf x
+      br _ _ = ()
+      em = ()
