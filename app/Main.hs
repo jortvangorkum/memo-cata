@@ -47,6 +47,9 @@ benchSpecCataSumMap n = env (setupMapInt n) (bench (show n) . nf (uncurry S.cata
 benchGenCataSumMapChange :: Int -> Benchmark
 benchGenCataSumMapChange n = env (setupMapIntChange n) (bench (show n) . nf (uncurry G.cataSum))
 
+benchGenCataSumTrieChange :: Int -> Benchmark
+benchGenCataSumTrieChange n = env (setupTrieIntChange n) (bench (show n) . nf (uncurry G.cataSumTrie))
+
 benchSpecCataSumMapChange :: Int -> Benchmark
 benchSpecCataSumMapChange n = env (setupMapIntChange n) (bench (show n) . nf (uncurry S.cataSumMap))
 
@@ -75,6 +78,12 @@ setupMapIntChange n = return (m, t)
     m = snd . G.cataSum empty . merkle . changeSingleLeaf . generateTreeG $ n
     t = merkle . generateTreeG $ n
 
+setupTrieIntChange :: Int -> IO (T.Trie Int, MerkleTree Int)
+setupTrieIntChange n = return (m, t)
+  where
+    m = snd . G.cataSumTrie empty . merkle . changeSingleLeaf . generateTreeG $ n
+    t = merkle . generateTreeG $ n
+
 changeSingleLeaf :: TreeG Int -> TreeG Int
 changeSingleLeaf (In (Inl (K _))) = In (Inl (K 10))
 changeSingleLeaf (In (Inr (Pair (Pair (I l, x), r)))) = In $ Inr $ Pair (Pair (I (changeSingleLeaf l), x), r)
@@ -97,6 +106,8 @@ main = defaultMain
     [benchSpecCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Generic Cata Sum with Single Change Map" $
     [benchGenCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
+  , bgroup "Generic Cata Sum with Single Change Trie" $
+    [benchGenCataSumTrieChange (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Specific Cata Sum with Single Change Map" $
     [benchSpecCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   ]
