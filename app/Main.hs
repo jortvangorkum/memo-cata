@@ -87,7 +87,7 @@ main = defaultMain
     [benchSpecCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Generic Cata Sum with Map"
     [benchGenCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Evaluate Trie"
+  , bgroup "Generic Cata Sum Trie" $
     [benchEvaluateTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Generic Cata Sum with Trie"
     [benchGenCataSumTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
