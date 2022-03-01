@@ -1,13 +1,10 @@
 {-# LANGUAGE TypeOperators #-}
 module GenericTree.Main where
 
-import qualified Data.Map                   as M
-import           Debug.Trace                (trace)
 import           Generics.Cata
 import           Generics.Data.Digest.CRC32
 import           Generics.Main
 import           Tree
-
 
 type MerkleFix f = Fix (f :*: K Digest)
 type MerkleTree a = MerkleFix (TreeGr a)
@@ -28,7 +25,7 @@ exampleTreeG :: TreeG Int
 exampleTreeG = from exampleTreeF
 
 showTreeG :: String
-showTreeG = show $ merkleG $ unFix exampleTreeG
+showTreeG = show exampleTreeG
 
 getRootDigest :: MerkleTree a -> Digest
 getRootDigest (In (Pair (_, K h))) = h
