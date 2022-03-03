@@ -1,13 +1,12 @@
 {-# LANGUAGE FlexibleInstances   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module UnitTests.GenericTreeSpec where
-import           Data.Bifunctor             (first)
-import qualified Data.Map                   as M
-import qualified Data.Trie                  as T
-import qualified GenericTree.GenericCata    as G
+import           Data.Bifunctor           (first)
+import qualified Data.Map                 as M
+import qualified Data.Trie                as T
+import qualified GenericTree.GenericCata  as G
 import           GenericTree.Main
-import qualified GenericTree.SpecificCata   as S
-import           Generics.Data.Digest.CRC32
+import qualified GenericTree.SpecificCata as S
 import           Generics.Main
 import           Test.Hspec
 import           Test.QuickCheck
