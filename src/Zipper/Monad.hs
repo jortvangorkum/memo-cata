@@ -48,7 +48,7 @@ t = Branch (Branch (Branch (Leaf 1) (Leaf 2))
            (Branch (Leaf 4)
                    (Leaf 5))
 
-left :: TravelTree a
-left = do
-       (Loc (Branch l r) c) <- get
-       return l
+-- left :: TravelTree a
+-- left = do
+--        (Loc (Branch l r) c) <- get
+--        return l
