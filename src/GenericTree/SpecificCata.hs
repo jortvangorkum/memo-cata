@@ -37,7 +37,7 @@ cataSumMap m = cata f
     f (Pair (px, K (Digest _ h))) = case M.lookup h m of
       Just n -> (n, m)
       Nothing -> case px of
-        Inl (K x) -> undefined
+        Inl (K x) -> (x, M.insert h x m)
         Inr (Pair (Pair (I (xl, ml), K x), I (xr, mr)))
           -> let y = x + xl + xr
              in (y, M.insert h y (ml <> mr))
