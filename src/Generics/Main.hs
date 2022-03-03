@@ -109,7 +109,7 @@ instance (NFData1 f, NFData1 g, NFData r) => NFData ((:*:) f g r) where
   rnf = rnf1
 
 -- Generic Merkelize
-class (Functor f) => Merkelize f where
+class Merkelize f where
   merkleG :: (Merkelize g) => f (Fix g) -> (f :*: K Digest) (Fix (g :*: K Digest))
 
 instance (Show a) => Merkelize (K a) where

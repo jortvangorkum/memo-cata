@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 528f5903baa07dccc7dee5642e4def2892afa9f2042bac9f751a20ebcd004358
+-- hash: 2653f60afdfa4f0451d9b4cf95f8494fce94d294c5e76083b51ce8c131a5a1db
 
 name:           memo-cata
 version:        0.1.0.0
@@ -32,9 +32,11 @@ library
       GenericTree.GenericCata
       GenericTree.Main
       GenericTree.SpecificCata
+      GenericTree.Zipper
       Lib
       Tree
       Zipper.LearnHaskell
+      Zipper.MerkleTree
       Zipper.Monad
       Zipper.Wiki
   other-modules:
