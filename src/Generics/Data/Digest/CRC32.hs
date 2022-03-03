@@ -31,9 +31,6 @@ instance Show Digest where
 instance Ord Digest where
   compare x y = compare (getByteString x) (getByteString y)
 
-debugHash :: Digest -> String
-debugHash = take 5 . show
-
 hashStr :: String -> Digest
 hashStr s = Digest w32 bs
   where
@@ -49,7 +46,7 @@ digestConcat (x:xs) = foldl' (flip combineDigest) x xs
 combineDigest :: Digest -> Digest -> Digest
 combineDigest x y = dig'
   where
-    w32' = crc32Update (getCRC32 x) (getByteString y)
+    w32' = crc32Update (getCRC32 x) y
     bs'  = toStrict $ toLazyByteString $ word32LE w32'
     dig' = Digest w32' bs'
 
