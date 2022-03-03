@@ -1,4 +1,13 @@
-module Zipper.MerkleTree where
+module Zipper.MerkleTree
+  ( left
+  , right
+  , down
+  , down'
+  , up
+  , top
+  , update
+  , travel
+  )where
 
 
 import           GenericTree.Main
@@ -20,6 +29,18 @@ left _ = error "Left not possible"
 right :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
 right (In (Pair (Inr (Pair (Pair (I l, K x), I r)), K h)), c) = (r, R c l x h)
 right _ = error "Right not possible"
+
+containsChildren :: Loc (MerkleTree a) a -> Bool
+containsChildren (In (Pair (Inr _, _)), _) = True
+containsChildren _                         = False
+
+-- | Move down to the leftmost child
+down :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+down l@(t, c) = if containsChildren l then down (left l) else l
+
+-- | Move down to the rightmost child
+down' :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+down' l@(t, c) = if containsChildren l then down (right l) else l
 
 up :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
 up (t, L c r x h) = (In (Pair (Inr (Pair (Pair (I t, K x), I r)), K h)), c)
