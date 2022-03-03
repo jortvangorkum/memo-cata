@@ -9,6 +9,7 @@ import           Generics.Main
 data Cxt f a = Top
              | L (Cxt f a) f a Digest
              | R (Cxt f a) f a Digest
+             deriving (Show)
 
 type Loc f a = (f, Cxt f a)
 
@@ -32,12 +33,28 @@ top z          = top (up z)
 modify :: (MerkleTree a -> MerkleTree a) -> Loc (MerkleTree a) a -> Loc (MerkleTree a) a
 modify f (m@(In (Pair (x, K h))), c) = (f m, c)
 
+travel :: [Loc (MerkleTree a) a -> Loc (MerkleTree a) a] -> MerkleTree a -> MerkleTree a
+travel dirs m = fst $ foldl (\x f -> f x) (m, Top) dirs
+
 -- TODO: determine how to rehash the first layer of the fixpoint
 -- use that to rehash from the current location to the root node
 
+rehash :: Show a => MerkleTree a -> MerkleTree a
+rehash (In (Pair (n@(Inr (Pair (Pair (I l, K x), I r))), K h))) = In (Pair (n, K h'))
+  where
+    h' = hash n
+rehash _ = error "Cannot rehash a Leaf"
 
--- rehash :: Show a => Loc (MerkleTree a) a -> Loc (MerkleTree a) a
--- rehash (In n@(Pair (Inr (Pair (Pair (I l, K x), I r)), K h)), c) = undefined
+update :: Show a => (MerkleTree a -> MerkleTree a) -> Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+update f l = updateTree (up l')
+  where
+    l' = modify f l
+    updateTree :: Show a => Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+    updateTree (x, Top) = (rehash x, Top)
+    updateTree z@(x, c) = updateTree (up (rehash x, c))
 
--- update :: (MerkleTree a -> MerkleTree a) -> Loc (MerkleTree a) a -> Loc (MerkleTree a) a
--- update f ()
+t :: MerkleTree Int
+t = In (Pair (Inl (K 69), K (digest "69")))
+
+test :: Loc (MerkleTree Int) Int
+test = update (const t) ((left. left) (merkle (generateTreeG 3), Top))
