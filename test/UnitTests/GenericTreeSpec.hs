@@ -1,7 +1,5 @@
 {-# LANGUAGE FlexibleInstances   #-}
-{-# LANGUAGE LambdaCase          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeOperators       #-}
 module UnitTests.GenericTreeSpec where
 import           Data.Bifunctor           (first)
 import qualified Data.Map                 as M
