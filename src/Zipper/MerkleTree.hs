@@ -36,9 +36,6 @@ modify f (m@(In (Pair (x, K h))), c) = (f m, c)
 travel :: [Loc (MerkleTree a) a -> Loc (MerkleTree a) a] -> MerkleTree a -> MerkleTree a
 travel dirs m = fst $ foldl (\x f -> f x) (m, Top) dirs
 
--- TODO: determine how to rehash the first layer of the fixpoint
--- use that to rehash from the current location to the root node
-
 rehash :: Show a => MerkleTree a -> MerkleTree a
 rehash (In (Pair (n@(Inr (Pair (Pair (I l, K x), I r))), K h))) = In (Pair (n, K h'))
   where
