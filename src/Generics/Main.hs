@@ -149,10 +149,10 @@ class Container c where
   insert :: Digest -> a -> c a -> c a
   lookup :: Digest -> c a -> Maybe a
 
-instance Container (M.Map Digest) where
+instance Container (M.Map ByteString) where
   empty  = M.empty
-  insert = M.insert
-  lookup = M.lookup
+  insert = M.insert . getByteString
+  lookup = M.lookup . getByteString
 
 instance Container T.Trie where
   empty = T.empty

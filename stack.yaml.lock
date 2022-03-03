@@ -25,6 +25,20 @@ packages:
       sha256: bab255b3ec340550f7d4fc1e1ef6a7bc61768288cfdd4620e76640d0b6bc0472
   original:
     hackage: bytestring-trie-0.2.6
+- completed:
+    hackage: hspec-2.7.10@sha256:c9e82c90086acebac576552a06f3cabd249bba048edd1667c7fae0b1313d5bce,1712
+    pantry-tree:
+      size: 583
+      sha256: c67dad42129f684b8d21deb0d2948d88618a287fe6a7ae235a232959bfe313df
+  original:
+    hackage: hspec-2.7.10
+- completed:
+    hackage: QuickCheck-2.14.2@sha256:4ce29211223d5e6620ebceba34a3ca9ccf1c10c0cf387d48aea45599222ee5aa,7736
+    pantry-tree:
+      size: 2315
+      sha256: 2fe423d0ed7cd64f0f165d708779f48814e66c4f181c568468134af55d86a5f8
+  original:
+    hackage: QuickCheck-2.14.2
 snapshots:
 - completed:
     size: 587393

@@ -19,7 +19,7 @@ jobs:
           fi
 
   run-haskell:
-    name: Build Haskell
+    name: Build Haskell & Run Tests
     needs: linting-haskell
     runs-on: ubuntu-latest
     steps:
@@ -39,3 +39,5 @@ jobs:
           stack-version: "latest"
       - name: Stack build
         run: stack build
+      - name: Stack test
+        run: stack test

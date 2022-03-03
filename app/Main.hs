@@ -1,6 +1,7 @@
 module Main where
 
 import           Criterion.Main
+import           Data.ByteString            (ByteString)
 import qualified Data.Map                   as M
 import qualified Data.Trie                  as T
 import qualified GenericTree.GenericCata    as G
@@ -9,18 +10,6 @@ import qualified GenericTree.SpecificCata   as S
 import           Generics.Data.Digest.CRC32
 import           Generics.Main
 import           Tree
-
--- Generates Tree of size 2n + 1
-generateTreeG :: Int -> TreeG Int
-generateTreeG = from . generateTreeF
-  where
-    generateTreeF n = generateBinTree 0 (n - 1)
-    generateBinTree :: Int -> Int -> TreeF Int
-    generateBinTree l u =
-      if u < l
-      then In $ LeafF l
-      else let i = (l + u) `div` 2
-           in In $ NodeF (generateBinTree l (i - 1)) i (generateBinTree (i + 1) u)
 
 -- BENCHMARKS
 benchCataInt :: Int -> Benchmark
@@ -57,7 +46,7 @@ benchSpecCataSumMapChange n = env (setupMapIntChange n) (bench (show n) . nf (un
 setupMerkleTree :: Int -> IO (MerkleTree Int)
 setupMerkleTree = return . merkle . generateTreeG
 
-setupMapInt :: Int -> IO (M.Map Digest Int, MerkleTree Int)
+setupMapInt :: Int -> IO (M.Map ByteString Int, MerkleTree Int)
 setupMapInt n = return (m, t)
   where
     m = snd . G.cataSum empty . merkle . generateTreeG $ n
@@ -72,7 +61,7 @@ setupTrieInt n = return (m, t)
     m = snd . G.cataSumTrie empty . merkle . generateTreeG $ n
     t = merkle . generateTreeG $ n
 
-setupMapIntChange :: Int -> IO (M.Map Digest Int, MerkleTree Int)
+setupMapIntChange :: Int -> IO (M.Map ByteString Int, MerkleTree Int)
 setupMapIntChange n = return (m, t)
   where
     m = snd . G.cataSum empty . merkle . changeSingleLeaf . generateTreeG $ n
@@ -90,25 +79,25 @@ changeSingleLeaf (In (Inr (Pair (Pair (I l, x), r)))) = In $ Inr $ Pair (Pair (I
 
 main :: IO ()
 main = defaultMain
-  [ bgroup "Cata Sum" $
+  [ bgroup "Cata Sum"
     [benchCataInt (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum" $
+  , bgroup "Generic Cata Sum"
     [benchGenCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Specific Cata Sum" $
+  , bgroup "Specific Cata Sum"
     [benchSpecCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Map" $
+  , bgroup "Generic Cata Sum with Map"
     [benchGenCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Generic Cata Sum Trie" $
     [benchEvaluateTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Trie" $
+  , bgroup "Generic Cata Sum with Trie"
     [benchGenCataSumTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Specific Cata Sum with Map" $
+  , bgroup "Specific Cata Sum with Map"
     [benchSpecCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Single Change Map" $
+  , bgroup "Generic Cata Sum with Single Change Map"
     [benchGenCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Single Change Trie" $
+  , bgroup "Generic Cata Sum with Single Change Trie"
     [benchGenCataSumTrieChange (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Specific Cata Sum with Single Change Map" $
+  , bgroup "Specific Cata Sum with Single Change Map"
     [benchSpecCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   ]
 
