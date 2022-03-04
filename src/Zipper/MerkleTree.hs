@@ -7,20 +7,27 @@ module Zipper.MerkleTree
   , top
   , update
   , travel
+  , insertTest
   )where
 
 
+import           Control.DeepSeq
 import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
 import           Generics.Main
 
 
-data Cxt f a = Top
-             | L (Cxt f a) f a Digest
-             | R (Cxt f a) f a Digest
-             deriving (Show)
+data Cxt fa a = Top
+              | L (Cxt fa a) fa a Digest
+              | R (Cxt fa a) fa a Digest
+              deriving (Show)
 
-type Loc f a = (f, Cxt f a)
+instance (NFData fa, NFData a) => NFData (Cxt fa a) where
+  rnf Top         = ()
+  rnf (L c t x h) = rnf c `seq` rnf t `seq` rnf x
+  rnf (R c t x h) = rnf c `seq` rnf t `seq` rnf x
+
+type Loc fa a = (fa, Cxt fa a)
 
 left :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
 left (In (Pair (Inr (Pair (Pair (I l, K x), I r)), K h)), c) = (l, L c r x h)
@@ -71,8 +78,11 @@ update f l = updateTree (up l')
     updateTree (x, Top) = (rehash x, Top)
     updateTree z@(x, c) = updateTree (up (rehash x, c))
 
-t :: MerkleTree Int
-t = In (Pair (Inl (K 69), K (digest "69")))
+t :: TreeG Int
+t = In (Inl (K 69))
 
-test :: Loc (MerkleTree Int) Int
-test = update (const t) ((left. left) (merkle (generateTreeG 3), Top))
+mt :: MerkleTree Int
+mt = merkle t
+
+insertTest :: MerkleTree Int -> Loc (MerkleTree Int) Int
+insertTest m = update (const mt) (down (m, Top))

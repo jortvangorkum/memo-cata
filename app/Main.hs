@@ -10,6 +10,7 @@ import qualified GenericTree.SpecificCata   as S
 import           Generics.Data.Digest.CRC32
 import           Generics.Main
 import           Tree
+import           Zipper.MerkleTree          (insertTest)
 
 -- BENCHMARKS
 benchCataInt :: Int -> Benchmark
@@ -41,6 +42,9 @@ benchGenCataSumTrieChange n = env (setupTrieIntChange n) (bench (show n) . nf (u
 
 benchSpecCataSumMapChange :: Int -> Benchmark
 benchSpecCataSumMapChange n = env (setupMapIntChange n) (bench (show n) . nf (uncurry S.cataSumMap))
+
+benchUpdateMerkleTree :: Int -> Benchmark
+benchUpdateMerkleTree n = env (setupMerkleTree n) (bench (show n) . nf insertTest)
 
 -- ENVIRONMENTS
 setupMerkleTree :: Int -> IO (MerkleTree Int)
@@ -80,7 +84,9 @@ changeSingleLeaf (In (Inr (Pair (Pair (I l, x), r)))) = In $ Inr $ Pair (Pair (I
 main :: IO ()
 main = defaultMain
   [ bgroup "Cata Sum"
-    [benchCataInt (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
+    [benchCataInt (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
+  , bgroup "Incremental Update MerkleTree"
+    [benchUpdateMerkleTree (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
   , bgroup "Generic Cata Sum"
     [benchGenCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Specific Cata Sum"

@@ -110,7 +110,7 @@ instance (NFData1 f, NFData1 g, NFData r) => NFData ((:*:) f g r) where
 
 -- Generic Merkelize
 class Merkelize f where
-  hash :: f (Fix (g :*: K Digest)) -> Digest
+  hash    :: f (Fix (g :*: K Digest)) -> Digest
   merkleG :: (Merkelize g) => f (Fix g) -> (f :*: K Digest) (Fix (g :*: K Digest))
 
 instance (Show a) => Merkelize (K a) where
@@ -165,7 +165,7 @@ instance Container (M.Map ByteString) where
   lookup = M.lookup . getByteString
 
 instance Container T.Trie where
-  empty = T.empty
+  empty  = T.empty
   insert = T.insert . getByteString
   lookup = T.lookup . getByteString
 
