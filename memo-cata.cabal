@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b660e5d81c0cd964c420f4438b8d55ad1f32a93f3f1e258e6789df5dfc123d1b
+-- hash: 21d698c49168cfe30ea37820bcfef131dcb1fbb927ac9f71c9389f873c93412e
 
 name:           memo-cata
 version:        0.1.0.0
@@ -32,8 +32,13 @@ library
       GenericTree.GenericCata
       GenericTree.Main
       GenericTree.SpecificCata
+      GenericTree.Zipper
       Lib
       Tree
+      Zipper.LearnHaskell
+      Zipper.MerkleTree
+      Zipper.Monad
+      Zipper.Wiki
   other-modules:
       Paths_memo_cata
   hs-source-dirs:
@@ -71,7 +76,10 @@ test-suite memo-cata-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Test.Arbitrary
+      Test.Helper
       UnitTests.GenericTreeSpec
+      UnitTests.UpdateMerkleTreeSpec
       Paths_memo_cata
   hs-source-dirs:
       test

@@ -1,7 +1,4 @@
-{-# LANGUAGE FlexibleInstances   #-}
-{-# LANGUAGE LambdaCase          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeOperators       #-}
 module UnitTests.GenericTreeSpec where
 import           Data.Bifunctor           (first)
 import qualified Data.Map                 as M
@@ -11,22 +8,10 @@ import           GenericTree.Main
 import qualified GenericTree.SpecificCata as S
 import           Generics.Cata
 import           Generics.Main
+import           Test.Arbitrary
+import           Test.Helper
 import           Test.Hspec
 import           Test.QuickCheck
-
-instance Arbitrary (TreeG Int) where
-  arbitrary = do sized (return . generateTreeG)
-
-instance Arbitrary (MerkleTree Int) where
-  arbitrary = merkle <$> arbitrary
-
-treeSize :: TreeG a -> Int
-treeSize (In x) = case x of
-  Inl k -> 1
-  Inr (Pair (Pair (I l, _), I r)) -> 1 + lx + rx
-    where
-      lx = treeSize l
-      rx = treeSize r
 
 spec :: Spec
 spec = describe "Generic Tree Unit Tests" $ do

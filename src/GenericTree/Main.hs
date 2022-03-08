@@ -14,6 +14,11 @@ type TreeG  a = Fix (TreeGr a)
 type TreeGr a = K a
              :+: ((I :*: K a) :*: I)
 
+fib :: Int -> Int
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n - 1) + fib (n - 2)
+
 from :: TreeF a -> TreeG a
 from = cata f
   where
@@ -21,21 +26,7 @@ from = cata f
     f (LeafF x)     = In $ Inl $ K x
     f (NodeF l x r) = In $ Inr $ Pair (Pair (I l, K x), I r)
 
-exampleTreeG :: TreeG Int
-exampleTreeG = from exampleTreeF
-
-showTreeG :: String
-showTreeG = show exampleTreeG
-
-getRootDigest :: MerkleTree a -> Digest
-getRootDigest (In (Pair (_, K h))) = h
-
-fib :: Int -> Int
-fib 0 = 0
-fib 1 = 1
-fib n = fib (n - 1) + fib (n - 2)
-
--- Generates Tree of size 2n + 1
+-- | Generates Tree of size 2n + 1
 generateTreeG :: Int -> TreeG Int
 generateTreeG = from . generateTreeF
   where

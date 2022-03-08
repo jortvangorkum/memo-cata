@@ -109,21 +109,29 @@ instance (NFData1 f, NFData1 g, NFData r) => NFData ((:*:) f g r) where
   rnf = rnf1
 
 -- Generic Merkelize
-class (Functor f) => Merkelize f where
+class Merkelize f where
+  hash    :: f (Fix (g :*: K Digest)) -> Digest
   merkleG :: (Merkelize g) => f (Fix g) -> (f :*: K Digest) (Fix (g :*: K Digest))
 
 instance (Show a) => Merkelize (K a) where
-  merkleG (K x) = Pair (K x, K h)
+  hash (K x) = digestConcat [digest "K", digest x]
+  merkleG k@(K x) = Pair (K x, K h)
     where
-      h = digestConcat [digest "K", digest x]
+      h = hash (K x)
 
 instance Merkelize I where
+  hash (I x) = digestConcat [digest "I", ph]
+    where
+      (In (Pair (_, K ph))) = x
   merkleG (I x) = Pair (I prevX, K h)
     where
       prevX@(In (Pair (_, K ph))) = merkle x
-      h = digestConcat [digest "I", ph]
+      h = hash (I prevX)
 
 instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
+  hash (Inl x) = digestConcat [digest "Inl", hash x]
+  hash (Inr x) = digestConcat [digest "Inr", hash x]
+
   merkleG (Inl x) = Pair (Inl prevX, K h)
     where
       (Pair (prevX, K ph)) = merkleG x
@@ -134,6 +142,8 @@ instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
       h = digestConcat [digest "Inr", ph]
 
 instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
+  hash (Pair (x, y)) = digestConcat [digest "Pair", hash x, hash y]
+
   merkleG (Pair (x, y)) = Pair (Pair (prevX, prevY), K h)
     where
       (Pair (prevX, K phx)) = merkleG x
@@ -155,7 +165,7 @@ instance Container (M.Map ByteString) where
   lookup = M.lookup . getByteString
 
 instance Container T.Trie where
-  empty = T.empty
+  empty  = T.empty
   insert = T.insert . getByteString
   lookup = T.lookup . getByteString
 
