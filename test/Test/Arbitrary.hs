@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
-module Arbitrary where
+module Test.Arbitrary where
 import           GenericTree.Main
 import           Generics.Main
 import           Test.QuickCheck

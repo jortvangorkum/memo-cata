@@ -1,6 +1,5 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module UnitTests.GenericTreeSpec where
-import           Arbitrary
 import           Data.Bifunctor           (first)
 import qualified Data.Map                 as M
 import qualified Data.Trie                as T
@@ -8,17 +7,12 @@ import qualified GenericTree.GenericCata  as G
 import           GenericTree.Main
 import qualified GenericTree.SpecificCata as S
 import           Generics.Main
+import           Test.Arbitrary
+import           Test.Helper
 import           Test.Hspec
 import           Test.QuickCheck
 
 
-treeSize :: TreeG a -> Int
-treeSize (In x) = case x of
-  Inl k -> 1
-  Inr (Pair (Pair (I l, _), I r)) -> 1 + lx + rx
-    where
-      lx = treeSize l
-      rx = treeSize r
 
 spec :: Spec
 spec = describe "Generic Tree Unit Tests" $ do

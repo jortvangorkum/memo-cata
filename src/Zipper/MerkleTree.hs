@@ -106,7 +106,4 @@ update f dirs mt = fromLoc $ updateLoc f loc'
 insertTest :: MerkleTree Int -> MerkleTree Int
 insertTest = update (const mt) [down]
   where
-    t :: TreeG Int
-    t = In (Inl (K 69))
-    mt :: MerkleTree Int
-    mt = merkle t
+    mt = merkle (In (Inl (K 69)))

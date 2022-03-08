@@ -1,10 +1,11 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module UnitTests.UpdateMerkleTreeSpec where
 
-import           Arbitrary
+import qualified GenericTree.GenericCata as G
 import           GenericTree.Main
-import           Generics.Data.Digest.CRC32
 import           Generics.Main
+import           Test.Arbitrary
+import           Test.Helper
 import           Test.Hspec
 import           Test.QuickCheck
 import           Zipper.MerkleTree
@@ -12,8 +13,7 @@ import           Zipper.MerkleTree
 mt :: MerkleTree Int
 mt = merkle (In (Inl (K 69)))
 
-getRootHash :: MerkleTree Int -> Digest
-getRootHash (In (Pair (_, K h))) = h
+
 
 spec :: Spec
 spec = describe "Incremental Update MerkleTree" $ do
@@ -25,3 +25,17 @@ spec = describe "Incremental Update MerkleTree" $ do
     \(t :: MerkleTree Int) -> getRootHash (update id [down] t) `shouldBe` getRootHash t
   it "Updated Tree hash with different value != Original Tree hash" $ property $
     \(t :: MerkleTree Int) -> getRootHash (update (const mt) [down] t) `shouldNotBe` getRootHash t
+  it "Size Updated Tree with same value == Size Original Tree" $ property $
+    \(t :: MerkleTree Int) -> merkleTreeSize (update id [down] t) `shouldBe` merkleTreeSize t
+  it "Size Updated Tree with different value == Size Original Tree" $ property $
+    \(t :: MerkleTree Int) -> merkleTreeSize (update (const mt) [down] t) `shouldBe` merkleTreeSize t
+  it "Result Updated Tree with same value == Result Original Tree" $ property $
+    \(t :: MerkleTree Int) -> G.cataSumTrie empty (update id [down] t) `shouldBe` G.cataSumTrie empty t
+  it "Result Updated Tree with different value != Result Original Tree" $ property $
+    \(t :: MerkleTree Int) -> G.cataSumTrie empty (update (const mt) [down] t) `shouldNotBe` G.cataSumTrie empty t
+  it "With Trie - Result Updated Tree with same value == Result Original Tree" $ property $
+    \(t :: MerkleTree Int) -> let (_, tr) = G.cataSumTrie empty t
+                              in  G.cataSumTrie tr (update id [down] t) `shouldBe` G.cataSumTrie tr t
+  it "With Trie - Result Updated Tree with different value != Result Original Tree" $ property $
+    \(t :: MerkleTree Int) -> let (_, tr) = G.cataSumTrie empty t
+                              in  G.cataSumTrie tr (update (const mt) [down] t) `shouldNotBe` G.cataSumTrie tr t
