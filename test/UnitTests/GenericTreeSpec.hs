@@ -1,5 +1,4 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeOperators       #-}
 module UnitTests.GenericTreeSpec where
 import           Data.Bifunctor           (first)
 import qualified Data.Map                 as M
@@ -13,8 +12,6 @@ import           Test.Arbitrary
 import           Test.Helper
 import           Test.Hspec
 import           Test.QuickCheck
-
-
 
 spec :: Spec
 spec = describe "Generic Tree Unit Tests" $ do
