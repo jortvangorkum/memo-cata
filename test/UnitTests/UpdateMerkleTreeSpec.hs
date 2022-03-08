@@ -13,8 +13,6 @@ import           Zipper.MerkleTree
 mt :: MerkleTree Int
 mt = merkle (In (Inl (K 69)))
 
-
-
 spec :: Spec
 spec = describe "Incremental Update MerkleTree" $ do
   it "Updated Tree with same value == Original Tree" $ property $
@@ -39,3 +37,6 @@ spec = describe "Incremental Update MerkleTree" $ do
   it "With Trie - Result Updated Tree with different value != Result Original Tree" $ property $
     \(t :: MerkleTree Int) -> let (_, tr) = G.cataSumTrie empty t
                               in  G.cataSumTrie tr (update (const mt) [down] t) `shouldNotBe` G.cataSumTrie tr t
+  it "With Trie - Result Updated Tree with different value == Result Original Tree + 69" $ property $
+    \(t :: MerkleTree Int) -> let (_, tr) = G.cataSumTrie empty t
+                              in  fst (G.cataSumTrie tr (update (const mt) [down] t)) `shouldBe` fst (G.cataSumTrie tr t) + 69
