@@ -46,6 +46,9 @@ benchSpecCataSumMapChange n = env (setupMapIntChange n) (bench (show n) . nf (un
 benchUpdateMerkleTree :: Int -> Benchmark
 benchUpdateMerkleTree n = env (setupMerkleTree n) (bench (show n) . nf insertTest)
 
+benchIncrementalCompute :: Int -> Benchmark
+benchIncrementalCompute n = env (setupTrieInt n) (bench (show n) . nf (\(tr, mt) -> G.cataSumTrie tr (insertTest mt)))
+
 -- ENVIRONMENTS
 setupMerkleTree :: Int -> IO (MerkleTree Int)
 setupMerkleTree = return . merkle . generateTreeG
@@ -62,7 +65,7 @@ generateTrie = snd . G.cataSumTrie empty
 setupTrieInt :: Int -> IO (T.Trie Int, MerkleTree Int)
 setupTrieInt n = return (m, t)
   where
-    m = snd . G.cataSumTrie empty . merkle . generateTreeG $ n
+    m = snd $ G.cataSumTrie empty $ merkle $ generateTreeG n
     t = merkle . generateTreeG $ n
 
 setupMapIntChange :: Int -> IO (M.Map ByteString Int, MerkleTree Int)
@@ -87,6 +90,8 @@ main = defaultMain
     [benchCataInt (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
   , bgroup "Incremental Update MerkleTree"
     [benchUpdateMerkleTree (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
+  , bgroup "Incremental Compute"
+    [benchIncrementalCompute (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
   , bgroup "Generic Cata Sum"
     [benchGenCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Specific Cata Sum"

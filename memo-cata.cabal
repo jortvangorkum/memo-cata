@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2653f60afdfa4f0451d9b4cf95f8494fce94d294c5e76083b51ce8c131a5a1db
+-- hash: 3372cad92f0e4b00de6d35d34adfa40452e6dbab0ad4834acccf42ba7724a6e5
 
 name:           memo-cata
 version:        0.1.0.0
@@ -76,7 +76,9 @@ test-suite memo-cata-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Arbitrary
       UnitTests.GenericTreeSpec
+      UnitTests.UpdateMerkleTreeSpec
       Paths_memo_cata
   hs-source-dirs:
       test
