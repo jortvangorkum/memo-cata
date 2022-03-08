@@ -1,16 +1,14 @@
 module Main where
 
 import           Criterion.Main
-import           Data.ByteString            (ByteString)
-import qualified Data.Map                   as M
-import qualified Data.Trie                  as T
-import qualified GenericTree.GenericCata    as G
+import           Data.ByteString          (ByteString)
+import qualified Data.Map                 as M
+import qualified Data.Trie                as T
+import qualified GenericTree.GenericCata  as G
 import           GenericTree.Main
-import qualified GenericTree.SpecificCata   as S
-import           Generics.Data.Digest.CRC32
+import qualified GenericTree.SpecificCata as S
 import           Generics.Main
-import           Tree
-import           Zipper.MerkleTree          (insertTest)
+import           Zipper.MerkleTree
 
 -- BENCHMARKS
 benchCataInt :: Int -> Benchmark
@@ -43,11 +41,25 @@ benchGenCataSumTrieChange n = env (setupTrieIntChange n) (bench (show n) . nf (u
 benchSpecCataSumMapChange :: Int -> Benchmark
 benchSpecCataSumMapChange n = env (setupMapIntChange n) (bench (show n) . nf (uncurry S.cataSumMap))
 
+-- The Evaluation of lazy to strict causes that the performance results become linear instead of log,
+-- because the conversion takes O(N) time
 benchUpdateMerkleTree :: Int -> Benchmark
-benchUpdateMerkleTree n = env (setupMerkleTree n) (bench (show n) . nf insertTest)
+benchUpdateMerkleTree n = env (setupMerkleTree n) (bench (show n) . nf (update (const mt) [down]))
+  where
+    mt :: MerkleTree Int
+    mt = merkle (In (Inl (K 69)))
 
-benchIncrementalCompute :: Int -> Benchmark
-benchIncrementalCompute n = env (setupTrieInt n) (bench (show n) . nf (\(tr, mt) -> G.cataSumTrie tr (insertTest mt)))
+benchIncrementalComputeMap :: Int -> Benchmark
+benchIncrementalComputeMap n = env (setupMapInt n) (bench (show n) . nf (\(m, t) -> fst $ G.cataSum m (update (const mt) [down] t)))
+  where
+    mt :: MerkleTree Int
+    mt = merkle (In (Inl (K 69)))
+
+benchIncrementalComputeTrie :: Int -> Benchmark
+benchIncrementalComputeTrie n = env (setupTrieInt n) (bench (show n) . nf (\(tr, t) -> fst $ G.cataSumTrie tr (update (const mt) [down] t)))
+  where
+    mt :: MerkleTree Int
+    mt = merkle (In (Inl (K 69)))
 
 -- ENVIRONMENTS
 setupMerkleTree :: Int -> IO (MerkleTree Int)
@@ -90,24 +102,24 @@ main = defaultMain
     [benchCataInt (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
   , bgroup "Incremental Update MerkleTree"
     [benchUpdateMerkleTree (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
-  , bgroup "Incremental Compute"
-    [benchIncrementalCompute (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
+  , bgroup "Incremental Compute Map"
+    [benchIncrementalComputeMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
+  , bgroup "Incremental Compute Trie"
+    [benchIncrementalComputeTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
   , bgroup "Generic Cata Sum"
-    [benchGenCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
+    [benchGenCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
   , bgroup "Specific Cata Sum"
     [benchSpecCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Generic Cata Sum with Map"
     [benchGenCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Generic Cata Sum Trie" $
-    [benchEvaluateTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
+    [benchEvaluateTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
   , bgroup "Generic Cata Sum with Trie"
     [benchGenCataSumTrie (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Specific Cata Sum with Map"
     [benchSpecCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Generic Cata Sum with Single Change Map"
     [benchGenCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
-  , bgroup "Generic Cata Sum with Single Change Trie"
-    [benchGenCataSumTrieChange (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Specific Cata Sum with Single Change Map"
     [benchSpecCataSumMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   ]
