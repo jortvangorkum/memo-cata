@@ -7,8 +7,8 @@ import qualified Data.Trie                as T
 import qualified GenericTree.GenericCata  as G
 import           GenericTree.Main
 import qualified GenericTree.SpecificCata as S
+import           GenericTree.Zipper
 import           Generics.Main
-import           Zipper.MerkleTree
 
 -- BENCHMARKS
 benchCataInt :: Int -> Benchmark

@@ -3,12 +3,12 @@ module UnitTests.UpdateMerkleTreeSpec where
 
 import qualified GenericTree.GenericCata as G
 import           GenericTree.Main
+import           GenericTree.Zipper
 import           Generics.Main
 import           Test.Arbitrary
 import           Test.Helper
 import           Test.Hspec
 import           Test.QuickCheck
-import           Zipper.MerkleTree
 
 mt :: MerkleTree Int
 mt = merkle (In (Inl (K 69)))
