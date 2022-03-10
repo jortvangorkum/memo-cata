@@ -1,30 +1,109 @@
-module GenericTree.Zipper where
+module GenericTree.Zipper
+  ( left
+  , right
+  , down
+  , down'
+  , up
+  , top
+  , update
+  , travel
+  , toLoc
+  , fromLoc
+  , insertTest
+  , applyDirs
+  ) where
 
+import           Control.DeepSeq
 import           GenericTree.Main
-import           Generics.Main
+import           Generics.Data.Digest.CRC32
+import           Generics.Main              hiding (insert)
 
-data Cxt f a = Top
-             | L f (Cxt f a) a
-             | R f (Cxt f a) a
-             deriving (Eq, Show)
+data Cxt fa a = Top
+              | L (Cxt fa a) fa a Digest
+              | R (Cxt fa a) fa a Digest
+              deriving (Show)
 
-type Loc f a = (f, Cxt f a)
+instance (NFData fa, NFData a) => NFData (Cxt fa a) where
+  rnf Top         = ()
+  rnf (L c t x h) = rnf c `seq` rnf t `seq` rnf x
+  rnf (R c t x h) = rnf c `seq` rnf t `seq` rnf x
 
-left :: Loc (TreeG a) a -> Loc (TreeG a) a
-left (In (Inr (Pair (Pair (I l, K x), I r))), c) = (l, L r c x)
-left (In (Inl _), c) = error "Left on a leaf is not possible"
+type Loc fa a = (fa, Cxt fa a)
 
-right :: Loc (TreeG a) a -> Loc (TreeG a) a
-right (In (Inr (Pair (Pair (I l, K x), I r))), c) = (r, R l c x)
-right (In (Inl _), c) = error "Right on a leaf is not possible"
+toLoc :: MerkleTree a -> Loc (MerkleTree a) a
+toLoc mt = (mt, Top)
 
-up :: Loc (TreeG a) a -> Loc (TreeG a) a
-up (t, L r c x) = (In (Inr (Pair (Pair (I t, K x), I r))), c)
-up (t, R l c x) = (In (Inr (Pair (Pair (I l, K x), I t))), c)
+fromLoc :: Loc (MerkleTree a) a -> MerkleTree a
+fromLoc (t, _) = t
 
-top :: Loc (TreeG a) a -> Loc (TreeG a) a
+left :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+left (In (Pair (Inr (Pair (Pair (I l, K x), I r)), K h)), c) = (l, L c r x h)
+left _ = error "Left not possible"
+
+right :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+right (In (Pair (Inr (Pair (Pair (I l, K x), I r)), K h)), c) = (r, R c l x h)
+right _ = error "Right not possible"
+
+containsChildren :: Loc (MerkleTree a) a -> Bool
+containsChildren (In (Pair (Inr _, _)), _) = True
+containsChildren _                         = False
+
+-- | Moves down to the leftmost child
+down :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+down l@(t, c) = if containsChildren l then down (left l) else l
+
+-- | Moves down to the rightmost child
+down' :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+down' l@(t, c) = if containsChildren l then down (right l) else l
+
+up :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+up (t, L c r x h) = (In (Pair (Inr (Pair (Pair (I t, K x), I r)), K h)), c)
+up (t, R c l x h) = (In (Pair (Inr (Pair (Pair (I l, K x), I t)), K h)), c)
+up (t, Top)       = error "Cannot go further than Top"
+
+top :: Loc (MerkleTree a) a -> Loc (MerkleTree a) a
 top z@(_, Top) = z
 top z          = top (up z)
 
-modify :: (TreeG a -> TreeG a) -> Loc (TreeG a) a -> Loc (TreeG a) a
-modify f (t, c) = (f t, c)
+isTop :: Loc (MerkleTree a) a -> Bool
+isTop (_, Top) = True
+isTop _        = False
+
+modify :: (MerkleTree a -> MerkleTree a) -> Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+modify f (m@(In (Pair (x, K h))), c) = (f m, c)
+
+travel :: [Loc (MerkleTree a) a -> Loc (MerkleTree a) a] -> MerkleTree a -> MerkleTree a
+travel dirs m = fst $ foldl (\x f -> f x) (m, Top) dirs
+
+rehash :: Show a => MerkleTree a -> MerkleTree a
+rehash (In (Pair (n@(Inr (Pair (Pair (I l, K x), I r))), K h))) = In (Pair (n, K h'))
+  where
+    h' = hash n
+rehash _ = error "Cannot rehash a Leaf"
+
+updateLoc :: Show a => (MerkleTree a -> MerkleTree a) -> Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+updateLoc f l = if isTop l' then l' else updateTree (up l')
+  where
+    l' = modify f l
+    updateTree :: Show a => Loc (MerkleTree a) a -> Loc (MerkleTree a) a
+    updateTree (x, Top) = (rehash x, Top)
+    updateTree z@(x, c) = updateTree (up (rehash x, c))
+
+applyDirs :: [Loc (MerkleTree a) a -> Loc (MerkleTree a) a]
+          -> Loc (MerkleTree a) a
+          -> Loc (MerkleTree a) a
+applyDirs dirs mt = foldl (\x f -> f x) mt dirs
+
+update :: Show a
+       => (MerkleTree a -> MerkleTree a)
+       -> [Loc (MerkleTree a) a -> Loc (MerkleTree a) a]
+       -> MerkleTree a
+       -> MerkleTree a
+update f dirs mt = fromLoc $ updateLoc f loc'
+  where
+    loc' = foldl (\x f -> f x) (toLoc mt) dirs
+
+insertTest :: MerkleTree Int -> MerkleTree Int
+insertTest = update (const mt) [down]
+  where
+    mt = merkle (In (Inl (K 69)))
