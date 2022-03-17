@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Test.Arbitrary where
-import           GenericTree.Main
 import           Generics.Main
+import           GenericTree.Main
 import           Test.QuickCheck
 
 instance Arbitrary (TreeG Int) where

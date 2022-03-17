@@ -1,8 +1,8 @@
 module Test.Helper where
 
-import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
 import           Generics.Main
+import           GenericTree.Main
 
 getRootHash :: MerkleTree Int -> Digest
 getRootHash (In (Pair (_, K h))) = h

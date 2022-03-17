@@ -1,10 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module UnitTests.UpdateMerkleTreeSpec where
 
+import           Generics.Main
 import qualified GenericTree.GenericCata as G
 import           GenericTree.Main
 import           GenericTree.Zipper
-import           Generics.Main
 import           Test.Arbitrary
 import           Test.Helper
 import           Test.Hspec

@@ -4,11 +4,11 @@ import           Criterion.Main
 import           Data.ByteString          (ByteString)
 import qualified Data.Map                 as M
 import qualified Data.Trie                as T
+import           Generics.Main
 import qualified GenericTree.GenericCata  as G
 import           GenericTree.Main
 import qualified GenericTree.SpecificCata as S
 import           GenericTree.Zipper
-import           Generics.Main
 
 -- BENCHMARKS
 benchCataInt :: Int -> Benchmark

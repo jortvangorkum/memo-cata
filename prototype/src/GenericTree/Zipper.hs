@@ -14,9 +14,9 @@ module GenericTree.Zipper
   ) where
 
 import           Control.DeepSeq
-import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
 import           Generics.Main              hiding (insert)
+import           GenericTree.Main
 
 data Cxt fa a = Top
               | L (Cxt fa a) fa a Digest

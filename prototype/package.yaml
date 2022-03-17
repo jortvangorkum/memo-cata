@@ -23,7 +23,6 @@ dependencies:
   - deepseq
   - bytestring
   - bytestring-trie
-  - mtl
 
 library:
   source-dirs: src
