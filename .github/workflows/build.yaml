@@ -5,6 +5,10 @@ on:
       project:
         required: true
         type: string
+      ghc-version:
+        required: false
+        type: string
+        default: 8.10.7 # =18.25
 jobs:
   linting-haskell:
     name: Linting Haskell
@@ -39,7 +43,7 @@ jobs:
       - uses: haskell/actions/setup@v1
         with:
           enable-stack: true
-          ghc-version: 8.10.7 # =18.25
+          ghc-version: ${{ inputs.ghc_version }}
           cabal-version: "latest"
           stack-version: "latest"
       - name: Stack build
