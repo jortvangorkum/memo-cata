@@ -9,5 +9,3 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       project: prototype
-    secrets:
-      token: ${{ secrets.TOKEN }}
