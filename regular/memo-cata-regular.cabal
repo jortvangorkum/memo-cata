@@ -20,6 +20,7 @@ source-repository head
 
 library
   exposed-modules:
+      Generics.Data.Digest.CRC32
       Lib
   other-modules:
       Paths_memo_cata_regular
@@ -27,6 +28,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , bytestring
     , digest
     , regular
     , template-haskell
@@ -41,6 +43,7 @@ executable memo-cata-regular-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
     , digest
     , memo-cata-regular
     , regular
@@ -57,6 +60,7 @@ test-suite memo-cata-regular-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
     , digest
     , memo-cata-regular
     , regular
