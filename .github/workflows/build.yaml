@@ -1,19 +1,20 @@
 name: Memo Cata GitHub Actions
-on: [push]
+on: 
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
 jobs:
   linting-haskell:
     name: Linting Haskell
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        project: [prototype, regular]
     steps:
       - uses: actions/checkout@v2
       - name: Check stylish-haskell and hlint
         run: |
-          curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s ${{ matrix.project }}
-          sh ./.github/stylish-haskell-0.13.0.0.sh | sh -s $(find ./${{ matrix.project }} -type f -name "*.hs" ! -path "*.stack-work*" ! -path "*executable*") -i
+          curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s ${{ inputs.project }}
+          sh ./.github/stylish-haskell-0.13.0.0.sh | sh -s $(find ./${{ inputs.project }} -type f -name "*.hs" ! -path "*.stack-work*" ! -path "*executable*") -i
           if [ -z "$(git status --porcelain)" ]; then
               echo "No style errors detected."
           else
@@ -33,8 +34,8 @@ jobs:
         with:
           path: |
             ~/.stack
-            prototype/.stack-work
-          key: ${{ runner.os }}-${{ hashFiles('prototype/stack.yaml.lock', 'prototype/package.yaml') }}
+            ${{ inputs.project }}/.stack-work
+          key: ${{ runner.os }}-${{ hashFiles('${{ inputs.project }}/stack.yaml.lock', '${{ inputs.project }}/package.yaml') }}
       - uses: haskell/actions/setup@v1
         with:
           enable-stack: true
@@ -42,8 +43,8 @@ jobs:
           cabal-version: "latest"
           stack-version: "latest"
       - name: Stack build
-        working-directory: ./prototype
+        working-directory: ./${{ inputs.project }}
         run: stack build
       - name: Stack test
-        working-directory: ./prototype
+        working-directory: ./${{ inputs.project }}
         run: stack test

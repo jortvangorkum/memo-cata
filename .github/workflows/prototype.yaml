@@ -1,0 +1,12 @@
+name: Memo Cata Prototype
+on:
+  push:
+    paths: 
+      - 'prototype/**'
+jobs:
+  call-workflow:
+    uses: ./github/workflows/build.yml
+    with:
+      project: prototype
+    secrets:
+      token: ${{ secrets.TOKEN }}
