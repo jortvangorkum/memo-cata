@@ -43,7 +43,7 @@ jobs:
       - uses: haskell/actions/setup@v1
         with:
           enable-stack: true
-          ghc-version: ${{ inputs.ghc_version }}
+          ghc-version: ${{ inputs.ghc-version }}
           cabal-version: "latest"
           stack-version: "latest"
       - name: Stack build
