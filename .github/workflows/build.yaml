@@ -1,4 +1,4 @@
-name: Memo Cata GitHub Actions
+name: Memo Cata Build
 on: 
   workflow_call:
     inputs:
