@@ -3,10 +3,10 @@ module GenericTree.SpecificCata where
 
 import           Data.ByteString            (ByteString)
 import qualified Data.Map                   as M
+import           GenericTree.Main
 import           Generics.Cata
 import           Generics.Data.Digest.CRC32
 import           Generics.Main
-import           GenericTree.Main
 
 cataInt :: TreeG Int -> Int
 cataInt = cata (\case
