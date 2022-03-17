@@ -37,7 +37,7 @@ executables:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - memo-cata
+      - memo-cata-prototype
       - criterion
 
 tests:
@@ -49,6 +49,6 @@ tests:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - memo-cata
+      - memo-cata-prototype
       - hspec
       - QuickCheck
