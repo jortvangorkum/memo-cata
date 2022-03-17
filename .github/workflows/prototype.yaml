@@ -2,6 +2,7 @@ name: Memo Cata Prototype
 on:
   push:
     paths: 
+      - '.github/**'
       - 'prototype/**'
 jobs:
   call-workflow:
