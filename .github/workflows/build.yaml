@@ -4,12 +4,16 @@ jobs:
   linting-haskell:
     name: Linting Haskell
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        project: [prototype, regular]
     steps:
       - uses: actions/checkout@v2
       - name: Check stylish-haskell and hlint
         run: |
-          curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s prototype
-          sh ./.github/stylish-haskell-0.13.0.0.sh | sh -s $(find ./prototype -type f -name "*.hs" ! -path "*.stack-work*" ! -path "*executable*") -i
+          curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s ${{ matrix.project }}
+          sh ./.github/stylish-haskell-0.13.0.0.sh | sh -s $(find ./${{ matrix.project }} -type f -name "*.hs" ! -path "*.stack-work*" ! -path "*executable*") -i
           if [ -z "$(git status --porcelain)" ]; then
               echo "No style errors detected."
           else
