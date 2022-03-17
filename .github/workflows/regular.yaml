@@ -1,0 +1,11 @@
+name: Memo Cata Regular
+on:
+  push:
+    paths: 
+      - '.github/**'
+      - 'regular/**'
+jobs:
+  call-workflow:
+    uses: ./.github/workflows/build.yaml
+    with:
+      project: regular
