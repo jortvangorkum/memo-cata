@@ -1,12 +1,11 @@
-{-# LANGUAGE AllowAmbiguousTypes  #-}
-{-# LANGUAGE FlexibleContexts     #-}
-{-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE ScopedTypeVariables  #-}
-{-# LANGUAGE StandaloneDeriving   #-}
-{-# LANGUAGE TemplateHaskell      #-}
-{-# LANGUAGE TypeFamilies         #-}
-{-# LANGUAGE TypeOperators        #-}
-{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE FlexibleInstances   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving  #-}
+{-# LANGUAGE TemplateHaskell     #-}
+{-# LANGUAGE TypeFamilies        #-}
+{-# LANGUAGE TypeOperators       #-}
 
 module Lib where
 
@@ -30,7 +29,7 @@ t = Node (Leaf 1) 2 (Leaf 3)
 class Merkelize f where
   merkleG :: f (Fix (g :*: K Digest)) -> (f :*: K Digest) (Fix (g :*: K Digest))
 
-merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Fix ((PF a) :*: K Digest)
+merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Fix (PF a :*: K Digest)
 merkle = In . merkleG . fmap merkle . from
 
 instance (Show a) => Merkelize (K a) where
@@ -39,7 +38,7 @@ instance (Show a) => Merkelize (K a) where
       h = digestConcat [digest "K", digest x]
 
 instance Merkelize I where
-  merkleG (I x) = (I x :*: K h)
+  merkleG (I x) = I x :*: K h
     where
       (In (_ :*: K ph)) = x
       h = digestConcat [digest "I", ph]
@@ -66,3 +65,14 @@ instance (Merkelize f) => Merkelize (C c f) where
     where
       h = digestConcat [digest "C", ph]
       prevX :*: K ph = merkleG x
+
+cata :: Functor f => (f a -> a) -> Fix f -> a
+cata alg t = alg (fmap (cata alg) (out t))
+
+cataInt :: Fix (PFTree :*: K Digest) -> Int
+cataInt = cata f
+  where
+    f :: (PFTree :*: K Digest) Int -> Int
+    f (px :*: K h) = case px of
+      L (C (K x))                 -> x
+      R (C (I l :*: K x :*: I r)) -> l + x + r
