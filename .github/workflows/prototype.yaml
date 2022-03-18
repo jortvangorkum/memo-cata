@@ -1,0 +1,11 @@
+name: Memo Cata Prototype
+on:
+  push:
+    paths: 
+      - '.github/**'
+      - 'prototype/**'
+jobs:
+  call-workflow:
+    uses: ./.github/workflows/build.yaml
+    with:
+      project: prototype

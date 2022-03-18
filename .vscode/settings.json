@@ -1,5 +1,5 @@
 {
-    "haskell.formattingProvider": "stylish-haskell",
-    "editor.formatOnSave": true,
-    "editor.tabSize": 2
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": "file:///home/jort/Documents/Github/memo-cata/.github/workflows/build.yaml"
+    }
 }

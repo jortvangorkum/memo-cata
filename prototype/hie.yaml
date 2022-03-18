@@ -1,0 +1,13 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "memo-cata-prototype:lib"
+
+    - path: "./app/Main.hs"
+      component: "memo-cata-prototype:exe:memo-cata-exe"
+
+    - path: "./app/Paths_memo_cata_prototype.hs"
+      component: "memo-cata-prototype:exe:memo-cata-exe"
+
+    - path: "./test"
+      component: "memo-cata-prototype:test:memo-cata-test"

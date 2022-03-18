@@ -1,0 +1,53 @@
+name: memo-cata-prototype
+version: 0.1.0.0
+github: "jortvangorkum/memo-cata"
+license: BSD3
+author: "Jort van Gorkum"
+maintainer: "jortvangorkum@gmail.com"
+copyright: "2022 Jort van Gorkum"
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description: Please see the README on GitHub at <https://github.com/jortvangorkum/memo-cata#readme>
+
+dependencies:
+  - base >= 4.7 && < 5
+  - containers
+  - mtl
+  - digest
+  - deepseq
+  - bytestring
+  - bytestring-trie
+
+library:
+  source-dirs: src
+
+executables:
+  memo-cata-exe:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - memo-cata-prototype
+      - criterion
+
+tests:
+  memo-cata-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - memo-cata-prototype
+      - hspec
+      - QuickCheck
