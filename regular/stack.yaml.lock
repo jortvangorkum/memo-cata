@@ -32,4 +32,18 @@ packages:
       sha256: b8bdc2259e2f943a7252fb164805666fe108ac959d398e0af27b43ba2ebc241c
   original:
     hackage: mtl-2.2.2
+- completed:
+    hackage: hspec-2.9.4@sha256:658a6a74d5a70c040edd6df2a12228c6d9e63082adaad1ed4d0438ad082a0ef3,1709
+    pantry-tree:
+      size: 583
+      sha256: 0a92fc29b7e7f422dbd056c8e8bb88f5e4009ad37d679a8a2dab3ca62de98277
+  original:
+    hackage: hspec-2.9.4
+- completed:
+    hackage: QuickCheck-2.14.2@sha256:4ce29211223d5e6620ebceba34a3ca9ccf1c10c0cf387d48aea45599222ee5aa,7736
+    pantry-tree:
+      size: 2315
+      sha256: 2fe423d0ed7cd64f0f165d708779f48814e66c4f181c568468134af55d86a5f8
+  original:
+    hackage: QuickCheck-2.14.2
 snapshots: []
