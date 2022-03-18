@@ -23,6 +23,7 @@ library
       Generics.Data.Digest.CRC32
       Generics.Memo.Cata
       Generics.Memo.Main
+      GenericTree.Cata
       GenericTree.Main
   other-modules:
       Paths_memo_cata_regular
@@ -60,6 +61,7 @@ test-suite memo-cata-regular-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Helper.Arbitrary
       Paths_memo_cata_regular
   hs-source-dirs:
       test

@@ -1,7 +1,9 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Helper.Arbitrary where
 
+import           GenericTree.Main
 import           Test.QuickCheck
 
-data Tree a = Leaf a
-            | Node (Tree a) a (Tree a)
+instance Arbitrary (Tree Int) where
+  arbitrary = do sized (return . generateTreeG)
 

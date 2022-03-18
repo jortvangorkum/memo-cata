@@ -12,38 +12,15 @@ packages:
   original:
     hackage: regular-0.3.4.4
 - completed:
-    hackage: template-haskell-2.10.0.0@sha256:43c9c16890a1dc86f38fe654d90fed6fd97f88bd07f1c3957ba16ee309bfc694,1598
-    pantry-tree:
-      size: 693
-      sha256: 7014d2e1adda35b72b30855139b49dd5239838d7d176f408f33fa7b434e42ed0
-  original:
-    hackage: template-haskell-2.10.0.0
-- completed:
     hackage: digest-0.0.1.3@sha256:2658eec5dd3516cd349aad4c2e734d4a6dbd5f3247c3feebd1e75d54a538c213,1575
     pantry-tree:
       size: 467
       sha256: 9ddc6a9b87b7213cd83afce2dd0bbbedd1a43c666cd9ffed465cbfb2e4f2cb83
   original:
     hackage: digest-0.0.1.3
+snapshots:
 - completed:
-    hackage: mtl-2.2.2@sha256:1050fb71acd9f5d67da7d992583f5bd0eb14407b9dc7acc122af1b738b706ca3,2261
-    pantry-tree:
-      size: 1713
-      sha256: b8bdc2259e2f943a7252fb164805666fe108ac959d398e0af27b43ba2ebc241c
-  original:
-    hackage: mtl-2.2.2
-- completed:
-    hackage: hspec-2.9.4@sha256:658a6a74d5a70c040edd6df2a12228c6d9e63082adaad1ed4d0438ad082a0ef3,1709
-    pantry-tree:
-      size: 583
-      sha256: 0a92fc29b7e7f422dbd056c8e8bb88f5e4009ad37d679a8a2dab3ca62de98277
-  original:
-    hackage: hspec-2.9.4
-- completed:
-    hackage: QuickCheck-2.14.2@sha256:4ce29211223d5e6620ebceba34a3ca9ccf1c10c0cf387d48aea45599222ee5aa,7736
-    pantry-tree:
-      size: 2315
-      sha256: 2fe423d0ed7cd64f0f165d708779f48814e66c4f181c568468134af55d86a5f8
-  original:
-    hackage: QuickCheck-2.14.2
-snapshots: []
+    size: 428787
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/6/35.yaml
+    sha256: f2ce58e96ad78750c355afc8fcd0bfbd06c8e1381050c59bc5c934577ebef872
+  original: lts-6.35
