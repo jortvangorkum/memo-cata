@@ -1,5 +1,7 @@
+{-# LANGUAGE AllowAmbiguousTypes  #-}
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE ScopedTypeVariables  #-}
 {-# LANGUAGE StandaloneDeriving   #-}
 {-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE TypeFamilies         #-}
@@ -25,19 +27,11 @@ type instance PF Tree = PFTree
 t :: Tree
 t = Node (Leaf 1) 2 (Leaf 3)
 
-type family Merkle (f :: (* -> *)) (h :: *) :: (* -> *)
-
-type instance Merkle (K a)     h = K a :*: K h
-type instance Merkle I         h = I :*: K h
-type instance Merkle (f :+: g) h = (Merkle f h :+: Merkle g h) :*: K h
-type instance Merkle (f :*: g) h = (Merkle f h :*: Merkle g h) :*: K h
-
 class Merkelize f where
-  merkleG :: Merkelize g => f (Fix g) -> (Merkle f Digest) (Fix (Merkle g Digest))
-  -- merkleG :: Merkelize g => f (Fix g) -> (f :*: K Digest) (Fix (g :*: K Digest))
+  merkleG :: f (Fix (g :*: K Digest)) -> (f :*: K Digest) (Fix (g :*: K Digest))
 
--- merkle :: Merkelize f => Fix f -> Fix (f :*: K Digest)
--- merkle = In . merkleG . out
+merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Fix ((PF a) :*: K Digest)
+merkle = In . merkleG . fmap merkle . from
 
 instance (Show a) => Merkelize (K a) where
   merkleG (K x) = K x :*: K h
@@ -45,9 +39,9 @@ instance (Show a) => Merkelize (K a) where
       h = digestConcat [digest "K", digest x]
 
 instance Merkelize I where
-  merkleG (I x) = I prevX :*: K h
+  merkleG (I x) = (I x :*: K h)
     where
-      prevX@(In (_ :*: K ph)) = In . merkleG . out $ x
+      (In (_ :*: K ph)) = x
       h = digestConcat [digest "I", ph]
 
 instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
@@ -66,3 +60,9 @@ instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
       prevX :*: K phx = merkleG x
       prevY :*: K phy = merkleG y
       h = digestConcat [digest "Pair", phx, phy]
+
+instance (Merkelize f) => Merkelize (C c f) where
+  merkleG (C x) = C x :*: K h
+    where
+      h = digestConcat [digest "C", ph]
+      prevX :*: K ph = merkleG x
