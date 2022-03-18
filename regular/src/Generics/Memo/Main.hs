@@ -45,6 +45,11 @@ instance (Merkelize f) => Merkelize (C c f) where
       h = digestConcat [digest "C", ph]
       prevX :*: K ph = merkleG x
 
+instance Merkelize U where
+  merkleG U = U :*: K h
+    where
+      h = digest "U"
+
 -- Generic Foldable
 -- https://github.com/blamario/grampa/blob/f4b97674161c6bd5e45c20226b5fb3458f942ff4/rank2classes/src/Rank2.hs#L307
 instance (Foldable f, Foldable g) => Foldable (f :+: g) where
@@ -63,6 +68,9 @@ instance Foldable I where
 instance Foldable f => Foldable (C c f) where
   foldMap f (C x) = foldMap f x
 
+instance Foldable U where
+  foldMap _ _ = mempty
+
 -- Generic Traversable
 -- https://www.tweag.io/blog/2021-07-08-linear-traversable/
 instance (Traversable f, Traversable g) => Traversable (f :+: g) where
@@ -80,3 +88,6 @@ instance Traversable I where
 
 instance Traversable f => Traversable (C c f) where
   traverse f (C x) = C <$> traverse f x
+
+instance Traversable U where
+  traverse f U = pure U

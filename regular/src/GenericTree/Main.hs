@@ -16,13 +16,25 @@ data Tree a = Leaf a
             | Node (Tree a) a (Tree a)
             deriving (Show)
 
+data RoseTree a = Empty
+                | NodeR a (RoseTree a) -- Recursive lists do not work with Generics
+                deriving (Show)
+
 $(deriveAll ''Tree "PFTree")
 type instance PF (Tree a) = PFTree a
+
+$(deriveAll ''RoseTree "PFRoseTree")
+type instance PF (RoseTree a) = PFRoseTree a
 
 t :: Tree Int
 t = Node (Leaf 1) 2 (Leaf 3)
 
-type MerkleTree a = Fix (PFTree a :*: K Digest)
+rt :: RoseTree Int
+rt = NodeR 1 (NodeR 2 (NodeR 3 Empty))
+
+type Merkle f = Fix (f :*: K Digest)
+type MerkleTree a = Merkle (PFTree a)
+type MerkleRoseTree a = Merkle (PFRoseTree a)
 
 cataInt :: Fix (PFTree Int :*: K Digest) -> Int
 cataInt = cata f
@@ -45,3 +57,10 @@ cataSum = cataMerkle
     L (C (K x))                 -> x
     R (C (I l :*: K x :*: I r)) -> l + x + r
   )
+
+cataSumRose :: MerkleRoseTree Int -> (Int, M.Map Digest Int)
+cataSumRose = cataMerkle f
+  where
+    f :: PFRoseTree Int Int -> Int
+    f (L _)                 = 0
+    f (R (C (K x :*: I y))) = x + y
