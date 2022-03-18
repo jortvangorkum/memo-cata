@@ -20,6 +20,8 @@ dependencies:
   - template-haskell
   - digest
   - bytestring
+  - mtl
+  - containers
 
 library:
   source-dirs: src

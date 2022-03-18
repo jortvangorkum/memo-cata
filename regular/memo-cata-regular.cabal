@@ -29,7 +29,9 @@ library
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , containers
     , digest
+    , mtl
     , regular
     , template-haskell
   default-language: Haskell2010
@@ -44,8 +46,10 @@ executable memo-cata-regular-exe
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , containers
     , digest
     , memo-cata-regular
+    , mtl
     , regular
     , template-haskell
   default-language: Haskell2010
@@ -61,8 +65,10 @@ test-suite memo-cata-regular-test
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , containers
     , digest
     , memo-cata-regular
+    , mtl
     , regular
     , template-haskell
   default-language: Haskell2010
