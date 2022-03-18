@@ -29,5 +29,5 @@ cataMerkle :: (Functor f, Traversable f)
 cataMerkle alg t = runState (cataMerkleState alg t) M.empty
 
 cataMerkleMap :: (Functor f, Traversable f)
-              => (f a -> a) -> (M.Map Digest a) -> Fix (f :*: K Digest) -> (a, M.Map Digest a)
+              => (f a -> a) -> M.Map Digest a -> Fix (f :*: K Digest) -> (a, M.Map Digest a)
 cataMerkleMap alg m t = runState (cataMerkleState alg t) m
