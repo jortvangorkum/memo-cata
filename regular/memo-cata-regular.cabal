@@ -24,7 +24,6 @@ library
       Generics.Memo.Cata
       Generics.Memo.Main
       GenericTree.Main
-      Lib
   other-modules:
       Paths_memo_cata_regular
   hs-source-dirs:

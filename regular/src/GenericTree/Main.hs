@@ -12,34 +12,34 @@ import           Generics.Memo.Main
 import           Generics.Regular.Base
 import           Generics.Regular.TH
 
-data Tree = Leaf Int
-          | Node Tree Int Tree
-          deriving (Show)
+data Tree a = Leaf a
+            | Node (Tree a) a (Tree a)
+            deriving (Show)
 
 $(deriveAll ''Tree "PFTree")
-type instance PF Tree = PFTree
+type instance PF (Tree a) = PFTree a
 
-t :: Tree
+t :: Tree Int
 t = Node (Leaf 1) 2 (Leaf 3)
 
-type MerkleTree = Fix (PFTree :*: K Digest)
+type MerkleTree a = Fix (PFTree a :*: K Digest)
 
-cataInt :: Fix (PFTree :*: K Digest) -> Int
+cataInt :: Fix (PFTree Int :*: K Digest) -> Int
 cataInt = cata f
   where
-    f :: (PFTree :*: K Digest) Int -> Int
+    f :: (PFTree Int :*: K Digest) Int -> Int
     f (px :*: K h) = case px of
       L (C (K x))                 -> x
       R (C (I l :*: K x :*: I r)) -> l + x + r
 
-cataHashes :: Fix (PFTree :*: K Digest) -> [Digest]
+cataHashes :: Fix (PFTree Int :*: K Digest) -> [Digest]
 cataHashes = cata f
   where
     f (px :*: K h) = case px of
       L _                       -> [h]
       R (C (I l :*: _ :*: I r)) -> h : l ++ r
 
-cataSum :: MerkleTree -> (Int, M.Map Digest Int)
+cataSum :: MerkleTree Int -> (Int, M.Map Digest Int)
 cataSum = cataMerkle
   (\case
     L (C (K x))                 -> x
