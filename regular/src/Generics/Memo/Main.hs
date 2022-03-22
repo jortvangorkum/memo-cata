@@ -8,7 +8,9 @@ import           Generics.Regular.Base
 class Merkelize f where
   merkleG :: f (Fix (g :*: K Digest)) -> (f :*: K Digest) (Fix (g :*: K Digest))
 
-merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Fix (PF a :*: K Digest)
+type Merkle f = Fix (PF f :*: K Digest)
+
+merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Merkle a
 merkle = In . merkleG . fmap merkle . from
 
 instance (Show a) => Merkelize (K a) where

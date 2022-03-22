@@ -23,6 +23,8 @@ library
       Generics.Data.Digest.CRC32
       Generics.Memo.Cata
       Generics.Memo.Main
+      Generics.Memo.Zipper
+      Generics.Regular.Zipper
       GenericTree.Cata
       GenericTree.Main
   other-modules:
