@@ -31,9 +31,6 @@ t = Node (Leaf 1) 2 (Leaf 3)
 rt :: RoseTree Int
 rt = NodeR 1 (NodeR 2 (NodeR 3 Empty))
 
-type MerkleTree a = Merkle (Tree a)
-type MerkleRoseTree a = Merkle (RoseTree a)
-
 -- | Generates Tree of size 2n + 1
 generateTree :: Int -> Tree Int
 generateTree = generateTreeF
