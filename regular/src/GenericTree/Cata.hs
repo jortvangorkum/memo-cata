@@ -10,6 +10,9 @@ import           Generics.Memo.Cata
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 
+cataSumTree :: Tree Int -> Int
+cataSumTree = sum
+
 cataInt :: Fix (PFTree Int :*: K Digest) -> Int
 cataInt = cata f
   where

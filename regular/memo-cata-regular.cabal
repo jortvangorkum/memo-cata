@@ -62,6 +62,8 @@ test-suite memo-cata-regular-test
   main-is: Spec.hs
   other-modules:
       Helper.Arbitrary
+      Helper.Main
+      UnitTests.GenericTreeSpec
       Paths_memo_cata_regular
   hs-source-dirs:
       test
