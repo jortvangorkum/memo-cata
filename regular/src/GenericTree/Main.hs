@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase      #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies    #-}
 {-# LANGUAGE TypeOperators   #-}
@@ -36,31 +35,18 @@ type Merkle f = Fix (f :*: K Digest)
 type MerkleTree a = Merkle (PFTree a)
 type MerkleRoseTree a = Merkle (PFRoseTree a)
 
-cataInt :: Fix (PFTree Int :*: K Digest) -> Int
-cataInt = cata f
+-- | Generates Tree of size 2n + 1
+generateTree :: Int -> Tree Int
+generateTree = generateTreeF
   where
-    f :: (PFTree Int :*: K Digest) Int -> Int
-    f (px :*: K h) = case px of
-      L (C (K x))                 -> x
-      R (C (I l :*: K x :*: I r)) -> l + x + r
+    generateTreeF n = generateBinTree 0 (n - 1)
+    generateBinTree :: Int -> Int -> Tree Int
+    generateBinTree l u =
+      if u < l
+      then Leaf l
+      else let i = (l + u) `div` 2
+           in Node (generateBinTree l (i - 1)) i (generateBinTree (i + 1) u)
 
-cataHashes :: Fix (PFTree Int :*: K Digest) -> [Digest]
-cataHashes = cata f
-  where
-    f (px :*: K h) = case px of
-      L _                       -> [h]
-      R (C (I l :*: _ :*: I r)) -> h : l ++ r
-
-cataSum :: MerkleTree Int -> (Int, M.Map Digest Int)
-cataSum = cataMerkle
-  (\case
-    L (C (K x))                 -> x
-    R (C (I l :*: K x :*: I r)) -> l + x + r
-  )
-
-cataSumRose :: MerkleRoseTree Int -> (Int, M.Map Digest Int)
-cataSumRose = cataMerkle f
-  where
-    f :: PFRoseTree Int Int -> Int
-    f (L _)                 = 0
-    f (R (C (K x :*: I y))) = x + y
+instance Foldable Tree where
+  foldMap f (Leaf x)     = f x
+  foldMap f (Node l x r) = f x `mappend` foldMap f l `mappend` foldMap f r
