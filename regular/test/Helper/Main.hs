@@ -5,7 +5,7 @@ import           GenericTree.Main
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 
-merkleTreeSize :: MerkleTree a -> Int
+merkleTreeSize :: MerklePF (Tree a) -> Int
 merkleTreeSize (In (x :*: _)) = case x of
   L _                       -> 1
   R (C (I l :*: _ :*: I r)) -> 1 + lh + rh
