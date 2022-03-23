@@ -56,14 +56,14 @@ class Functor f => Zipper f where
 
 instance Zipper I where
   cmap  f CId = CId
-  fill  CId x = I x
+  fill  CId   = I
   first (I x) = Just (x, CId)
   last  (I x) = Just (x, CId)
   next  CId x = Nothing
   prev  CId x = Nothing
 
 instance Zipper (K a) where
-  cmap f void = impossible void
+  cmap f = impossible
   fill void x = impossible void
   first (K a) = Nothing
   last  (K a) = Nothing
@@ -71,7 +71,7 @@ instance Zipper (K a) where
   prev  void x = impossible void
 
 instance Zipper U where
-  cmap f void = impossible void
+  cmap f = impossible
   fill void x = impossible void
   first U      = Nothing
   last  U      = Nothing

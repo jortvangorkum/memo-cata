@@ -24,7 +24,6 @@ library
       Generics.Memo.Cata
       Generics.Memo.Main
       Generics.Memo.Zipper
-      Generics.Regular.Zipper
       GenericTree.Cata
       GenericTree.Main
   other-modules:
