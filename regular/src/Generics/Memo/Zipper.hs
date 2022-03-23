@@ -4,6 +4,9 @@
 {-# LANGUAGE TypeFamilies      #-}
 {-# LANGUAGE TypeOperators     #-}
 
+{-# HLINT ignore "Use <&>" #-}
+{-# HLINT ignore "Use newtype instead of data" #-}
+
 module Generics.Memo.Zipper
   ( Loc(..)
   , Ctx(..)
@@ -94,16 +97,16 @@ instance (Zipper f, Zipper g) => Zipper (f :*: g) where
   cmap f (C2 x c) = C2 (fmap f x) (cmap f c)
   fill (C1 c y) x = fill c x :*: y
   fill (C2 x c) y = x :*: fill c y
-  first (x :*: y) =         fmap (fmap (flip C1 y)) (first x)
+  first (x :*: y) =         fmap (fmap (`C1` y)) (first x)
                     `mplus` fmap (fmap (C2 x))      (first y)
   last  (x :*: y) =         fmap (fmap (C2 x))      (last  y)
-                    `mplus` fmap (fmap (flip C1 y)) (last  x)
-  next (C1 c y) z =         (fmap (flip C1 y)     <$> next c z)
+                    `mplus` fmap (fmap (`C1` y)) (last  x)
+  next (C1 c y) z =         (fmap (`C1` y)     <$> next c z)
                     `mplus` (fmap (C2 (fill c z)) <$> first y)
   next (C2 x c) z =          fmap (C2 x)          <$> next c z
-  prev (C1 c y) z =          fmap (flip C1 y)     <$> prev c z
+  prev (C1 c y) z =          fmap (`C1` y)     <$> prev c z
   prev (C2 x c) z =         (fmap (C2 x)               <$> prev c z)
-                    `mplus` (fmap (flip C1 (fill c z)) <$> last x)
+                    `mplus` (fmap (`C1` fill c z) <$> last x)
 
 instance (Zipper f) => Zipper (C c f) where
   cmap f (CC c)   = CC (cmap f c)
@@ -167,6 +170,8 @@ left (Loc x []    ) = Nothing
 left (Loc x (c:cs)) = prev c x >>= \(a,c') -> return (Loc a (c':cs))
 
 -- ** Modification
+
+-- TODO: Update the hashes
 
 -- | Update the current focus without changing its type.
 update :: (a -> a) -> Loc a -> Loc a
