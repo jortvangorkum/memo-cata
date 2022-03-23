@@ -8,13 +8,15 @@ module Generics.Memo.Zipper where
 
 import           Control.Monad              (mplus)
 import           Data.Maybe
+import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 import           Prelude                    hiding (last)
 
-data Loc (a :: *) :: * -> * where
-  Loc :: (Regular a, Zipper (PF a)) => Merkle a -> [Ctx (PF a) (Merkle a)] -> Loc a (Merkle a)
+data Loc :: * -> * where
+  Loc :: (Zipper a) => Merkle a -> [Ctx (a :*: K Digest) (Merkle a)] -> Loc (Merkle a)
+  -- Loc :: (Regular a, Zipper (PF a)) => a -> [Ctx (PF a) a] -> Loc a
 
 data family Ctx (f :: * -> *) :: * -> *
 
@@ -116,13 +118,25 @@ instance (Zipper f) => Zipper (S s f) where
 impossible :: a -> b
 impossible x = x `seq` error "impossible"
 
-enter :: (Regular a, Zipper (PF a)) => Merkle a -> Loc a (Merkle a)
+enter :: (Zipper a) => Merkle a -> Loc (Merkle a)
 enter x = Loc x []
 
--- leave :: Loc a (Merkle a) -> Merkle a
--- leave (Loc x []) = x
--- leave loc        = leave (fromJust (up loc))
+leave :: Loc (Merkle a) -> Merkle a
+leave (Loc x []) = x
+leave loc        = leave (fromJust (up loc))
 
--- up :: Loc a (Merkle a) -> Maybe (Loc a (Merkle a))
--- up (Loc x [])     = Nothing
--- up (Loc x (c:cs)) = Just (Loc (In (fill c x)) cs)
+up :: Loc (Merkle a) -> Maybe (Loc (Merkle a))
+up (Loc x [])     = Nothing
+up (Loc x (c:cs)) = Just (Loc (In (fill c x)) cs)
+
+down :: Loc (Merkle a) -> Maybe (Loc (Merkle a))
+down (Loc x cs) = first (out x) >>= \(a,c) -> return (Loc a (c:cs))
+
+update :: (a -> a) -> Loc a -> Loc a
+update f (Loc x cs) = Loc (f x) cs
+
+test :: (Zipper (PF (Tree Int))) => Merkle (PF (Tree Int)) -> Merkle (PF (Tree Int))
+test = leave . update (const mt) . fromJust . down . enter
+  where
+    mt :: Merkle (PF (Tree Int))
+    mt = merkle $ Leaf 69

@@ -13,7 +13,7 @@ import           Generics.Regular.Base
 cataSumTree :: Tree Int -> Int
 cataSumTree = sum
 
-cataInt :: Merkle (Tree Int) -> Int
+cataInt :: MerklePF (Tree Int) -> Int
 cataInt = cata f
   where
     f :: (PFTree Int :*: K Digest) Int -> Int
@@ -21,21 +21,21 @@ cataInt = cata f
       L (C (K x))                 -> x
       R (C (I l :*: K x :*: I r)) -> l + x + r
 
-cataHashes :: Merkle (Tree Int) -> [Digest]
+cataHashes :: MerklePF (Tree Int) -> [Digest]
 cataHashes = cata f
   where
     f (px :*: K h) = case px of
       L _                       -> [h]
       R (C (I l :*: _ :*: I r)) -> h : l ++ r
 
-cataSum :: Merkle (Tree Int) -> (Int, M.Map Digest Int)
+cataSum :: MerklePF (Tree Int) -> (Int, M.Map Digest Int)
 cataSum = cataMerkle
   (\case
     L (C (K x))                 -> x
     R (C (I l :*: K x :*: I r)) -> l + x + r
   )
 
-cataSumRose :: Merkle (RoseTree Int) -> (Int, M.Map Digest Int)
+cataSumRose :: MerklePF (RoseTree Int) -> (Int, M.Map Digest Int)
 cataSumRose = cataMerkle f
   where
     f :: PFRoseTree Int Int -> Int
