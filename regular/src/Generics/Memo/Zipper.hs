@@ -4,7 +4,7 @@
 {-# LANGUAGE TypeFamilies      #-}
 {-# LANGUAGE TypeOperators     #-}
 
-{-# HLINT ignore "Use <&>" #-}
+{-# HLINT ignore "Use <&>" #-} -- shorthand is introduced in a later base version (4.11.0.0)
 {-# HLINT ignore "Use newtype instead of data" #-}
 
 module Generics.Memo.Zipper
