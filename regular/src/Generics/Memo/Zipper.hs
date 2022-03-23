@@ -4,7 +4,14 @@
 {-# LANGUAGE TypeFamilies      #-}
 {-# LANGUAGE TypeOperators     #-}
 
-module Generics.Memo.Zipper where
+module Generics.Memo.Zipper
+  ( Loc(..)
+  , Ctx(..)
+  , Zipper(..)
+  , enter, leave
+  , up, down, down', left, right
+  , update
+  ) where
 
 import           Control.Monad              (mplus)
 import           Data.Maybe
@@ -16,7 +23,6 @@ import           Prelude                    hiding (last)
 
 data Loc :: * -> * where
   Loc :: (Zipper a) => Merkle a -> [Ctx (a :*: K Digest) (Merkle a)] -> Loc (Merkle a)
-  -- Loc :: (Regular a, Zipper (PF a)) => a -> [Ctx (PF a) a] -> Loc a
 
 data family Ctx (f :: * -> *) :: * -> *
 
@@ -118,22 +124,55 @@ instance (Zipper f) => Zipper (S s f) where
 impossible :: a -> b
 impossible x = x `seq` error "impossible"
 
+-- ** Construction and Destruction
+
+-- | Start navigating a datastructure. Returns a location that
+-- focuses the entire value and has an empty context.
 enter :: (Zipper a) => Merkle a -> Loc (Merkle a)
 enter x = Loc x []
 
+-- | Return the entire value, independent of the current focus.
 leave :: Loc (Merkle a) -> Merkle a
 leave (Loc x []) = x
 leave loc        = leave (fromJust (up loc))
 
+-- ** Navigation
+
+-- | Move up to the parent. Returns 'Nothing' if the current
+-- focus is the root.
 up :: Loc (Merkle a) -> Maybe (Loc (Merkle a))
 up (Loc x [])     = Nothing
 up (Loc x (c:cs)) = Just (Loc (In (fill c x)) cs)
 
+-- | Move down to the leftmost child. Returns 'Nothing' if the
+-- current focus is a leaf.
 down :: Loc (Merkle a) -> Maybe (Loc (Merkle a))
 down (Loc x cs) = first (out x) >>= \(a,c) -> return (Loc a (c:cs))
 
+-- | Move down to the rightmost child. Returns 'Nothing' if the
+-- current focus is a leaf.
+down' :: Loc a -> Maybe (Loc a)
+down' (Loc x cs) = last (out x) >>= \(a,c) -> return (Loc a (c:cs))
+
+-- | Move to the right sibling. Returns 'Nothing' if the current
+-- focus is the rightmost sibling.
+right :: Loc a -> Maybe (Loc a)
+right (Loc x []    ) = Nothing
+right (Loc x (c:cs)) = next c x >>= \(a,c') -> return (Loc a (c':cs))
+
+-- | Move to the left sibling. Returns 'Nothing' if the current
+-- focus is the leftmost sibling.
+left :: Loc a -> Maybe (Loc a)
+left (Loc x []    ) = Nothing
+left (Loc x (c:cs)) = prev c x >>= \(a,c') -> return (Loc a (c':cs))
+
+-- ** Modification
+
+-- | Update the current focus without changing its type.
 update :: (a -> a) -> Loc a -> Loc a
 update f (Loc x cs) = Loc (f x) cs
+
+-- TEST INSERT
 
 test :: (Zipper (PF (Tree Int))) => Merkle (PF (Tree Int)) -> Merkle (PF (Tree Int))
 test = leave . update (const mt) . fromJust . down . enter
