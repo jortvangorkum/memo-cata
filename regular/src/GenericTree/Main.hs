@@ -1,10 +1,14 @@
-{-# LANGUAGE PatternSynonyms #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeFamilies    #-}
-{-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE PatternSynonyms      #-}
+{-# LANGUAGE StandaloneDeriving   #-}
+{-# LANGUAGE TemplateHaskell      #-}
+{-# LANGUAGE TypeFamilies         #-}
+{-# LANGUAGE TypeOperators        #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 module GenericTree.Main where
 
+-- import           Data.Functor.Classes
 import qualified Data.Map                   as M
 import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Cata
@@ -14,11 +18,11 @@ import           Generics.Regular.TH
 
 data Tree a = Leaf a
             | Node (Tree a) a (Tree a)
-            deriving (Show)
+            deriving (Show, Eq)
 
 data RoseTree a = Empty
                 | NodeR a (RoseTree a) -- Recursive lists do not work with Generics
-                deriving (Show)
+                deriving (Show, Eq)
 
 $(deriveAll ''Tree "PFTree")
 type instance PF (Tree a) = PFTree a

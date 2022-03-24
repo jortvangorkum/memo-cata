@@ -1,7 +1,11 @@
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeOperators    #-}
+{-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE StandaloneDeriving   #-}
+{-# LANGUAGE TypeOperators        #-}
+{-# LANGUAGE UndecidableInstances #-}
+
 module Generics.Memo.Main where
 
+import           Data.Functor.Classes
 import           Generics.Data.Digest.CRC32
 import           Generics.Regular.Base
 
@@ -80,3 +84,84 @@ instance Traversable f => Traversable (C c f) where
 
 instance Traversable U where
   traverse f U = pure U
+
+-- Generic Equality
+instance Eq (f (Fix f)) => Eq (Fix f) where
+  f == g = out f == out g
+
+instance Eq a => Eq1 (K a) where
+  eq1 (K x) (K y) = x == y
+
+instance (Eq a, Eq r) => Eq (K a r) where
+  (==) = eq1
+
+instance Eq1 I where
+  eq1 = (==)
+
+instance Eq r => Eq (I r) where
+  I x == I y = x == y
+
+instance (Eq1 f, Eq1 g) => Eq1 (f :+: g) where
+  eq1 (L x) (L y) = eq1 x y
+  eq1 (R x) (R y) = eq1 x y
+  eq1 _     _     = False
+
+instance (Eq1 f, Eq1 g, Eq r) => Eq ((f :+: g) r) where
+  (==) = eq1
+
+instance (Eq1 f, Eq1 g) => Eq1 (f :*: g) where
+  eq1 (x1 :*: y1) (x2 :*: y2) = eq1 x1 x2 && eq1 y1 y2
+
+instance (Eq1 f, Eq1 g, Eq r) => Eq ((f :*: g) r) where
+  (==) = eq1
+
+instance (Eq1 f) => Eq1 (C c f) where
+  eq1 (C x) (C y) = eq1 x y
+
+instance (Eq1 f, Eq r) => Eq (C c f r) where
+  (==) = eq1
+
+-- Generic Show
+instance Show (f (Fix f)) => Show (Fix f) where
+  show = show . out
+
+instance Show a => Show1 (K a) where
+  showsPrec1 n (K x) = showsPrec n x
+
+instance (Show a, Show r) => Show (K a r) where
+  showsPrec = showsPrec1
+
+instance Show1 I where
+  showsPrec1 = showsPrec
+
+instance Show r => Show (I r) where
+  showsPrec n (I r) = showsPrec n r
+
+instance (Show1 f, Show1 g) => Show1 (f :+: g) where
+  showsPrec1 n (L x) = showsPrec1 n x
+  showsPrec1 n (R x) = showsPrec1 n x
+
+instance (Show1 f, Show1 g, Show r) => Show ((f :+: g) r) where
+  showsPrec = showsPrec1
+
+instance (Show1 f, Show1 g) => Show1 (f :*: g) where
+  showsPrec1 n (x :*: y) = showsPrec1 n x . showString " " . showsPrec1 n y
+
+instance (Show1 f, Show1 g, Show r) => Show ((f :*: g) r) where
+  showsPrec = showsPrec1
+
+showBraces :: Bool -> ShowS -> ShowS
+showBraces b p = if b then showChar '{' . p . showChar '}' else p
+
+instance (Constructor c, Show1 f) => Show1 (C c f) where
+  showsPrec1 n cx@(C x) = case fixity of
+    Prefix -> showParen True (showString (conName cx) . showChar ' ' . showBraces isRecord (showsPrec1 n x))
+    Infix _ _ -> showParen True
+                    (showChar '(' . showString (conName cx)
+                     . showChar ')' . showChar ' '
+                     . showBraces isRecord (showsPrec1 n x))
+    where isRecord = conIsRecord cx
+          fixity   = conFixity cx
+
+instance (Constructor c, Show1 f, Show r) => Show (C c f r) where
+  showsPrec = showsPrec1
