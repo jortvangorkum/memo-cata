@@ -182,14 +182,14 @@ modify :: (a -> a) -> Loc a -> Loc a
 modify f (Loc x cs) = Loc (f x) cs
 
 updateLoc :: Hashable a => (Merkle a -> Merkle a) -> Loc (Merkle a) -> Loc (Merkle a)
-updateLoc f loc = if top loc' then loc' else updateParents (fromJust (up loc'))
+updateLoc f loc = if top loc' then loc' else updateParents (expectJust "Exception: Cannot go up" (up loc'))
   where
     loc' = modify f loc
     updateParents :: Hashable a => Loc (Merkle a) -> Loc (Merkle a)
     updateParents (Loc (In (x :*: _)) []) = Loc f []
       where
         f = In (x :*: K (hash x))
-    updateParents (Loc (In (x :*: _)) cs) = updateParents (fromJust (up (Loc f cs)))
+    updateParents (Loc (In (x :*: _)) cs) = updateParents (expectJust "Exception: Cannot go up" (up (Loc f cs)))
       where
         f = In (x :*: K (hash x))
 
@@ -200,7 +200,7 @@ update :: (Zipper a, Hashable a)
         -> Merkle a
 update f dirs m = leave $ updateLoc f loc'
   where
-    loc' = foldl (\x f -> fromJust (f x)) (enter m) dirs
+    loc' = foldl (\x f -> fromMaybe x (f x)) (enter m) dirs
 
 -- TEST INSERT
 
@@ -209,3 +209,8 @@ test = update (const mt) [down]
   where
     mt :: Merkle (PF (Tree Int))
     mt = merkle $ Leaf 69
+
+-- ** Utility
+
+expectJust :: String -> Maybe a -> a
+expectJust msg = maybe (error msg) id
