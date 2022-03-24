@@ -5,53 +5,39 @@ module Generics.Memo.Main where
 import           Generics.Data.Digest.CRC32
 import           Generics.Regular.Base
 
-class Merkelize f where
-  merkleG :: f (Fix (g :*: K Digest)) -> (f :*: K Digest) (Fix (g :*: K Digest))
+class Hashable f where
+  hash :: f (Fix (g :*: K Digest)) -> Digest
+
+instance (Show a) => Hashable (K a) where
+  hash (K x) = digestConcat [digest "K", digest x]
+
+instance Hashable I where
+  hash (I x) = digestConcat [digest "I", getDigest x]
+    where
+      getDigest :: Fix (f :*: K Digest) -> Digest
+      getDigest (In (_ :*: K h)) = h
+
+instance (Hashable f, Hashable g) => Hashable (f :+: g) where
+  hash (L x) = digestConcat [digest "L", hash x]
+  hash (R x) = digestConcat [digest "R", hash x]
+
+instance (Hashable f, Hashable g) => Hashable (f :*: g) where
+  hash (x :*: y) = digestConcat [digest "P", hash x, hash y]
+
+instance (Hashable f) => Hashable (C c f) where
+  hash (C x) = digestConcat [digest "C", hash x]
+
+instance Hashable U where
+  hash _ = digest "U"
 
 type MerklePF f = Merkle (PF f)
 type Merkle f = Fix (f :*: K Digest)
 
-merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Merkle (PF a)
+merkle :: (Regular a, Hashable (PF a), Functor (PF a)) => a -> Merkle (PF a)
 merkle = In . merkleG . fmap merkle . from
 
-instance (Show a) => Merkelize (K a) where
-  merkleG (K x) = K x :*: K h
-    where
-      h = digestConcat [digest "K", digest x]
-
-instance Merkelize I where
-  merkleG (I x) = I x :*: K h
-    where
-      (In (_ :*: K ph)) = x
-      h = digestConcat [digest "I", ph]
-
-instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
-  merkleG (L x) = L prevX :*: K h
-    where
-      (prevX :*: K ph) = merkleG x
-      h = digestConcat [digest "L", ph]
-  merkleG (R x) = R prevX :*: K h
-    where
-      (prevX :*: K ph) = merkleG x
-      h = digestConcat [digest "R", ph]
-
-instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
-  merkleG (x :*: y) = (prevX :*: prevY) :*: K h
-    where
-      prevX :*: K phx = merkleG x
-      prevY :*: K phy = merkleG y
-      h = digestConcat [digest "Pair", phx, phy]
-
-instance (Merkelize f) => Merkelize (C c f) where
-  merkleG (C x) = C x :*: K h
-    where
-      h = digestConcat [digest "C", ph]
-      prevX :*: K ph = merkleG x
-
-instance Merkelize U where
-  merkleG U = U :*: K h
-    where
-      h = digest "U"
+merkleG :: Hashable f => f (Fix (g :*: K Digest)) -> (f :*: K Digest) (Fix (g :*: K Digest))
+merkleG f = f :*: K (hash f)
 
 -- Generic Foldable
 -- https://github.com/blamario/grampa/blob/f4b97674161c6bd5e45c20226b5fb3458f942ff4/rank2classes/src/Rank2.hs#L307

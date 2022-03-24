@@ -13,7 +13,7 @@ module Generics.Memo.Zipper
   , Zipper(..)
   , enter, leave
   , up, down, down', left, right
-  , update
+  , modify, update
   ) where
 
 import           Control.Monad              (mplus)
@@ -135,7 +135,7 @@ enter :: (Zipper a) => Merkle a -> Loc (Merkle a)
 enter x = Loc x []
 
 -- | Return the entire value, independent of the current focus.
-leave :: Loc (Merkle a) -> Merkle a
+leave :: Loc a -> a
 leave (Loc x []) = x
 leave loc        = leave (fromJust (up loc))
 
@@ -143,13 +143,13 @@ leave loc        = leave (fromJust (up loc))
 
 -- | Move up to the parent. Returns 'Nothing' if the current
 -- focus is the root.
-up :: Loc (Merkle a) -> Maybe (Loc (Merkle a))
+up :: Loc a -> Maybe (Loc a)
 up (Loc x [])     = Nothing
 up (Loc x (c:cs)) = Just (Loc (In (fill c x)) cs)
 
 -- | Move down to the leftmost child. Returns 'Nothing' if the
 -- current focus is a leaf.
-down :: Loc (Merkle a) -> Maybe (Loc (Merkle a))
+down :: Loc a -> Maybe (Loc a)
 down (Loc x cs) = first (out x) >>= \(a,c) -> return (Loc a (c:cs))
 
 -- | Move down to the rightmost child. Returns 'Nothing' if the
@@ -169,18 +169,43 @@ left :: Loc a -> Maybe (Loc a)
 left (Loc x []    ) = Nothing
 left (Loc x (c:cs)) = prev c x >>= \(a,c') -> return (Loc a (c':cs))
 
+-- ** Conditions
+
+top :: Loc a -> Bool
+top (Loc _ []) = True
+top _          = False
+
 -- ** Modification
 
--- TODO: Update the hashes
+-- | Modify the current focus without changing its type.
+modify :: (a -> a) -> Loc a -> Loc a
+modify f (Loc x cs) = Loc (f x) cs
 
--- | Update the current focus without changing its type.
-update :: (a -> a) -> Loc a -> Loc a
-update f (Loc x cs) = Loc (f x) cs
+updateLoc :: Hashable a => (Merkle a -> Merkle a) -> Loc (Merkle a) -> Loc (Merkle a)
+updateLoc f loc = if top loc' then loc' else updateParents (fromJust (up loc'))
+  where
+    loc' = modify f loc
+    updateParents :: Hashable a => Loc (Merkle a) -> Loc (Merkle a)
+    updateParents (Loc (In (x :*: _)) []) = Loc f []
+      where
+        f = In (x :*: K (hash x))
+    updateParents (Loc (In (x :*: _)) cs) = updateParents (fromJust (up (Loc f cs)))
+      where
+        f = In (x :*: K (hash x))
+
+update :: (Zipper a, Hashable a)
+        => (Merkle a -> Merkle a)
+        -> [Loc (Merkle a) -> Loc (Merkle a)]
+        -> Merkle a
+        -> Merkle a
+update f dirs m = leave $ updateLoc f loc'
+  where
+    loc' = foldl (\x f -> f x) (enter m) dirs
 
 -- TEST INSERT
 
 test :: (Zipper (PF (Tree Int))) => Merkle (PF (Tree Int)) -> Merkle (PF (Tree Int))
-test = leave . update (const mt) . fromJust . down . enter
+test = update (const mt) [(fromJust . down)]
   where
     mt :: Merkle (PF (Tree Int))
     mt = merkle $ Leaf 69
