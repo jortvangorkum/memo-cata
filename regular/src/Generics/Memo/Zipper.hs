@@ -205,7 +205,7 @@ update f dirs m = leave $ updateLoc f loc'
 -- TEST INSERT
 
 test :: (Zipper (PF (Tree Int))) => Merkle (PF (Tree Int)) -> Merkle (PF (Tree Int))
-test = update (const mt) [(fromJust . down)]
+test = update (const mt) [fromJust . down]
   where
     mt :: Merkle (PF (Tree Int))
     mt = merkle $ Leaf 69
