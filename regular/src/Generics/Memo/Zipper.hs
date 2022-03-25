@@ -223,14 +223,6 @@ update f dirs m = leave $ updateLoc f loc'
   where
     loc' = foldl (\x f -> fromMaybe x (f x)) (enter m) dirs
 
--- TEST INSERT
-
-test :: (Zipper (PF (Tree Int))) => Merkle (PF (Tree Int)) -> Merkle (PF (Tree Int))
-test = update (const mt) [down]
-  where
-    mt :: Merkle (PF (Tree Int))
-    mt = merkle $ Leaf 69
-
 -- ** Utility
 
 expectJust :: String -> Maybe a -> a
