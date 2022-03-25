@@ -11,8 +11,8 @@ module Generics.Memo.Zipper
   ( Loc(..)
   , Ctx(..)
   , Zipper(..)
-  , enter, leave
-  , up, down, down', left, right
+  , enter, leave, on
+  , up, down, down', left, right, bottom, bottom'
   , modify, update
   ) where
 
@@ -139,6 +139,11 @@ leave :: Loc a -> a
 leave (Loc x []) = x
 leave loc        = leave (fromJust (up loc))
 
+-- | Operate on the current focus. This function can be used to
+-- extract the current point of focus.
+on :: Loc a -> a
+on (Loc x _) = x
+
 -- ** Navigation
 
 -- | Move up to the parent. Returns 'Nothing' if the current
@@ -169,6 +174,18 @@ left :: Loc a -> Maybe (Loc a)
 left (Loc x []    ) = Nothing
 left (Loc x (c:cs)) = prev c x >>= \(a,c') -> return (Loc a (c':cs))
 
+-- | Move to the leftmost lowest element.
+bottom :: Loc a -> Maybe (Loc a)
+bottom loc = case down loc of
+  Nothing   -> Just loc
+  Just loc' -> bottom loc'
+
+-- | Move to the rightmost lowest element.
+bottom' :: Loc a -> Maybe (Loc a)
+bottom' loc = case down' loc of
+  Nothing   -> Just loc
+  Just loc' -> bottom' loc'
+
 -- ** Conditions
 
 top :: Loc a -> Bool
@@ -182,16 +199,20 @@ modify :: (a -> a) -> Loc a -> Loc a
 modify f (Loc x cs) = Loc (f x) cs
 
 updateLoc :: Hashable a => (Merkle a -> Merkle a) -> Loc (Merkle a) -> Loc (Merkle a)
-updateLoc f loc = if top loc' then loc' else updateParents (expectJust "Exception: Cannot go up" (up loc'))
+updateLoc f loc = if   top loc'
+                  then loc'
+                  else updateParents $ expectJust "Exception: Cannot go up" (up loc')
   where
     loc' = modify f loc
+
+    updateDigest :: Hashable a => Merkle a -> Merkle a
+    updateDigest (In (x :*: _)) = In (x :*: K (hash x))
+
     updateParents :: Hashable a => Loc (Merkle a) -> Loc (Merkle a)
-    updateParents (Loc (In (x :*: _)) []) = Loc f []
-      where
-        f = In (x :*: K (hash x))
-    updateParents (Loc (In (x :*: _)) cs) = updateParents (expectJust "Exception: Cannot go up" (up (Loc f cs)))
-      where
-        f = In (x :*: K (hash x))
+    updateParents (Loc x []) = Loc (updateDigest x) []
+    updateParents (Loc x cs) = updateParents
+                             $ expectJust "Exception: Cannot go up"
+                             $ up (Loc (updateDigest x) cs)
 
 update :: (Zipper a, Hashable a)
         => (Merkle a -> Merkle a)

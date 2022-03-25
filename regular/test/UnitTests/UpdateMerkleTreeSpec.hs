@@ -22,17 +22,8 @@ spec = describe "Incremental Update MerkleTree" $ do
   it "Size Updated Tree with same value == Size Original Tree" $ property $
     \(t :: MerklePF (Tree Int)) -> merkleTreeSize (update id [down] t) `shouldBe` merkleTreeSize t
   it "Size Updated Tree with different value == Size Original Tree" $ property $
-    \(t :: MerklePF (Tree Int)) -> merkleTreeSize (update (const mt) [down] t) `shouldBe` merkleTreeSize t
-  -- it "Result Updated Tree with same value == Result Original Tree" $ property $
-  --   \(t :: MerklePF (Tree Int)) -> G.cataSumTrie empty (update id [down] t) `shouldBe` G.cataSumTrie empty t
-  -- it "Result Updated Tree with different value != Result Original Tree" $ property $
-  --   \(t :: MerklePF (Tree Int)) -> G.cataSumTrie empty (update (const mt) [down] t) `shouldNotBe` G.cataSumTrie empty t
-  -- it "With Trie - Result Updated Tree with same value == Result Original Tree" $ property $
-  --   \(t :: MerklePF (Tree Int)) -> let (_, tr) = G.cataSumTrie empty t
-  --                             in  G.cataSumTrie tr (update id [down] t) `shouldBe` G.cataSumTrie tr t
-  -- it "With Trie - Result Updated Tree with different value != Result Original Tree" $ property $
-  --   \(t :: MerklePF (Tree Int)) -> let (_, tr) = G.cataSumTrie empty t
-  --                             in  G.cataSumTrie tr (update (const mt) [down] t) `shouldNotBe` G.cataSumTrie tr t
-  -- it "With Trie - Result Updated Tree with different value == Result Original Tree + 69" $ property $
-  --   \(t :: MerklePF (Tree Int)) -> let (_, tr) = G.cataSumTrie empty t
-  --                             in  fst (G.cataSumTrie tr (update (const mt) [down] t)) `shouldBe` fst (G.cataSumTrie tr t) + 69
+    \(t :: MerklePF (Tree Int)) -> merkleTreeSize (update (const mt) [bottom] t) `shouldBe` merkleTreeSize t
+  it "Result Updated Tree with same value == Result Original Tree" $ property $
+    \(t :: MerklePF (Tree Int)) -> cataSum (update id [bottom] t) `shouldBe` cataSum t
+  it "Result Updated Tree with different value != Result Original Tree" $ property $
+    \(t :: MerklePF (Tree Int)) -> cataSum (update (const mt) [bottom] t) `shouldNotBe` cataSum t
