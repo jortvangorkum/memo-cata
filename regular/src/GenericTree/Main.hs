@@ -6,7 +6,7 @@
 
 module GenericTree.Main where
 
--- import           Data.Functor.Classes
+import           Control.DeepSeq
 import qualified Data.Map                   as M
 import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Cata
@@ -56,3 +56,7 @@ generateTree = generateTreeF
 instance Foldable Tree where
   foldMap f (Leaf x)     = f x
   foldMap f (Node l x r) = f x `mappend` foldMap f l `mappend` foldMap f r
+
+instance NFData a => NFData (Tree a) where
+  rnf (Leaf x)     = rnf x
+  rnf (Node l x r) = rnf l `seq` rnf x `seq` rnf r
