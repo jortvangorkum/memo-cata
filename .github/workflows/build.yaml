@@ -1,5 +1,5 @@
 name: Memo Cata Build
-on: 
+on:
   workflow_call:
     inputs:
       project:
@@ -39,7 +39,7 @@ jobs:
           path: |
             ~/.stack
             ${{ inputs.project }}/.stack-work
-          key: ${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml.lock', inputs.project), format('{0}/package.yaml', inputs.project) }}
+          key: ${{ runner.os }}-${{ hashFiles(format('{0}/stack.yaml.lock', inputs.project), format('{0}/package.yaml', inputs.project)) }}
       - uses: haskell/actions/setup@v1
         with:
           enable-stack: true
