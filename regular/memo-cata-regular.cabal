@@ -34,6 +34,7 @@ library
       base >=4.7 && <5
     , bytestring
     , containers
+    , deepseq
     , digest
     , mtl
     , regular
@@ -52,6 +53,8 @@ executable memo-cata-regular-exe
       base >=4.7 && <5
     , bytestring
     , containers
+    , criterion
+    , deepseq
     , digest
     , memo-cata-regular
     , mtl
@@ -77,6 +80,7 @@ test-suite memo-cata-regular-test
     , base >=4.7 && <5
     , bytestring
     , containers
+    , deepseq
     , digest
     , hspec
     , memo-cata-regular

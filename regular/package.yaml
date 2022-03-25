@@ -23,6 +23,7 @@ dependencies:
   - mtl
   - transformers
   - containers
+  - deepseq
 
 library:
   source-dirs: src
@@ -37,6 +38,7 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - memo-cata-regular
+      - criterion
 
 tests:
   memo-cata-regular-test:

@@ -16,11 +16,11 @@ mt = merkle $ Leaf 69
 spec :: Spec
 spec = describe "Incremental Update MerkleTree" $ do
   it "Updated Tree with same value == Original Tree" $ property $
-    \(t :: MerklePF (Tree Int)) -> update id [down] t `shouldBe` t
+    \(t :: MerklePF (Tree Int)) -> update id [bottom] t `shouldBe` t
   it "Updated Tree with different value != Original Tree" $ property $
-    \(t :: MerklePF (Tree Int)) -> update (const mt) [down] t `shouldNotBe` t
+    \(t :: MerklePF (Tree Int)) -> update (const mt) [bottom] t `shouldNotBe` t
   it "Size Updated Tree with same value == Size Original Tree" $ property $
-    \(t :: MerklePF (Tree Int)) -> merkleTreeSize (update id [down] t) `shouldBe` merkleTreeSize t
+    \(t :: MerklePF (Tree Int)) -> merkleTreeSize (update id [bottom] t) `shouldBe` merkleTreeSize t
   it "Size Updated Tree with different value == Size Original Tree" $ property $
     \(t :: MerklePF (Tree Int)) -> merkleTreeSize (update (const mt) [bottom] t) `shouldBe` merkleTreeSize t
   it "Result Updated Tree with same value == Result Original Tree" $ property $

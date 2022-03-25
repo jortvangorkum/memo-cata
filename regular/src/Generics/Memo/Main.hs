@@ -4,6 +4,7 @@
 
 module Generics.Memo.Main where
 
+import           Control.DeepSeq
 import           Data.Functor.Classes
 import           Generics.Data.Digest.CRC32
 import           Generics.Regular.Base
@@ -164,3 +165,51 @@ instance (Constructor c, Show1 f) => Show1 (C c f) where
 
 instance (Constructor c, Show1 f, Show r) => Show (C c f r) where
   showsPrec = showsPrec1
+
+-- Generic NFData
+-- https://hackage.haskell.org/package/deepseq-1.4.6.1/docs/src/Control.DeepSeq.html#line-535
+
+-- # COPIED FROM NEWER VERSIONS OF DEEPSEQ
+class NFData1 f where
+  liftRnf :: (a -> ()) -> f a -> ()
+
+rnf1 :: (NFData1 f, NFData a) => f a -> ()
+rnf1 = liftRnf rnf
+
+rwhnf :: a -> ()
+rwhnf = (`seq` ())
+-- #
+
+instance NFData (f (Fix f)) => NFData (Fix f) where
+  rnf (In x) = rnf x
+
+instance NFData r => NFData (I r) where
+  rnf = rnf1
+
+instance NFData1 I where
+  liftRnf f (I x) = f x
+
+instance (NFData a, NFData r) => NFData (K a r) where
+  rnf = rnf1
+
+instance NFData a => NFData1 (K a) where
+  liftRnf _ (K x) = rwhnf x
+
+instance (NFData1 f, NFData1 g) => NFData1 (f :+: g) where
+  liftRnf f (L x) = liftRnf f x
+  liftRnf f (R x) = liftRnf f x
+
+instance (NFData1 f, NFData1 g, NFData r) => NFData ((f :+: g) r) where
+  rnf = rnf1
+
+instance (NFData1 f, NFData1 g) => NFData1 (f :*: g) where
+  liftRnf f (x :*: y) = liftRnf f x `seq` liftRnf f y
+
+instance (NFData1 f, NFData1 g, NFData r) => NFData ((f :*: g) r) where
+  rnf = rnf1
+
+instance NFData1 f => NFData1 (C c f) where
+  liftRnf f (C x) = liftRnf f x
+
+instance (NFData1 f, NFData r) => NFData (C c f r) where
+  rnf = rnf1
