@@ -35,6 +35,13 @@ cataSum = cataMerkle
     R (C (I l :*: K x :*: I r)) -> l + x + r
   )
 
+cataSumMap :: M.Map Digest Int -> MerklePF (Tree Int) -> (Int, M.Map Digest Int)
+cataSumMap = cataMerkleMap
+  (\case
+    L (C (K x))                 -> x
+    R (C (I l :*: K x :*: I r)) -> l + x + r
+  )
+
 cataSumRose :: MerklePF (RoseTree Int) -> (Int, M.Map Digest Int)
 cataSumRose = cataMerkle f
   where

@@ -24,6 +24,12 @@ benchCataInt n = env (return . generateTree $ n) (bench (show n) . nf cataSumTre
 benchGenCataSum :: Int -> Benchmark
 benchGenCataSum n = env (setupMerkleTree n) (bench (show n) . nf cataSum)
 
+benchIncrementalComputeMap :: Int -> Benchmark
+benchIncrementalComputeMap n = env (setupMapInt n) (bench (show n) . nf (\(m, t) -> fst $ cataSumMap m (update (const mt) [bottom] t)))
+  where
+    mt :: MerklePF (Tree Int)
+    mt = merkle $ Leaf 69
+
 -- MAIN
 main :: IO ()
 main = defaultMain
@@ -31,4 +37,6 @@ main = defaultMain
     [benchCataInt (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
   , bgroup "Generic Cata Sum"
     [benchGenCataSum (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5]]
+  , bgroup "Incremental Compute Map"
+    [benchIncrementalComputeMap (1 * (10 ^ i)) | i <- [0, 1, 2, 3, 4, 5, 6]]
   ]
