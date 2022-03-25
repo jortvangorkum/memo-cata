@@ -11,6 +11,7 @@ module Generics.Data.Digest.CRC32
   , digestConcat
   ) where
 
+import           Control.DeepSeq
 import           Data.ByteString         (ByteString)
 import           Data.ByteString.Builder (stringUtf8, toLazyByteString,
                                           word32LE)
@@ -30,6 +31,9 @@ instance Show Digest where
 
 instance Ord Digest where
   compare x y = compare (getByteString x) (getByteString y)
+
+instance NFData Digest where
+  rnf (Digest crc32 bs) = rnf crc32 `seq` rnf bs
 
 hashStr :: String -> Digest
 hashStr s = Digest w32 bs
