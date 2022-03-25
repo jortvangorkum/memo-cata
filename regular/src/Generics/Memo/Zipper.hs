@@ -234,4 +234,4 @@ test = update (const mt) [down]
 -- ** Utility
 
 expectJust :: String -> Maybe a -> a
-expectJust msg = maybe (error msg) id
+expectJust msg = fromMaybe (error msg)
