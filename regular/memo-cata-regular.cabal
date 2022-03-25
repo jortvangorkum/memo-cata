@@ -23,6 +23,7 @@ library
       Generics.Data.Digest.CRC32
       Generics.Memo.Cata
       Generics.Memo.Main
+      Generics.Memo.Zipper
       GenericTree.Cata
       GenericTree.Main
   other-modules:
@@ -37,6 +38,7 @@ library
     , mtl
     , regular
     , template-haskell
+    , transformers
   default-language: Haskell2010
 
 executable memo-cata-regular-exe
@@ -55,6 +57,7 @@ executable memo-cata-regular-exe
     , mtl
     , regular
     , template-haskell
+    , transformers
   default-language: Haskell2010
 
 test-suite memo-cata-regular-test
@@ -64,6 +67,7 @@ test-suite memo-cata-regular-test
       Helper.Arbitrary
       Helper.Main
       UnitTests.GenericTreeSpec
+      UnitTests.UpdateMerkleTreeSpec
       Paths_memo_cata_regular
   hs-source-dirs:
       test
@@ -79,4 +83,5 @@ test-suite memo-cata-regular-test
     , mtl
     , regular
     , template-haskell
+    , transformers
   default-language: Haskell2010

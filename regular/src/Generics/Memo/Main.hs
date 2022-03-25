@@ -1,54 +1,46 @@
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeOperators    #-}
+{-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE TypeOperators        #-}
+{-# LANGUAGE UndecidableInstances #-}
+
 module Generics.Memo.Main where
 
+import           Data.Functor.Classes
 import           Generics.Data.Digest.CRC32
 import           Generics.Regular.Base
 
-class Merkelize f where
-  merkleG :: f (Fix (g :*: K Digest)) -> (f :*: K Digest) (Fix (g :*: K Digest))
+class Hashable f where
+  hash :: f (Fix (g :*: K Digest)) -> Digest
 
-merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Fix (PF a :*: K Digest)
+instance (Show a) => Hashable (K a) where
+  hash (K x) = digestConcat [digest "K", digest x]
+
+instance Hashable I where
+  hash (I x) = digestConcat [digest "I", getDigest x]
+    where
+      getDigest :: Fix (f :*: K Digest) -> Digest
+      getDigest (In (_ :*: K h)) = h
+
+instance (Hashable f, Hashable g) => Hashable (f :+: g) where
+  hash (L x) = digestConcat [digest "L", hash x]
+  hash (R x) = digestConcat [digest "R", hash x]
+
+instance (Hashable f, Hashable g) => Hashable (f :*: g) where
+  hash (x :*: y) = digestConcat [digest "P", hash x, hash y]
+
+instance (Hashable f) => Hashable (C c f) where
+  hash (C x) = digestConcat [digest "C", hash x]
+
+instance Hashable U where
+  hash _ = digest "U"
+
+type MerklePF f = Merkle (PF f)
+type Merkle f = Fix (f :*: K Digest)
+
+merkle :: (Regular a, Hashable (PF a), Functor (PF a)) => a -> Merkle (PF a)
 merkle = In . merkleG . fmap merkle . from
 
-instance (Show a) => Merkelize (K a) where
-  merkleG (K x) = K x :*: K h
-    where
-      h = digestConcat [digest "K", digest x]
-
-instance Merkelize I where
-  merkleG (I x) = I x :*: K h
-    where
-      (In (_ :*: K ph)) = x
-      h = digestConcat [digest "I", ph]
-
-instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
-  merkleG (L x) = L prevX :*: K h
-    where
-      (prevX :*: K ph) = merkleG x
-      h = digestConcat [digest "L", ph]
-  merkleG (R x) = R prevX :*: K h
-    where
-      (prevX :*: K ph) = merkleG x
-      h = digestConcat [digest "R", ph]
-
-instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
-  merkleG (x :*: y) = (prevX :*: prevY) :*: K h
-    where
-      prevX :*: K phx = merkleG x
-      prevY :*: K phy = merkleG y
-      h = digestConcat [digest "Pair", phx, phy]
-
-instance (Merkelize f) => Merkelize (C c f) where
-  merkleG (C x) = C x :*: K h
-    where
-      h = digestConcat [digest "C", ph]
-      prevX :*: K ph = merkleG x
-
-instance Merkelize U where
-  merkleG U = U :*: K h
-    where
-      h = digest "U"
+merkleG :: Hashable f => f (Fix (g :*: K Digest)) -> (f :*: K Digest) (Fix (g :*: K Digest))
+merkleG f = f :*: K (hash f)
 
 -- Generic Foldable
 -- https://github.com/blamario/grampa/blob/f4b97674161c6bd5e45c20226b5fb3458f942ff4/rank2classes/src/Rank2.hs#L307
@@ -91,3 +83,84 @@ instance Traversable f => Traversable (C c f) where
 
 instance Traversable U where
   traverse f U = pure U
+
+-- Generic Equality
+instance Eq (f (Fix f)) => Eq (Fix f) where
+  f == g = out f == out g
+
+instance Eq a => Eq1 (K a) where
+  eq1 (K x) (K y) = x == y
+
+instance (Eq a, Eq r) => Eq (K a r) where
+  (==) = eq1
+
+instance Eq1 I where
+  eq1 = (==)
+
+instance Eq r => Eq (I r) where
+  I x == I y = x == y
+
+instance (Eq1 f, Eq1 g) => Eq1 (f :+: g) where
+  eq1 (L x) (L y) = eq1 x y
+  eq1 (R x) (R y) = eq1 x y
+  eq1 _     _     = False
+
+instance (Eq1 f, Eq1 g, Eq r) => Eq ((f :+: g) r) where
+  (==) = eq1
+
+instance (Eq1 f, Eq1 g) => Eq1 (f :*: g) where
+  eq1 (x1 :*: y1) (x2 :*: y2) = eq1 x1 x2 && eq1 y1 y2
+
+instance (Eq1 f, Eq1 g, Eq r) => Eq ((f :*: g) r) where
+  (==) = eq1
+
+instance (Eq1 f) => Eq1 (C c f) where
+  eq1 (C x) (C y) = eq1 x y
+
+instance (Eq1 f, Eq r) => Eq (C c f r) where
+  (==) = eq1
+
+-- Generic Show
+instance Show (f (Fix f)) => Show (Fix f) where
+  show = show . out
+
+instance Show a => Show1 (K a) where
+  showsPrec1 n (K x) = showsPrec n x
+
+instance (Show a, Show r) => Show (K a r) where
+  showsPrec = showsPrec1
+
+instance Show1 I where
+  showsPrec1 = showsPrec
+
+instance Show r => Show (I r) where
+  showsPrec n (I r) = showsPrec n r
+
+instance (Show1 f, Show1 g) => Show1 (f :+: g) where
+  showsPrec1 n (L x) = showsPrec1 n x
+  showsPrec1 n (R x) = showsPrec1 n x
+
+instance (Show1 f, Show1 g, Show r) => Show ((f :+: g) r) where
+  showsPrec = showsPrec1
+
+instance (Show1 f, Show1 g) => Show1 (f :*: g) where
+  showsPrec1 n (x :*: y) = showsPrec1 n x . showString " " . showsPrec1 n y
+
+instance (Show1 f, Show1 g, Show r) => Show ((f :*: g) r) where
+  showsPrec = showsPrec1
+
+showBraces :: Bool -> ShowS -> ShowS
+showBraces b p = if b then showChar '{' . p . showChar '}' else p
+
+instance (Constructor c, Show1 f) => Show1 (C c f) where
+  showsPrec1 n cx@(C x) = case fixity of
+    Prefix -> showParen True (showString (conName cx) . showChar ' ' . showBraces isRecord (showsPrec1 n x))
+    Infix _ _ -> showParen True
+                    (showChar '(' . showString (conName cx)
+                     . showChar ')' . showChar ' '
+                     . showBraces isRecord (showsPrec1 n x))
+    where isRecord = conIsRecord cx
+          fixity   = conFixity cx
+
+instance (Constructor c, Show1 f, Show r) => Show (C c f r) where
+  showsPrec = showsPrec1

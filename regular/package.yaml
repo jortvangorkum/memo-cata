@@ -21,6 +21,7 @@ dependencies:
   - digest
   - bytestring
   - mtl
+  - transformers
   - containers
 
 library:

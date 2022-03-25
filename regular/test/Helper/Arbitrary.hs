@@ -9,6 +9,6 @@ import           Test.QuickCheck
 instance Arbitrary (Tree Int) where
   arbitrary = do sized (return . generateTree)
 
-instance Arbitrary (MerkleTree Int) where
+instance Arbitrary (Merkle (PFTree Int)) where
   arbitrary = do t :: Tree Int <- arbitrary
                  return (merkle t)
