@@ -13,6 +13,8 @@ import           Test.QuickCheck
 mt :: MerklePF (Tree Int)
 mt = merkle $ Leaf 69
 
+-- iterUpdate :: Int -> MerklePF (Tree Int)
+
 spec :: Spec
 spec = describe "Incremental Update MerkleTree" $ do
   it "Updated Tree with same value == Original Tree" $ property $
@@ -27,3 +29,5 @@ spec = describe "Incremental Update MerkleTree" $ do
     \(t :: MerklePF (Tree Int)) -> cataSum (update id [bottom] t) `shouldBe` cataSum t
   it "Result Updated Tree with different value != Result Original Tree" $ property $
     \(t :: MerklePF (Tree Int)) -> cataSum (update (const mt) [bottom] t) `shouldNotBe` cataSum t
+  it "Multiple update iterations => merkle cata value == cata value" $ property $
+    \(n :: Positive Int, t :: MerklePF (Tree Int), ds :: [Direction a]) -> undefined

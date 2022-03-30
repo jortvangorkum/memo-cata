@@ -11,9 +11,11 @@ module Generics.Memo.Zipper
   ( Loc(..)
   , Ctx(..)
   , Zipper(..)
+  , Direction
   , enter, leave, on
   , up, down, down', left, right, bottom, bottom'
   , modify, update
+  , applyDirs, applyDirs'
   ) where
 
 import           Control.Monad              (mplus)
@@ -146,42 +148,47 @@ on (Loc x _) = x
 
 -- ** Navigation
 
+type Direction a = Loc a -> Maybe (Loc a)
+
+instance Show (Direction a) where
+  show dir = "dir"
+
 -- | Move up to the parent. Returns 'Nothing' if the current
 -- focus is the root.
-up :: Loc a -> Maybe (Loc a)
+up :: Direction a
 up (Loc x [])     = Nothing
 up (Loc x (c:cs)) = Just (Loc (In (fill c x)) cs)
 
 -- | Move down to the leftmost child. Returns 'Nothing' if the
 -- current focus is a leaf.
-down :: Loc a -> Maybe (Loc a)
+down :: Direction a
 down (Loc x cs) = first (out x) >>= \(a,c) -> return (Loc a (c:cs))
 
 -- | Move down to the rightmost child. Returns 'Nothing' if the
 -- current focus is a leaf.
-down' :: Loc a -> Maybe (Loc a)
+down' :: Direction a
 down' (Loc x cs) = last (out x) >>= \(a,c) -> return (Loc a (c:cs))
 
 -- | Move to the right sibling. Returns 'Nothing' if the current
 -- focus is the rightmost sibling.
-right :: Loc a -> Maybe (Loc a)
+right :: Direction a
 right (Loc x []    ) = Nothing
 right (Loc x (c:cs)) = next c x >>= \(a,c') -> return (Loc a (c':cs))
 
 -- | Move to the left sibling. Returns 'Nothing' if the current
 -- focus is the leftmost sibling.
-left :: Loc a -> Maybe (Loc a)
+left :: Direction a
 left (Loc x []    ) = Nothing
 left (Loc x (c:cs)) = prev c x >>= \(a,c') -> return (Loc a (c':cs))
 
 -- | Move to the leftmost lowest element.
-bottom :: Loc a -> Maybe (Loc a)
+bottom :: Direction a
 bottom loc = case down loc of
   Nothing   -> Just loc
   Just loc' -> bottom loc'
 
 -- | Move to the rightmost lowest element.
-bottom' :: Loc a -> Maybe (Loc a)
+bottom' :: Direction a
 bottom' loc = case down' loc of
   Nothing   -> Just loc
   Just loc' -> bottom' loc'
@@ -214,14 +221,22 @@ updateLoc f loc = if   top loc'
                              $ expectJust "Exception: Cannot go up"
                              $ up (Loc (updateDigest x) cs)
 
+-- | The given directions are applied on the location, if the direction fails it returns Nothing
+applyDirs :: [Direction a] -> Loc a -> Maybe (Loc a)
+applyDirs dirs x = foldl (>>=) (Just x) dirs
+
+-- | The given directions are applied on the location, if the direction fails it returns the current location
+applyDirs' :: [Direction a] -> Loc a -> Loc a
+applyDirs' dirs x = foldl (\y f -> fromMaybe y (f y)) x dirs
+
 update :: (Zipper a, Hashable a)
         => (Merkle a -> Merkle a)
-        -> [Loc (Merkle a) -> Maybe (Loc (Merkle a))]
+        -> [Direction (Merkle a)]
         -> Merkle a
         -> Merkle a
 update f dirs m = leave $ updateLoc f loc'
   where
-    loc' = foldl (\x f -> fromMaybe x (f x)) (enter m) dirs
+    loc' = expectJust "Cannot apply given directions" $ applyDirs dirs (enter m)
 
 -- ** Utility
 

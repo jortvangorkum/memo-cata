@@ -17,7 +17,7 @@ cataInt :: MerklePF (Tree Int) -> Int
 cataInt = cata f
   where
     f :: (PFTree Int :*: K Digest) Int -> Int
-    f (px :*: K h) = case px of
+    f (px :*: _) = case px of
       L (C (K x))                 -> x
       R (C (I l :*: K x :*: I r)) -> l + x + r
 
