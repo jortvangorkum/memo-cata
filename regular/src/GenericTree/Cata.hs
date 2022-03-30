@@ -31,15 +31,15 @@ cataHashes = cata f
 cataSum :: MerklePF (Tree Int) -> (Int, M.Map Digest Int)
 cataSum = cataMerkle
   (\case
-    L (C (K x))                 -> x
-    R (C (I l :*: K x :*: I r)) -> l + x + r
+    Leaf_ x     -> x
+    Node_ l x r -> l + x + r
   )
 
 cataSumMap :: M.Map Digest Int -> MerklePF (Tree Int) -> (Int, M.Map Digest Int)
 cataSumMap = cataMerkleMap
   (\case
-    L (C (K x))                 -> x
-    R (C (I l :*: K x :*: I r)) -> l + x + r
+    Leaf_ x     -> x
+    Node_ l x r -> l + x + r
   )
 
 cataSumRose :: MerklePF (RoseTree Int) -> (Int, M.Map Digest Int)

@@ -29,11 +29,15 @@ $(deriveAll ''RoseTree "PFRoseTree")
 type instance PF (RoseTree a) = PFRoseTree a
 
 -- https://haskell-explained.gitlab.io/blog/posts/2019/08/27/pattern-synonyms/index.html
--- https://gitlab.haskell.org/ghc/ghc/-/wikis/pattern-synonyms
--- pattern Tree :: PF (Tree a) -> Tree a
--- pattern Tree a <- PF (Tree a) where
---   Tree (LeafF x)     = L (C (K x))
---   Tree (NodeF l x r) = R (C (I l :*: K x :*: I r))
+{-# COMPLETE Leaf_, Node_ #-}
+
+pattern Leaf_ :: a -> PF (Tree a) r
+pattern Leaf_ x <- L (C (K x)) where
+  Leaf_ x = L (C (K x))
+
+pattern Node_ :: r -> a -> r -> PF (Tree a) r
+pattern Node_ l x r <- R (C (I l :*: K x :*: I r)) where
+  Node_ l x r = R (C (I l :*: K x :*: I r))
 
 t :: Tree Int
 t = Node (Leaf 1) 2 (Leaf 3)
