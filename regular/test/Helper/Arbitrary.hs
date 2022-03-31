@@ -14,5 +14,5 @@ instance Arbitrary (Merkle (PFTree Int)) where
   arbitrary = do t :: Tree Int <- arbitrary
                  return (merkle t)
 
-instance Arbitrary a => Arbitrary (Direction a) where
-  arbitrary = elements [up, down, down', right, left, bottom, bottom']
+instance Arbitrary Dir where
+  arbitrary = elements [Up, Dwn, Dwn', Lft, Rght, Bttm, Bttm']
