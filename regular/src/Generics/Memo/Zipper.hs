@@ -226,7 +226,7 @@ updateLoc f loc = if   top loc'
     loc' = modify f loc
 
     updateDigest :: Hashable a => Merkle a -> Merkle a
-    updateDigest (In (x :*: _)) = In (x :*: K (hash x))
+    updateDigest (In (x :*: _)) = In (merkleG x)
 
     updateParents :: Hashable a => Loc (Merkle a) -> Loc (Merkle a)
     updateParents (Loc x []) = Loc (updateDigest x) []
