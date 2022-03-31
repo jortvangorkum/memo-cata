@@ -1,0 +1,60 @@
+benchmarking Cata Sum Memory/1
+time                 90.15 ns   (73.73 ns .. 112.5 ns)
+                     0.798 R²   (0.734 R² .. 0.965 R²)
+mean                 84.09 ns   (73.90 ns .. 105.9 ns)
+std dev              43.87 ns   (21.12 ns .. 68.35 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              224.007    (223.962 .. 224.055)
+  y                  -1045.211  (-20643.566 .. 21622.170)
+variance introduced by outliers: 100% (severely inflated)
+
+benchmarking Cata Sum Memory/10
+time                 667.2 ns   (624.6 ns .. 734.7 ns)
+                     0.952 R²   (0.931 R² .. 0.977 R²)
+mean                 714.9 ns   (669.3 ns .. 764.0 ns)
+std dev              174.5 ns   (132.2 ns .. 230.3 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1952.055   (1951.659 .. 1952.436)
+  y                  -1327.849  (-27175.974 .. 29297.506)
+variance introduced by outliers: 98% (severely inflated)
+
+benchmarking Cata Sum Memory/100
+time                 7.416 μs   (6.906 μs .. 8.188 μs)
+                     0.944 R²   (0.927 R² .. 0.965 R²)
+mean                 9.002 μs   (8.355 μs .. 9.607 μs)
+std dev              2.042 μs   (1.534 μs .. 2.633 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              19232.009  (19226.369 .. 19237.839)
+  y                  -788.033   (-40476.085 .. 36105.576)
+variance introduced by outliers: 97% (severely inflated)
+
+benchmarking Cata Sum Memory/1000
+time                 80.27 μs   (76.48 μs .. 85.43 μs)
+                     0.978 R²   (0.965 R² .. 0.989 R²)
+mean                 79.11 μs   (75.66 μs .. 82.95 μs)
+std dev              13.54 μs   (8.003 μs .. 18.80 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              192042.116 (191983.122 .. 192091.865)
+  y                  -4752.611  (-42391.726 .. 42512.284)
+variance introduced by outliers: 93% (severely inflated)
+
+benchmarking Cata Sum Memory/10000
+time                 1.106 ms   (1.000 ms .. 1.177 ms)
+                     0.956 R²   (0.936 R² .. 0.980 R²)
+mean                 992.3 μs   (940.1 μs .. 1.062 ms)
+std dev              200.0 μs   (156.4 μs .. 277.5 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1919955.699 (1919258.155 .. 1920723.450)
+  y                  -361.744   (-77572.778 .. 77087.188)
+variance introduced by outliers: 92% (severely inflated)
+
+benchmarking Cata Sum Memory/100000
+time                 6.589 ms   (5.837 ms .. 7.200 ms)
+                     0.905 R²   (0.831 R² .. 0.957 R²)
+mean                 9.415 ms   (8.634 ms .. 10.85 ms)
+std dev              2.646 ms   (1.983 ms .. 3.428 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1.920e7    (1.919e7 .. 1.921e7)
+  y                  -14678.799 (-202348.592 .. 159024.579)
+variance introduced by outliers: 93% (severely inflated)
+
