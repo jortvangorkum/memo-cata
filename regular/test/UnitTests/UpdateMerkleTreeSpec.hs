@@ -53,4 +53,4 @@ spec = describe "Incremental Update MerkleTree" $ do
   it "Result Updated Tree with different value != Result Original Tree" $ property $
     \(t :: MerklePF (Tree Int)) -> cataSum (update (const mt) [Bttm] t) `shouldNotBe` cataSum t
   it "Multiple update iterations => merkle cata value == cata value" $ property $
-    \((Positive n) :: Positive Int) -> forAll (iterCata n) $ (\((n, _), t) -> n `shouldBe` cataInt t)
+    \((Positive n) :: Positive Int) -> forAll (iterCata n) (\((n, _), t) -> n `shouldBe` cataInt t)
