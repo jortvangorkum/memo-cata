@@ -17,7 +17,7 @@ mt :: MerklePF (Tree Int)
 mt = merkle $ Leaf 69
 
 iterCata :: Int -> Gen ((Int, M.Map Digest Int), MerklePF (Tree Int))
-iterCata 0 = do (t :: MerklePF (Tree Int)) <- arbitrary
+iterCata 0 = do (t :: MerklePF (Tree Int))  <- arbitrary
                 (rt :: MerklePF (Tree Int)) <- arbitrary
                 (ds :: Dirs)                <- arbitrary
                 let t' = update' (const rt) ds t
