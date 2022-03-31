@@ -41,10 +41,3 @@ cataSumMap = cataMerkleMap
     L (C (K x))                 -> x
     R (C (I l :*: K x :*: I r)) -> l + x + r
   )
-
-cataSumRose :: MerklePF (RoseTree Int) -> (Int, M.Map Digest Int)
-cataSumRose = cataMerkle f
-  where
-    f :: PFRoseTree Int Int -> Int
-    f (L _)                 = 0
-    f (R (C (K x :*: I y))) = x + y
