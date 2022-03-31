@@ -11,9 +11,11 @@ module Generics.Memo.Zipper
   ( Loc(..)
   , Ctx(..)
   , Zipper(..)
+  , Dir(..), Dirs
   , enter, leave, on
   , up, down, down', left, right, bottom, bottom'
-  , modify, update
+  , modify, update, update'
+  , applyDir, applyDirs, applyDirs'
   ) where
 
 import           Control.Monad              (mplus)
@@ -146,6 +148,24 @@ on (Loc x _) = x
 
 -- ** Navigation
 
+type Dirs = [Dir]
+data Dir = Lft
+         | Rght
+         | Up
+         | Bttm
+         | Bttm'
+         | Dwn
+         | Dwn'
+
+instance Show Dir where
+  show Lft   = "Left"
+  show Rght  = "Right"
+  show Up    = "Up"
+  show Bttm  = "Bottom"
+  show Bttm' = "Bottom'"
+  show Dwn   = "Down"
+  show Dwn'  = "Down'"
+
 -- | Move up to the parent. Returns 'Nothing' if the current
 -- focus is the root.
 up :: Loc a -> Maybe (Loc a)
@@ -214,14 +234,40 @@ updateLoc f loc = if   top loc'
                              $ expectJust "Exception: Cannot go up"
                              $ up (Loc (updateDigest x) cs)
 
+applyDir :: Dir -> Loc a -> Maybe (Loc a)
+applyDir Lft   = left
+applyDir Rght  = right
+applyDir Up    = up
+applyDir Bttm  = bottom
+applyDir Bttm' = bottom'
+applyDir Dwn   = down
+applyDir Dwn'  = down'
+
+-- | The given directions are applied on the location, if the direction fails it returns Nothing
+applyDirs :: Dirs -> Loc a -> Maybe (Loc a)
+applyDirs dirs x = foldl (\y d -> y >>= applyDir d) (Just x) dirs
+
+-- | The given directions are applied on the location, if the direction fails it returns the current location
+applyDirs' :: Dirs -> Loc a -> Loc a
+applyDirs' dirs x = foldl (\y d -> fromMaybe y (applyDir d y)) x dirs
+
 update :: (Zipper a, Hashable a)
         => (Merkle a -> Merkle a)
-        -> [Loc (Merkle a) -> Maybe (Loc (Merkle a))]
+        -> Dirs
         -> Merkle a
         -> Merkle a
 update f dirs m = leave $ updateLoc f loc'
   where
-    loc' = foldl (\x f -> fromMaybe x (f x)) (enter m) dirs
+    loc' = expectJust "Cannot apply given directions" $ applyDirs dirs (enter m)
+
+update' :: (Zipper a, Hashable a)
+        => (Merkle a -> Merkle a)
+        -> Dirs
+        -> Merkle a
+        -> Merkle a
+update' f dirs m = leave $ updateLoc f loc'
+  where
+    loc' = applyDirs' dirs (enter m)
 
 -- ** Utility
 
