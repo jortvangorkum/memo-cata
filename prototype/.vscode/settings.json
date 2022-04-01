@@ -1,5 +1,0 @@
-{
-    "haskell.formattingProvider": "stylish-haskell",
-    "editor.formatOnSave": true,
-    "editor.tabSize": 2
-}
