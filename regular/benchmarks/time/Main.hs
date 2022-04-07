@@ -34,11 +34,11 @@ benchIncrementalComputeMap n = env (setupMapInt n) (bench (show n) . nf (\(m, t)
 main :: IO ()
 main = defaultMain
   [ bgroup "Cata Sum"
-    [benchCataInt (f i) | i <- [0 .. 15]]
-  , bgroup "Generic Cata Sum"
-    [benchGenCataSum (f i) | i <- [0 .. 15]]
+    [benchCataInt (f i) | i <- [0 .. 20]]
   , bgroup "Incremental Compute Map"
-    [benchIncrementalComputeMap (f i) | i <- [0 .. 15]]
+    [benchIncrementalComputeMap (f i) | i <- [0 .. 20]]
+  , bgroup "Generic Cata Sum"
+    [benchGenCataSum (f i) | i <- [0 .. 20]]
   ]
   where
-    f i = round ((10 ** (1 / 3)) ^ i)
+    f i = round ((10 ** (1 / 4)) ^ i)

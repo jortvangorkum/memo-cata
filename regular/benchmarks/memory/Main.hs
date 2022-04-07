@@ -18,27 +18,47 @@ setupMapInt n = do t <- setupMerkleTree n
                    return (m, t)
 
 -- BENCHMARKS
+
+-- ALLOCATION
+-- benchCataInt :: Int -> Benchmark
+-- benchCataInt n = env (return . generateTree $ n) (bench (show n) . nf cataSumTree)
+
+-- benchGenCataSum :: Int -> Benchmark
+-- benchGenCataSum n = env (setupMerkleTree n) (bench (show n) . nf cataSum)
+
+-- benchIncrementalComputeMap :: Int -> Benchmark
+-- benchIncrementalComputeMap n = env (setupMapInt n) (bench (show n) . nf (\(m, t) -> fst $ cataSumMap m (update (const mt) [Bttm] t)))
+--   where
+--     mt :: MerklePF (Tree Int)
+--     mt = merkle $ Leaf 69
+
+-- MEMORY USAGE
 benchCataInt :: Int -> Benchmark
-benchCataInt n = env (return . generateTree $ n) (bench (show n) . nf cataSumTree)
+benchCataInt n = bench (show n) $ nf (cataSumTree . generateTree) n
 
 benchGenCataSum :: Int -> Benchmark
-benchGenCataSum n = env (setupMerkleTree n) (bench (show n) . nf cataSum)
+benchGenCataSum n = bench (show n) $ nf (cataSum . merkle . generateTree) n
 
 benchIncrementalComputeMap :: Int -> Benchmark
-benchIncrementalComputeMap n = env (setupMapInt n) (bench (show n) . nf (\(m, t) -> fst $ cataSumMap m (update (const mt) [Bttm] t)))
+benchIncrementalComputeMap n = bench (show n) $ nf incCataSum n
   where
+    incCataSum :: Int -> Int
+    incCataSum i = fst $ cataSumMap m (update (const mt) [Bttm] t)
+      where
+        t = merkle $ generateTree i
+        m = snd $ cataSum t
     mt :: MerklePF (Tree Int)
     mt = merkle $ Leaf 69
 
 -- MAIN
 main :: IO ()
 main = defaultMain
-  [ bgroup "Cata Sum Memory"
-    [benchCataInt (f i) | i <- [0 .. 15]]
-  , bgroup "Generic Cata Sum"
-    [benchGenCataSum (f i) | i <- [0 .. 15]]
-  , bgroup "Incremental Compute Map"
-    [benchIncrementalComputeMap (f i) | i <- [0 .. 15]]
+  [ bgroup "Memory Usage - Cata Sum"
+    [benchCataInt (f i) | i <- [0 .. 20]]
+  , bgroup "Memory Usage - Generic Cata Sum"
+    [benchGenCataSum (f i) | i <- [0 .. 20]]
+  , bgroup "Memory Usage - Incremental Compute Map"
+    [benchIncrementalComputeMap (f i) | i <- [0 .. 20]]
   ]
   where
-    f i = round ((10 ** (1 / 3)) ^ i)
+    f i = round ((10 ** (1 / 4)) ^ i)
