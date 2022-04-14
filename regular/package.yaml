@@ -51,6 +51,7 @@ executables:
     dependencies:
       - memo-cata-regular
       - criterion
+      - QuickCheck
 
 tests:
   memo-cata-regular-test:

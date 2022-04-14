@@ -50,7 +50,8 @@ executable memo-cata-regular-memory
       benchmarks/memory
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , bytestring
     , containers
     , criterion
