@@ -2,7 +2,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Helper.Arbitrary where
 
+import qualified Data.Map                   as M
+import           GenericTree.Cata
 import           GenericTree.Main
+import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
 import           Test.QuickCheck
