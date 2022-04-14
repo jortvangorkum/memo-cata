@@ -1,5 +1,6 @@
 module Main where
 
+import           Control.Monad              (replicateM)
 import           Criterion.Main
 import qualified Data.Map                   as M
 import           GenericTree.Cata
@@ -7,13 +8,13 @@ import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
-import Test.QuickCheck
+import           Test.QuickCheck
 
 -- ENVIRONMENTS
 setupMerkleTree :: Int -> IO (MerklePF (Tree Int))
 setupMerkleTree = return . merkle . generateTree
 
-setupDirs :: Int -> IO (Dirs)
+setupDirs :: Int -> IO Dirs
 setupDirs n = sequence [generate genDir | _ <- [0 .. n]]
   where
     genDir = elements [Up, Dwn, Dwn', Lft, Rght, Bttm, Bttm']
@@ -23,7 +24,7 @@ setupIter nChanges nNodes nDirs = do cs <- changes
                                      mt <- setupMerkleTree nNodes
                                      return (cs, mt)
   where
-    changes = sequence $ replicate nChanges $ 
+    changes = replicateM nChanges $
       do ds <- setupDirs nDirs
          rt <- setupMerkleTree 1
          return (rt, ds)
