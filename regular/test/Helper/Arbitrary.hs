@@ -16,3 +16,15 @@ instance Arbitrary (Merkle (PFTree Int)) where
 
 instance Arbitrary Dir where
   arbitrary = elements [Up, Dwn, Dwn', Lft, Rght, Bttm, Bttm']
+
+cataIter :: Int -> Gen ((Int, M.Map Digest Int), MerklePF (Tree Int))
+cataIter 0 = do (t :: MerklePF (Tree Int))  <- arbitrary
+                (rt :: MerklePF (Tree Int)) <- arbitrary
+                (ds :: Dirs)                <- arbitrary
+                let t' = update' (const rt) ds t
+                return (cataSum t', t')
+cataIter n = do ((_, m), t) <- cataIter (n - 1)
+                (rt :: MerklePF (Tree Int)) <- arbitrary
+                (ds :: Dirs)                <- arbitrary
+                let t' = update' (const rt) ds t
+                return (cataSumMap m t', t')

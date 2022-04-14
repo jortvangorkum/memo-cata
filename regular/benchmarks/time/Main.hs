@@ -7,6 +7,7 @@ import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
+import Test.QuickCheck
 
 -- ENVIRONMENTS
 setupMerkleTree :: Int -> IO (MerklePF (Tree Int))
@@ -16,6 +17,21 @@ setupMapInt :: Int -> IO (M.Map Digest Int, MerklePF (Tree Int))
 setupMapInt n = do t <- setupMerkleTree n
                    let m = snd $ cataSum t
                    return (m, t)
+
+setupDirs :: Int -> IO (Dirs)
+setupDirs n = sequence [generate genDir | _ <- [0 .. n]]
+  where
+    genDir = elements [Up, Dwn, Dwn', Lft, Rght, Bttm, Bttm']
+
+setupIter :: Int -> Int -> Int -> IO ([(MerklePF (Tree Int), Dirs)], MerklePF (Tree Int))
+setupIter nChanges nNodes nDirs = do cs <- changes
+                                     mt <- setupMerkleTree nNodes
+                                     return (cs, mt)
+  where
+    changes = sequence $ replicate nChanges $ 
+      do ds <- setupDirs nDirs
+         rt <- setupMerkleTree 1
+         return (rt, ds)
 
 -- BENCHMARKS
 benchCataInt :: Int -> Benchmark
@@ -30,15 +46,27 @@ benchIncrementalComputeMap n = env (setupMapInt n) (bench (show n) . nf (\(m, t)
     mt :: MerklePF (Tree Int)
     mt = merkle $ Leaf 69
 
+benchCataIter :: Int -> Int -> Benchmark
+benchCataIter nChange nNodes = env (setupIter nChange nNodes nNodes) (bench (show nNodes) . nf applyChanges)
+  where
+    applyChanges :: ([(MerklePF (Tree Int), Dirs)], MerklePF (Tree Int)) -> (Int, M.Map Digest Int)
+    applyChanges ([(rt, ds)], mt)  = let t' = update' (const rt) ds mt in cataSum t'
+    applyChanges ((rt, ds):cs, mt) = cataSumMap m t'
+      where
+        (_, m) = applyChanges (cs, mt)
+        t' = update' (const rt) ds mt
+
 -- MAIN
 main :: IO ()
 main = defaultMain
   [ bgroup "Cata Sum"
-    [benchCataInt (f i) | i <- [0 .. 20]]
+    [benchCataInt (f i) | i <- [0 .. 10]]
   , bgroup "Incremental Compute Map"
-    [benchIncrementalComputeMap (f i) | i <- [0 .. 20]]
+    [benchIncrementalComputeMap (f i) | i <- [0 .. 10]]
   , bgroup "Generic Cata Sum"
-    [benchGenCataSum (f i) | i <- [0 .. 20]]
+    [benchGenCataSum (f i) | i <- [0 .. 10]]
+  , bgroup ("Changes " ++ show 10 ++ " - Incremental Compute Map")
+    [benchCataIter 10 (f i) | i <- [0 .. 10]]
   ]
   where
-    f i = round ((10 ** (1 / 4)) ^ i)
+    f i = round ((10 ** (1 / 2)) ^ i)

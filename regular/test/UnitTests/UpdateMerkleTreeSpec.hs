@@ -16,18 +16,6 @@ import           Test.QuickCheck.Monadic
 mt :: MerklePF (Tree Int)
 mt = merkle $ Leaf 69
 
-iterCata :: Int -> Gen ((Int, M.Map Digest Int), MerklePF (Tree Int))
-iterCata 0 = do (t :: MerklePF (Tree Int))  <- arbitrary
-                (rt :: MerklePF (Tree Int)) <- arbitrary
-                (ds :: Dirs)                <- arbitrary
-                let t' = update' (const rt) ds t
-                return (cataSum t', t')
-iterCata n = do ((_, m), t) <- iterCata (n - 1)
-                (rt :: MerklePF (Tree Int)) <- arbitrary
-                (ds :: Dirs)                <- arbitrary
-                let t' = update' (const rt) ds t
-                return (cataSumMap m t', t')
-
 spec :: Spec
 spec = describe "Incremental Update MerkleTree" $ do
   it "Updated Tree with same value == Original Tree" $ property $
@@ -43,4 +31,4 @@ spec = describe "Incremental Update MerkleTree" $ do
   it "Result Updated Tree with different value != Result Original Tree" $ property $
     \(t :: MerklePF (Tree Int)) -> cataSum (update (const mt) [Bttm] t) `shouldNotBe` cataSum t
   it "Multiple update iterations => merkle cata value == cata value" $ property $
-    \((Positive n) :: Positive Int) -> forAll (iterCata n) (\((x, _), t) -> x `shouldBe` cataInt t)
+    \((Positive n) :: Positive Int) -> forAll (cataIter n) (\((x, _), t) -> x `shouldBe` cataInt t)

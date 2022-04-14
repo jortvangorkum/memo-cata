@@ -25,6 +25,7 @@ import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 import           Prelude                    hiding (last)
+import Control.DeepSeq
 
 data Loc :: * -> * where
   Loc :: (Zipper a) => Merkle a -> [Ctx (a :*: K Digest) (Merkle a)] -> Loc (Merkle a)
@@ -165,6 +166,9 @@ instance Show Dir where
   show Bttm' = "Bottom'"
   show Dwn   = "Down"
   show Dwn'  = "Down'"
+
+instance NFData Dir where
+  rnf x = x `seq` ()
 
 -- | Move up to the parent. Returns 'Nothing' if the current
 -- focus is the root.
