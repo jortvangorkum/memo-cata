@@ -1,0 +1,629 @@
+benchmarking Cata Sum Memory/1
+time                 123.5 ns   (114.2 ns .. 132.8 ns)
+                     0.961 R²   (0.943 R² .. 0.976 R²)
+mean                 124.7 ns   (115.3 ns .. 149.8 ns)
+std dev              48.97 ns   (24.82 ns .. 90.01 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              432.014    (431.935 .. 432.108)
+  y                  -1352.965  (-32242.491 .. 22359.587)
+variance introduced by outliers: 100% (severely inflated)
+
+benchmarking Cata Sum Memory/2
+time                 218.0 ns   (205.3 ns .. 227.3 ns)
+                     0.979 R²   (0.971 R² .. 0.986 R²)
+mean                 211.4 ns   (201.0 ns .. 228.3 ns)
+std dev              40.95 ns   (29.66 ns .. 54.26 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              800.015    (799.921 .. 800.116)
+  y                  -958.763   (-24737.379 .. 26313.081)
+variance introduced by outliers: 97% (severely inflated)
+
+benchmarking Cata Sum Memory/3
+time                 367.1 ns   (334.4 ns .. 396.9 ns)
+                     0.951 R²   (0.936 R² .. 0.968 R²)
+mean                 361.9 ns   (335.5 ns .. 390.9 ns)
+std dev              89.78 ns   (77.66 ns .. 112.0 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1168.033   (1167.798 .. 1168.294)
+  y                  -1289.043  (-28440.317 .. 23989.820)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Cata Sum Memory/6
+time                 540.6 ns   (523.8 ns .. 565.2 ns)
+                     0.961 R²   (0.938 R² .. 0.980 R²)
+mean                 672.5 ns   (615.7 ns .. 747.5 ns)
+std dev              212.3 ns   (162.6 ns .. 269.6 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2272.061   (2271.733 .. 2272.383)
+  y                  -1753.295  (-32701.574 .. 25131.787)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Cata Sum Memory/10
+time                 921.4 ns   (857.8 ns .. 974.5 ns)
+                     0.972 R²   (0.954 R² .. 0.994 R²)
+mean                 897.1 ns   (865.5 ns .. 961.8 ns)
+std dev              154.1 ns   (103.4 ns .. 242.3 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3744.062   (3743.513 .. 3744.667)
+  y                  -1266.820  (-33096.929 .. 30052.366)
+variance introduced by outliers: 96% (severely inflated)
+
+benchmarking Cata Sum Memory/18
+time                 1.892 μs   (1.747 μs .. 2.002 μs)
+                     0.961 R²   (0.949 R² .. 0.974 R²)
+mean                 1.982 μs   (1.865 μs .. 2.183 μs)
+std dev              493.3 ns   (427.6 ns .. 585.1 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              6687.876   (6686.903 .. 6689.192)
+  y                  -2500.971  (-40003.947 .. 28206.696)
+variance introduced by outliers: 98% (severely inflated)
+
+benchmarking Cata Sum Memory/32
+time                 3.538 μs   (3.227 μs .. 3.899 μs)
+                     0.952 R²   (0.937 R² .. 0.972 R²)
+mean                 3.227 μs   (3.074 μs .. 3.492 μs)
+std dev              630.5 ns   (474.7 ns .. 837.1 ns)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              11839.888  (11838.035 .. 11842.440)
+  y                  -3311.450  (-38647.770 .. 30484.026)
+variance introduced by outliers: 97% (severely inflated)
+
+benchmarking Cata Sum Memory/56
+time                 10.33 μs   (9.907 μs .. 10.84 μs)
+                     0.971 R²   (0.948 R² .. 0.984 R²)
+mean                 10.39 μs   (9.925 μs .. 11.28 μs)
+std dev              2.019 μs   (1.547 μs .. 3.022 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              20671.267  (20665.490 .. 20678.804)
+  y                  399.324    (-39884.186 .. 34386.331)
+variance introduced by outliers: 96% (severely inflated)
+
+benchmarking Cata Sum Memory/100
+time                 18.70 μs   (17.61 μs .. 20.06 μs)
+                     0.954 R²   (0.925 R² .. 0.975 R²)
+mean                 22.01 μs   (19.08 μs .. 30.11 μs)
+std dev              16.53 μs   (4.351 μs .. 30.83 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              36865.959  (36856.434 .. 36874.856)
+  y                  -3088.124  (-44576.504 .. 33674.075)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Cata Sum Memory/178
+time                 32.77 μs   (29.70 μs .. 36.75 μs)
+                     0.938 R²   (0.915 R² .. 0.962 R²)
+mean                 36.19 μs   (34.38 μs .. 38.93 μs)
+std dev              7.395 μs   (6.498 μs .. 8.703 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              65569.872  (65546.630 .. 65594.589)
+  y                  -2713.207  (-43123.625 .. 35859.152)
+variance introduced by outliers: 96% (severely inflated)
+
+benchmarking Cata Sum Memory/316
+time                 54.31 μs   (50.48 μs .. 57.43 μs)
+                     0.973 R²   (0.958 R² .. 0.990 R²)
+mean                 54.11 μs   (51.76 μs .. 57.72 μs)
+std dev              8.305 μs   (6.365 μs .. 11.27 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              116349.450 (116311.969 .. 116385.249)
+  y                  -183.560   (-32175.004 .. 38199.055)
+variance introduced by outliers: 93% (severely inflated)
+
+benchmarking Cata Sum Memory/562
+time                 112.3 μs   (98.13 μs .. 130.6 μs)
+                     0.895 R²   (0.853 R² .. 0.965 R²)
+mean                 100.8 μs   (93.92 μs .. 109.3 μs)
+std dev              26.59 μs   (20.03 μs .. 39.73 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              206872.000 (206796.616 .. 206943.290)
+  y                  115.024    (-47261.653 .. 45215.386)
+variance introduced by outliers: 97% (severely inflated)
+
+benchmarking Cata Sum Memory/1000
+time                 178.4 μs   (170.3 μs .. 194.9 μs)
+                     0.887 R²   (0.795 R² .. 0.955 R²)
+mean                 241.7 μs   (213.4 μs .. 284.6 μs)
+std dev              121.6 μs   (78.69 μs .. 178.0 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              368057.207 (367911.780 .. 368190.431)
+  y                  -1459.446  (-48420.647 .. 52573.038)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Cata Sum Memory/1778
+time                 682.7 μs   (475.3 μs .. 935.8 μs)
+                     0.554 R²   (0.474 R² .. 0.723 R²)
+mean                 995.9 μs   (733.3 μs .. 1.389 ms)
+std dev              976.9 μs   (692.1 μs .. 1.471 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              654473.913 (653971.096 .. 654892.097)
+  y                  -10161.698 (-73150.629 .. 48700.838)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Cata Sum Memory/3162
+time                 509.0 μs   (-6.588 μs .. 821.0 μs)
+                     0.056 R²   (0.001 R² .. 0.335 R²)
+mean                 3.248 ms   (1.774 ms .. 6.146 ms)
+std dev              6.208 ms   (2.744 ms .. 9.533 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1163791.491 (1162724.883 .. 1164871.850)
+  y                  -9398.424  (-91635.449 .. 69238.535)
+variance introduced by outliers: 98% (severely inflated)
+
+benchmarking Cata Sum Memory/5623
+time                 1.042 ms   (956.9 μs .. 1.277 ms)
+                     0.487 R²   (0.305 R² .. 0.836 R²)
+mean                 1.649 ms   (1.407 ms .. 1.949 ms)
+std dev              961.6 μs   (632.9 μs .. 1.322 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2069519.465 (2068509.748 .. 2070508.864)
+  y                  -11888.850 (-85853.766 .. 80136.077)
+variance introduced by outliers: 98% (severely inflated)
+
+benchmarking Cata Sum Memory/10000
+time                 2.267 ms   (2.156 ms .. 2.444 ms)
+                     0.971 R²   (0.948 R² .. 0.988 R²)
+mean                 2.377 ms   (2.305 ms .. 2.460 ms)
+std dev              258.2 μs   (190.9 μs .. 334.8 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3679935.413 (3678452.962 .. 3681597.968)
+  y                  -3295.387  (-86408.285 .. 75191.318)
+variance introduced by outliers: 71% (severely inflated)
+
+benchmarking Cata Sum Memory/17783
+time                 6.353 ms   (4.714 ms .. 9.070 ms)
+                     0.709 R²   (0.607 R² .. 0.942 R²)
+mean                 4.864 ms   (4.362 ms .. 5.669 ms)
+std dev              1.765 ms   (879.6 μs .. 3.202 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              6544745.810 (6540639.844 .. 6548908.402)
+  y                  -19998.517 (-116209.637 .. 91207.284)
+variance introduced by outliers: 97% (severely inflated)
+
+benchmarking Cata Sum Memory/31623
+time                 8.331 ms   (7.788 ms .. 8.729 ms)
+                     0.963 R²   (0.897 R² .. 0.990 R²)
+mean                 8.646 ms   (8.255 ms .. 9.643 ms)
+std dev              1.732 ms   (955.5 μs .. 3.105 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1.164e7    (1.163e7 .. 1.165e7)
+  y                  -24569.630 (-129731.336 .. 94340.638)
+variance introduced by outliers: 84% (severely inflated)
+
+benchmarking Cata Sum Memory/56234
+time                 15.45 ms   (14.91 ms .. 15.98 ms)
+                     0.990 R²   (0.977 R² .. 0.997 R²)
+mean                 15.99 ms   (15.38 ms .. 17.67 ms)
+std dev              2.661 ms   (956.1 μs .. 4.811 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2.070e7    (2.069e7 .. 2.071e7)
+  y                  -49647.956 (-265266.988 .. 160756.870)
+variance introduced by outliers: 74% (severely inflated)
+
+benchmarking Cata Sum Memory/100000
+time                 26.98 ms   (25.57 ms .. 28.29 ms)
+                     0.990 R²   (0.979 R² .. 0.997 R²)
+mean                 29.48 ms   (28.51 ms .. 30.72 ms)
+std dev              2.444 ms   (1.422 ms .. 3.822 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3.681e7    (3.679e7 .. 3.683e7)
+  y                  -98107.503 (-304411.149 .. 113991.031)
+variance introduced by outliers: 32% (moderately inflated)
+
+benchmarking Generic Cata Sum/1
+time                 8.633 μs   (7.837 μs .. 9.395 μs)
+                     0.962 R²   (0.950 R² .. 0.987 R²)
+mean                 8.276 μs   (7.935 μs .. 8.835 μs)
+std dev              1.601 μs   (1.017 μs .. 2.498 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              47111.662  (47103.276 .. 47119.573)
+  y                  -796.136   (-48407.617 .. 41847.562)
+variance introduced by outliers: 96% (severely inflated)
+
+benchmarking Generic Cata Sum/2
+time                 14.67 μs   (14.30 μs .. 15.11 μs)
+                     0.993 R²   (0.989 R² .. 0.996 R²)
+mean                 14.93 μs   (14.58 μs .. 15.64 μs)
+std dev              1.534 μs   (1.140 μs .. 2.202 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              82786.599  (82769.388 .. 82800.939)
+  y                  -5169.212  (-62736.561 .. 52879.158)
+variance introduced by outliers: 86% (severely inflated)
+
+benchmarking Generic Cata Sum/3
+time                 20.33 μs   (20.01 μs .. 20.72 μs)
+                     0.990 R²   (0.982 R² .. 0.997 R²)
+mean                 21.28 μs   (20.65 μs .. 22.57 μs)
+std dev              3.053 μs   (1.676 μs .. 5.236 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              118742.337 (118718.457 .. 118764.614)
+  y                  -553.736   (-58241.013 .. 61102.892)
+variance introduced by outliers: 92% (severely inflated)
+
+benchmarking Generic Cata Sum/6
+time                 41.01 μs   (40.16 μs .. 42.02 μs)
+                     0.994 R²   (0.992 R² .. 0.997 R²)
+mean                 42.23 μs   (41.33 μs .. 43.70 μs)
+std dev              3.840 μs   (2.977 μs .. 5.088 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              226192.843 (226151.058 .. 226240.256)
+  y                  -2762.037  (-67292.582 .. 57085.566)
+variance introduced by outliers: 81% (severely inflated)
+
+benchmarking Generic Cata Sum/10
+time                 75.75 μs   (72.40 μs .. 80.20 μs)
+                     0.985 R²   (0.974 R² .. 0.995 R²)
+mean                 76.72 μs   (74.18 μs .. 82.23 μs)
+std dev              11.86 μs   (7.236 μs .. 20.28 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              370173.836 (370092.349 .. 370253.468)
+  y                  -2128.496  (-76263.618 .. 75206.585)
+variance introduced by outliers: 92% (severely inflated)
+
+benchmarking Generic Cata Sum/18
+time                 148.9 μs   (143.4 μs .. 154.9 μs)
+                     0.981 R²   (0.968 R² .. 0.989 R²)
+mean                 156.8 μs   (149.9 μs .. 168.5 μs)
+std dev              26.72 μs   (20.55 μs .. 34.22 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              659213.169 (659005.953 .. 659400.458)
+  y                  -5722.296  (-94763.873 .. 74359.547)
+variance introduced by outliers: 92% (severely inflated)
+
+benchmarking Generic Cata Sum/32
+time                 290.4 μs   (276.0 μs .. 309.1 μs)
+                     0.981 R²   (0.972 R² .. 0.991 R²)
+mean                 290.1 μs   (279.8 μs .. 303.0 μs)
+std dev              40.58 μs   (30.40 μs .. 62.07 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1165289.747 (1165031.814 .. 1165620.302)
+  y                  68.698     (-102071.028 .. 71060.960)
+variance introduced by outliers: 88% (severely inflated)
+
+benchmarking Generic Cata Sum/56
+time                 541.8 μs   (526.5 μs .. 558.7 μs)
+                     0.986 R²   (0.978 R² .. 0.993 R²)
+mean                 612.9 μs   (564.5 μs .. 752.5 μs)
+std dev              278.5 μs   (70.19 μs .. 522.3 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2035817.630 (2034997.482 .. 2036569.085)
+  y                  568.392    (-106396.427 .. 131400.785)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Generic Cata Sum/100
+time                 1.014 ms   (973.8 μs .. 1.052 ms)
+                     0.985 R²   (0.974 R² .. 0.992 R²)
+mean                 1.030 ms   (995.5 μs .. 1.074 ms)
+std dev              130.5 μs   (96.82 μs .. 174.7 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3635843.476 (3634641.480 .. 3637403.843)
+  y                  -5881.921  (-112068.594 .. 79204.996)
+variance introduced by outliers: 82% (severely inflated)
+
+benchmarking Generic Cata Sum/178
+time                 1.714 ms   (1.663 ms .. 1.784 ms)
+                     0.983 R²   (0.972 R² .. 0.992 R²)
+mean                 1.911 ms   (1.795 ms .. 2.289 ms)
+std dev              685.2 μs   (214.5 μs .. 1.397 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              6488747.154 (6486111.188 .. 6490849.229)
+  y                  -24938.553 (-162830.541 .. 167339.994)
+variance introduced by outliers: 98% (severely inflated)
+
+benchmarking Generic Cata Sum/316
+time                 3.040 ms   (2.982 ms .. 3.095 ms)
+                     0.989 R²   (0.975 R² .. 0.996 R²)
+mean                 3.229 ms   (3.126 ms .. 3.420 ms)
+std dev              397.0 μs   (219.1 μs .. 616.2 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1.154e7    (1.154e7 .. 1.154e7)
+  y                  -40343.092 (-227746.469 .. 143902.274)
+variance introduced by outliers: 74% (severely inflated)
+
+benchmarking Generic Cata Sum/562
+time                 5.534 ms   (5.418 ms .. 5.687 ms)
+                     0.987 R²   (0.963 R² .. 0.997 R²)
+mean                 5.712 ms   (5.594 ms .. 5.906 ms)
+std dev              504.1 μs   (298.9 μs .. 809.7 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2.056e7    (2.055e7 .. 2.057e7)
+  y                  -12844.064 (-240385.398 .. 261360.067)
+variance introduced by outliers: 55% (severely inflated)
+
+benchmarking Generic Cata Sum/1000
+time                 12.02 ms   (10.93 ms .. 12.88 ms)
+                     0.965 R²   (0.943 R² .. 0.981 R²)
+mean                 11.87 ms   (11.43 ms .. 12.48 ms)
+std dev              1.683 ms   (1.250 ms .. 2.370 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3.666e7    (3.664e7 .. 3.668e7)
+  y                  -22018.958 (-363111.296 .. 316643.319)
+variance introduced by outliers: 70% (severely inflated)
+
+benchmarking Generic Cata Sum/1778
+time                 19.97 ms   (18.69 ms .. 21.31 ms)
+                     0.970 R²   (0.941 R² .. 0.987 R²)
+mean                 21.59 ms   (20.49 ms .. 23.08 ms)
+std dev              3.018 ms   (1.876 ms .. 5.036 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              6.541e7    (6.538e7 .. 6.543e7)
+  y                  -119980.038 (-469211.268 .. 256066.114)
+variance introduced by outliers: 60% (severely inflated)
+
+benchmarking Generic Cata Sum/3162
+time                 39.02 ms   (36.01 ms .. 43.68 ms)
+                     0.968 R²   (0.915 R² .. 0.998 R²)
+mean                 39.14 ms   (37.78 ms .. 40.86 ms)
+std dev              3.199 ms   (2.053 ms .. 4.772 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1.166e8    (1.166e8 .. 1.167e8)
+  y                  -171829.486 (-414495.443 .. 88467.850)
+variance introduced by outliers: 32% (moderately inflated)
+
+benchmarking Generic Cata Sum/5623
+time                 64.72 ms   (61.04 ms .. 69.78 ms)
+                     0.988 R²   (0.972 R² .. 0.998 R²)
+mean                 69.48 ms   (67.00 ms .. 72.59 ms)
+std dev              4.315 ms   (3.176 ms .. 5.546 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2.079e8    (2.079e8 .. 2.080e8)
+  y                  -297932.945 (-568622.104 .. 211901.244)
+variance introduced by outliers: 17% (moderately inflated)
+
+benchmarking Generic Cata Sum/10000
+time                 116.5 ms   (110.2 ms .. 123.6 ms)
+                     0.995 R²   (0.980 R² .. 0.999 R²)
+mean                 117.0 ms   (114.0 ms .. 120.3 ms)
+std dev              4.971 ms   (3.388 ms .. 6.861 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3.706e8    (3.704e8 .. 3.707e8)
+  y                  -197682.857 (-743138.053 .. 682958.199)
+variance introduced by outliers: 11% (moderately inflated)
+
+benchmarking Generic Cata Sum/17783
+time                 203.2 ms   (180.2 ms .. 224.4 ms)
+                     0.994 R²   (0.976 R² .. 1.000 R²)
+mean                 212.0 ms   (205.3 ms .. 224.0 ms)
+std dev              11.09 ms   (3.550 ms .. 14.74 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              6.615e8    (6.613e8 .. 6.618e8)
+  y                  -557197.333 (-936541.333 .. 124323.000)
+variance introduced by outliers: 14% (moderately inflated)
+
+benchmarking Generic Cata Sum/31623
+time                 401.6 ms   (362.2 ms .. 469.1 ms)
+                     0.997 R²   (0.992 R² .. 1.000 R²)
+mean                 420.2 ms   (407.0 ms .. 431.1 ms)
+std dev              17.24 ms   (0.0 s .. 18.87 ms)
+allocated:           1.000 R²   (1.000 R² .. NaN R²)
+  iters              1.180e9    (1.179e9 .. NaN)
+  y                  -472308.000 (-1852168.000 .. 920336.000)
+variance introduced by outliers: 19% (moderately inflated)
+
+benchmarking Generic Cata Sum/56234
+time                 734.0 ms   (726.9 ms .. 739.2 ms)
+                     1.000 R²   (1.000 R² .. 1.000 R²)
+mean                 776.8 ms   (764.2 ms .. 785.9 ms)
+std dev              13.95 ms   (0.0 s .. 15.91 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2.103e9    (2.103e9 .. 2.104e9)
+  y                  -940208.000 (-1892296.000 .. 22792.000)
+variance introduced by outliers: 19% (moderately inflated)
+
+benchmarking Generic Cata Sum/100000
+time                 1.564 s    (938.4 ms .. 1.895 s)
+                     0.982 R²   (0.946 R² .. 1.000 R²)
+mean                 1.615 s    (1.517 s .. 1.679 s)
+std dev              96.47 ms   (0.0 s .. 111.4 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3.748e9    (3.747e9 .. 3.748e9)
+  y                  -478112.000 (-953320.000 .. 1888112.000)
+variance introduced by outliers: 19% (moderately inflated)
+
+benchmarking Incremental Compute Map/1
+time                 14.45 μs   (13.66 μs .. 15.28 μs)
+                     0.969 R²   (0.955 R² .. 0.981 R²)
+mean                 15.50 μs   (14.69 μs .. 16.25 μs)
+std dev              2.909 μs   (2.510 μs .. 3.540 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              71706.737  (71694.768 .. 71719.785)
+  y                  -5423.259  (-66982.141 .. 50158.716)
+variance introduced by outliers: 96% (severely inflated)
+
+benchmarking Incremental Compute Map/2
+time                 23.34 μs   (21.52 μs .. 25.19 μs)
+                     0.955 R²   (0.940 R² .. 0.973 R²)
+mean                 30.29 μs   (22.95 μs .. 57.88 μs)
+std dev              43.10 μs   (4.248 μs .. 90.79 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              107521.270 (107504.438 .. 107540.002)
+  y                  -3221.775  (-70392.331 .. 52492.019)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Incremental Compute Map/3
+time                 32.22 μs   (31.74 μs .. 32.68 μs)
+                     0.991 R²   (0.984 R² .. 0.997 R²)
+mean                 33.68 μs   (32.77 μs .. 35.70 μs)
+std dev              4.107 μs   (2.420 μs .. 7.161 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              167332.757 (167303.347 .. 167360.191)
+  y                  -5331.719  (-76363.663 .. 61032.923)
+variance introduced by outliers: 89% (severely inflated)
+
+benchmarking Incremental Compute Map/6
+time                 73.63 μs   (61.93 μs .. 90.20 μs)
+                     0.835 R²   (0.802 R² .. 0.942 R²)
+mean                 66.33 μs   (60.98 μs .. 75.27 μs)
+std dev              22.34 μs   (14.49 μs .. 29.20 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              274825.013 (274770.782 .. 274880.432)
+  y                  -3478.479  (-70690.019 .. 51393.045)
+variance introduced by outliers: 98% (severely inflated)
+
+benchmarking Incremental Compute Map/10
+time                 105.2 μs   (99.15 μs .. 111.3 μs)
+                     0.975 R²   (0.966 R² .. 0.988 R²)
+mean                 107.4 μs   (101.3 μs .. 121.7 μs)
+std dev              26.38 μs   (12.06 μs .. 54.00 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              443028.088 (442913.729 .. 443146.048)
+  y                  -395.398   (-68693.990 .. 75127.323)
+variance introduced by outliers: 96% (severely inflated)
+
+benchmarking Incremental Compute Map/18
+time                 168.1 μs   (165.7 μs .. 171.0 μs)
+                     0.975 R²   (0.947 R² .. 0.995 R²)
+mean                 207.1 μs   (177.7 μs .. 308.2 μs)
+std dev              166.5 μs   (35.75 μs .. 344.9 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              756502.617 (756335.655 .. 756675.361)
+  y                  -5786.692  (-76537.421 .. 62586.959)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Incremental Compute Map/32
+time                 371.2 μs   (365.7 μs .. 377.8 μs)
+                     0.986 R²   (0.968 R² .. 0.996 R²)
+mean                 388.9 μs   (375.4 μs .. 417.5 μs)
+std dev              61.51 μs   (31.29 μs .. 100.2 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1286871.325 (1286454.382 .. 1287273.550)
+  y                  -7301.420  (-90616.091 .. 95471.040)
+variance introduced by outliers: 89% (severely inflated)
+
+benchmarking Incremental Compute Map/56
+time                 759.3 μs   (736.6 μs .. 782.4 μs)
+                     0.986 R²   (0.977 R² .. 0.992 R²)
+mean                 879.2 μs   (818.6 μs .. 1.200 ms)
+std dev              372.1 μs   (88.12 μs .. 887.3 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2157522.780 (2156630.121 .. 2158464.933)
+  y                  -4296.044  (-96685.622 .. 79007.391)
+variance introduced by outliers: 99% (severely inflated)
+
+benchmarking Incremental Compute Map/100
+time                 1.307 ms   (1.282 ms .. 1.336 ms)
+                     0.988 R²   (0.969 R² .. 0.997 R²)
+mean                 1.370 ms   (1.332 ms .. 1.444 ms)
+std dev              188.2 μs   (112.0 μs .. 285.6 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3780748.701 (3779041.753 .. 3782633.877)
+  y                  -6665.898  (-149180.259 .. 145422.290)
+variance introduced by outliers: 82% (severely inflated)
+
+benchmarking Incremental Compute Map/178
+time                 2.444 ms   (2.347 ms .. 2.552 ms)
+                     0.977 R²   (0.956 R² .. 0.989 R²)
+mean                 2.719 ms   (2.609 ms .. 2.927 ms)
+std dev              500.5 μs   (296.3 μs .. 811.7 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              6657442.158 (6653568.545 .. 6661597.308)
+  y                  -11610.353 (-158943.244 .. 161894.828)
+variance introduced by outliers: 88% (severely inflated)
+
+benchmarking Incremental Compute Map/316
+time                 5.031 ms   (4.883 ms .. 5.224 ms)
+                     0.982 R²   (0.960 R² .. 0.993 R²)
+mean                 5.590 ms   (5.437 ms .. 5.857 ms)
+std dev              629.0 μs   (508.3 μs .. 874.6 μs)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1.173e7    (1.173e7 .. 1.174e7)
+  y                  -47437.541 (-188696.112 .. 133574.521)
+variance introduced by outliers: 66% (severely inflated)
+
+benchmarking Incremental Compute Map/562
+time                 8.183 ms   (7.833 ms .. 8.663 ms)
+                     0.983 R²   (0.965 R² .. 0.994 R²)
+mean                 8.752 ms   (8.387 ms .. 9.737 ms)
+std dev              1.480 ms   (554.3 μs .. 2.816 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2.078e7    (2.077e7 .. 2.079e7)
+  y                  -26886.022 (-280920.925 .. 259610.429)
+variance introduced by outliers: 81% (severely inflated)
+
+benchmarking Incremental Compute Map/1000
+time                 14.72 ms   (14.21 ms .. 15.18 ms)
+                     0.986 R²   (0.955 R² .. 0.998 R²)
+mean                 15.53 ms   (14.97 ms .. 16.73 ms)
+std dev              1.864 ms   (609.7 μs .. 3.194 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3.688e7    (3.688e7 .. 3.688e7)
+  y                  -330.981   (-2870.543 .. 1705.539)
+variance introduced by outliers: 58% (severely inflated)
+
+benchmarking Incremental Compute Map/1778
+time                 28.95 ms   (27.60 ms .. 30.24 ms)
+                     0.989 R²   (0.974 R² .. 0.997 R²)
+mean                 28.34 ms   (27.75 ms .. 29.42 ms)
+std dev              1.637 ms   (919.9 μs .. 2.570 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              6.564e7    (6.564e7 .. 6.564e7)
+  y                  -1229.020  (-5008.549 .. 2173.523)
+variance introduced by outliers: 21% (moderately inflated)
+
+benchmarking Incremental Compute Map/3162
+time                 54.95 ms   (52.90 ms .. 56.78 ms)
+                     0.995 R²   (0.986 R² .. 0.999 R²)
+mean                 54.49 ms   (53.29 ms .. 55.85 ms)
+std dev              2.301 ms   (1.611 ms .. 3.066 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1.169e8    (1.169e8 .. 1.169e8)
+  y                  -38934.788 (-90354.986 .. 2906.650)
+
+benchmarking Incremental Compute Map/5623
+time                 126.1 ms   (79.37 ms .. 190.2 ms)
+                     0.835 R²   (0.441 R² .. 0.993 R²)
+mean                 124.7 ms   (110.0 ms .. 150.2 ms)
+std dev              30.31 ms   (12.85 ms .. 45.36 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2.082e8    (2.081e8 .. 2.083e8)
+  y                  -181520.571 (-430654.769 .. 161266.326)
+variance introduced by outliers: 73% (severely inflated)
+
+benchmarking Incremental Compute Map/10000
+time                 185.1 ms   (173.1 ms .. 194.7 ms)
+                     0.998 R²   (0.992 R² .. 1.000 R²)
+mean                 195.0 ms   (191.1 ms .. 201.4 ms)
+std dev              6.632 ms   (1.879 ms .. 8.878 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3.709e8    (3.709e8 .. 3.709e8)
+  y                  -100094.400 (-187954.667 .. 6044.364)
+variance introduced by outliers: 14% (moderately inflated)
+
+benchmarking Incremental Compute Map/17783
+time                 449.8 ms   (248.9 ms .. 781.0 ms)
+                     0.943 R²   (0.882 R² .. 1.000 R²)
+mean                 396.2 ms   (343.9 ms .. 432.6 ms)
+std dev              54.79 ms   (0.0 s .. 63.09 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              6.618e8    (6.617e8 .. 6.619e8)
+  y                  -183796.000 (-368104.000 .. 8784.000)
+variance introduced by outliers: 24% (moderately inflated)
+
+benchmarking Incremental Compute Map/31623
+time                 652.8 ms   (626.7 ms .. 680.8 ms)
+                     1.000 R²   (0.999 R² .. 1.000 R²)
+mean                 667.2 ms   (661.0 ms .. 671.0 ms)
+std dev              5.781 ms   (0.0 s .. 6.597 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              1.180e9    (1.180e9 .. 1.180e9)
+  y                  -208720.000 (-422040.000 .. 16856.000)
+variance introduced by outliers: 19% (moderately inflated)
+
+benchmarking Incremental Compute Map/56234
+time                 1.241 s    (1.080 s .. 1.310 s)
+                     0.998 R²   (0.995 R² .. NaN R²)
+mean                 1.250 s    (1.226 s .. 1.266 s)
+std dev              24.34 ms   (0.0 s .. 28.10 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              2.103e9    (2.103e9 .. 2.104e9)
+  y                  -37824.000 (-1170936.000 .. 1119800.000)
+variance introduced by outliers: 19% (moderately inflated)
+
+benchmarking Incremental Compute Map/100000
+time                 2.207 s    (2.046 s .. 2.318 s)
+                     0.999 R²   (0.998 R² .. 1.000 R²)
+mean                 2.281 s    (2.243 s .. 2.341 s)
+std dev              52.47 ms   (0.0 s .. 56.60 ms)
+allocated:           1.000 R²   (1.000 R² .. 1.000 R²)
+  iters              3.748e9    (3.748e9 .. 3.748e9)
+  y                  -409564.000 (-819552.000 .. 1253432.000)
+variance introduced by outliers: 19% (moderately inflated)
+

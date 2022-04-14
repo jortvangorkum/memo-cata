@@ -1,13 +1,13 @@
 cradle:
   stack:
     - path: "./src"
-      component: "regular:lib"
+      component: "memo-cata-regular:lib"
 
     - path: "./app/Main.hs"
-      component: "regular:exe:regular-exe"
+      component: "memo-cata-regular:exe:memo-cata-regular-exe"
 
-    - path: "./app/Paths_regular.hs"
-      component: "regular:exe:regular-exe"
+    - path: "./app/Paths_memo_cata_regular.hs"
+      component: "memo-cata-regular:exe:memo-cata-regular-exe"
 
     - path: "./test"
-      component: "regular:test:regular-test"
+      component: "memo-cata-regular:test:memo-cata-regular-test"
