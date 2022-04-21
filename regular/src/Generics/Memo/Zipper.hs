@@ -18,6 +18,7 @@ module Generics.Memo.Zipper
   , applyDir, applyDirs, applyDirs'
   ) where
 
+import           Control.DeepSeq
 import           Control.Monad              (mplus)
 import           Data.Maybe
 import           GenericTree.Main
@@ -25,7 +26,6 @@ import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 import           Prelude                    hiding (last)
-import Control.DeepSeq
 
 data Loc :: * -> * where
   Loc :: (Zipper a) => Merkle a -> [Ctx (a :*: K Digest) (Merkle a)] -> Loc (Merkle a)

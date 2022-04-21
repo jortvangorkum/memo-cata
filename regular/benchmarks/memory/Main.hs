@@ -67,7 +67,7 @@ main = defaultMain
     [benchGenCataSum (f i) | i <- [0 .. 10]]
   , bgroup "Incremental Compute Map"
     [benchIncrementalComputeMap (f i) | i <- [0 .. 10]]
-  , bgroup ("Changes " ++ show 10 ++ " - Incremental Compute Map")
+  , bgroup ("Iterations " ++ show 10 ++ " - Incremental Compute Map")
     [benchCataIter 10 (f i) | i <- [0 .. 10]]
   ]
   where
