@@ -47,16 +47,35 @@ benchIncrementalComputeMap n = bench (show n) $ nf incCataSum n
     mt :: MerklePF (Tree Int)
     mt = merkle $ Leaf 69
 
-benchCataIter :: Int -> Int -> Benchmark
-benchCataIter nChange nNodes = env (setupIter nChange nNodes nNodes) (bench (show nNodes) . nf applyChanges)
-  where
-    applyChanges :: ([(MerklePF (Tree Int), Dirs)], MerklePF (Tree Int)) -> (Int, M.Map Digest Int)
-    applyChanges ([(rt, ds)], mt)  = let t' = update' (const rt) ds mt in cataSum t'
-    applyChanges ((rt, ds):cs, mt) = cataSumMap m t'
-      where
-        (_, m) = applyChanges (cs, mt)
-        t' = update' (const rt) ds mt
+type Change  = (MerklePF (Tree Int), Dirs)
+type Changes = [Change]
+type BTree   = MerklePF (Tree Int)
+type Cache   = M.Map Digest Int
 
+benchIter :: Int -> (Cache -> BTree -> (Int, Cache)) -> (Changes, BTree) -> Benchmark
+benchIter nNodes f = bench (show nNodes) . nf (\(cs, t) -> applyChanges M.empty cs t)
+  where
+    applyChanges :: Cache -> Changes -> BTree -> Int
+    applyChanges m [(rt, ds)] t = fst $ f m t'
+      where
+        t' = update' (const rt) ds t
+    applyChanges m ((rt, ds):cs) t = y
+      where
+        (z, m') = f m t'
+        y = z `seq` applyChanges m' cs t'
+        t' = update' (const rt) ds t
+
+benchCataIter :: Int -> IO (Changes, BTree) -> Benchmark
+benchCataIter nNodes cs = env cs $ benchIter nNodes (\_ t -> (cataInt t, undefined))
+
+benchGenCataIter :: Int -> IO (Changes, BTree) -> Benchmark
+benchGenCataIter nNodes cs = env cs $ benchIter nNodes (\_ t -> cataSum t)
+
+benchIncCataIter :: Int -> IO (Changes, BTree) -> Benchmark
+benchIncCataIter nNodes cs = env cs $ benchIter nNodes cataSumMap
+
+map' :: (a -> b) -> [a] -> [(a, b)]
+map' f xs = zip xs (map f xs)
 
 -- MAIN
 main :: IO ()
@@ -67,8 +86,14 @@ main = defaultMain
     [benchGenCataSum (f i) | i <- [0 .. 10]]
   , bgroup "Incremental Compute Map"
     [benchIncrementalComputeMap (f i) | i <- [0 .. 10]]
-  , bgroup ("Iterations " ++ show 10 ++ " - Incremental Compute Map")
-    [benchCataIter 10 (f i) | i <- [0 .. 10]]
+  , bgroup ("Iterations " ++ show 10 ++ " - Cata Sum Without Cache") $
+    map (uncurry benchCataIter) cs
+  , bgroup ("Iterations " ++ show 10 ++ " - Cata Sum Only Empty Cache") $
+    map (uncurry benchGenCataIter) cs
+  , bgroup ("Iterations " ++ show 10 ++ " - Incremental Cata Sum") $
+    map (uncurry benchIncCataIter) cs
   ]
   where
     f i = round ((10 ** (1 / 2)) ^ i)
+    is = [(f i) | i <- [0 .. 8]]
+    cs = map' (setupIter 10 10) is

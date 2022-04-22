@@ -66,7 +66,7 @@ benchIter nNodes f = bench (show nNodes) . nf (\(cs, t) -> applyChanges M.empty 
         t' = update' (const rt) ds t
 
 benchCataIter :: Int -> IO (Changes, BTree) -> Benchmark
-benchCataIter nNodes cs = env cs $ benchIter nNodes (\_ t -> (cataInt t, M.empty))
+benchCataIter nNodes cs = env cs $ benchIter nNodes (\_ t -> (cataInt t, undefined))
 
 benchGenCataIter :: Int -> IO (Changes, BTree) -> Benchmark
 benchGenCataIter nNodes cs = env cs $ benchIter nNodes (\_ t -> cataSum t)
