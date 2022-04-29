@@ -53,7 +53,7 @@ type BTree   = MerklePF (Tree Int)
 type Cache   = M.Map Digest Int
 
 benchIter :: Int -> (Cache -> BTree -> (Int, Cache)) -> (Changes, BTree) -> Benchmark
-benchIter nNodes f = bench (show nNodes) . nf (\(cs, t) -> applyChanges M.empty cs t)
+benchIter nNodes f = bench (show nNodes) . nf (uncurry (applyChanges M.empty))
   where
     applyChanges :: Cache -> Changes -> BTree -> Int
     applyChanges m [(rt, ds)] t = fst $ f m t'
@@ -95,5 +95,5 @@ main = defaultMain
   ]
   where
     f i = round ((10 ** (1 / 2)) ^ i)
-    is = [(f i) | i <- [0 .. 8]]
+    is = [f i | i <- [0 .. 8]]
     cs = map' (setupIter 10 10) is
