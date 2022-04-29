@@ -1,10 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module UnitTests.GenericTreeSpec where
-import           Data.Bifunctor     (first)
-import qualified Data.Map           as M
+import           Data.Bifunctor          (first)
+import qualified Data.Map                as M
 import           GenericTree.Cata
 import           GenericTree.Main
-import           Generics.Memo.Cata
+import           Generics.Memo.Cata.Main
 import           Generics.Memo.Main
 import           Helper.Arbitrary
 import           Helper.Main

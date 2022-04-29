@@ -3,10 +3,10 @@
 
 module GenericTree.Cata where
 
-import qualified Data.Map                   as M
+import qualified Data.Map                        as M
 import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
-import           Generics.Memo.Cata
+import           Generics.Memo.Cata.RemoveUnused
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 

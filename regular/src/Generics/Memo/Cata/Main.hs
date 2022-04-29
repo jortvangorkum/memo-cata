@@ -1,6 +1,6 @@
 {-# LANGUAGE TypeOperators #-}
 
-module Generics.Memo.Cata
+module Generics.Memo.Cata.Main
   ( cata
   , cataMerkle
   , cataMerkleMap
@@ -31,3 +31,4 @@ cataMerkle alg t = runState (cataMerkleState alg t) M.empty
 cataMerkleMap :: (Functor f, Traversable f)
               => (f a -> a) -> M.Map Digest a -> Fix (f :*: K Digest) -> (a, M.Map Digest a)
 cataMerkleMap alg m t = runState (cataMerkleState alg t) m
+

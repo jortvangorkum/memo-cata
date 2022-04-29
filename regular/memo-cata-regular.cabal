@@ -21,7 +21,8 @@ source-repository head
 library
   exposed-modules:
       Generics.Data.Digest.CRC32
-      Generics.Memo.Cata
+      Generics.Memo.Cata.Main
+      Generics.Memo.Cata.RemoveUnused
       Generics.Memo.Main
       Generics.Memo.Zipper
       GenericTree.Cata
