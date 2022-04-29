@@ -2,7 +2,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Helper.Arbitrary where
 
+import qualified Data.Map                   as M
+import           GenericTree.Cata
 import           GenericTree.Main
+import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
 import           Test.QuickCheck
@@ -16,3 +19,15 @@ instance Arbitrary (Merkle (PFTree Int)) where
 
 instance Arbitrary Dir where
   arbitrary = elements [Up, Dwn, Dwn', Lft, Rght, Bttm, Bttm']
+
+cataIter :: Int -> Gen ((Int, M.Map Digest Int), MerklePF (Tree Int))
+cataIter 0 = do (t :: MerklePF (Tree Int))  <- arbitrary
+                (rt :: MerklePF (Tree Int)) <- arbitrary
+                (ds :: Dirs)                <- arbitrary
+                let t' = update' (const rt) ds t
+                return (cataSum t', t')
+cataIter n = do ((_, m), t) <- cataIter (n - 1)
+                (rt :: MerklePF (Tree Int)) <- arbitrary
+                (ds :: Dirs)                <- arbitrary
+                let t' = update' (const rt) ds t
+                return (cataSumMap m t', t')

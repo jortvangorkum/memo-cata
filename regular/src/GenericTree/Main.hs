@@ -21,9 +21,6 @@ data Tree a = Leaf a
 $(deriveAll ''Tree "PFTree")
 type instance PF (Tree a) = PFTree a
 
-t :: Tree Int
-t = Node (Leaf 1) 2 (Leaf 3)
-
 -- | Generates Tree of size 2n + 1
 generateTree :: Int -> Tree Int
 generateTree = generateTreeF

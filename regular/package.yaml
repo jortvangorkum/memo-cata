@@ -39,6 +39,7 @@ executables:
     dependencies:
       - memo-cata-regular
       - criterion
+      - QuickCheck
 
   memo-cata-regular-memory:
     main: Main.hs
@@ -50,6 +51,7 @@ executables:
     dependencies:
       - memo-cata-regular
       - criterion
+      - QuickCheck
 
 tests:
   memo-cata-regular-test:

@@ -18,6 +18,7 @@ module Generics.Memo.Zipper
   , applyDir, applyDirs, applyDirs'
   ) where
 
+import           Control.DeepSeq
 import           Control.Monad              (mplus)
 import           Data.Maybe
 import           GenericTree.Main
@@ -165,6 +166,9 @@ instance Show Dir where
   show Bttm' = "Bottom'"
   show Dwn   = "Down"
   show Dwn'  = "Down'"
+
+instance NFData Dir where
+  rnf x = x `seq` ()
 
 -- | Move up to the parent. Returns 'Nothing' if the current
 -- focus is the root.
