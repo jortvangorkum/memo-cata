@@ -71,6 +71,10 @@ executable memo-cata-regular-memory
 executable memo-cata-regular-time
   main-is: Main.hs
   other-modules:
+      Benchmarks.Environments
+      Benchmarks.MultiIter
+      Benchmarks.SingleIter
+      Utils
       Paths_memo_cata_regular
   hs-source-dirs:
       benchmarks/time
