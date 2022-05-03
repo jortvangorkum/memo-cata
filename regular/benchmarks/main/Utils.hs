@@ -16,8 +16,8 @@ data Change  = Change
 
 data ConfigIter = ConfigIter
   { nIters :: Int
-  , nNodes :: Int
   , nDirs  :: Int
+  , nNodes :: Int
   }
 
 data EnvIter = EnvIter

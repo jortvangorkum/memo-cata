@@ -50,7 +50,7 @@ multiIterBenches config = bgroup ("Multi Iterations " ++ show its)
     its = nIters config
     n = nNodes config
     n' = fromIntegral n
-    f i = round ((10 ** (1 / (n' / 5))) ^ i)
+    f i = round ((10 ** (1 / 2)) ^ i)
     is = [f i | i <- [0 .. n]]
 
     configs = map (ConfigIter 10 10) is

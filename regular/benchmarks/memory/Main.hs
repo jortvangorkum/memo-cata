@@ -9,5 +9,5 @@ import           Utils
 main :: IO ()
 main = defaultMain
   [ singleIterBenches 5
-  , multiIterBenches (ConfigIter { nNodes = 5, nIters = 10, nDirs = 10 })
+  , multiIterBenches (ConfigIter { nNodes = 8, nIters = 10, nDirs = 10 })
   ]

@@ -20,5 +20,5 @@ run_time_benchmark () {
     stack run memo-cata-regular-time -- --csv="${name}.csv" 
 }
 
-run_memory_benchmark
 run_time_benchmark
+run_memory_benchmark
