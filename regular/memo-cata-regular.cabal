@@ -46,6 +46,8 @@ library
 executable memo-cata-regular-memory
   main-is: Main.hs
   other-modules:
+      MultiIter
+      SingleIter
       Paths_memo_cata_regular
   hs-source-dirs:
       benchmarks/memory
