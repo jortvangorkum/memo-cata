@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module Benchmarks.Environments where
+module Environments where
 
 import           Control.Monad              (replicateM)
 import           Criterion.Main

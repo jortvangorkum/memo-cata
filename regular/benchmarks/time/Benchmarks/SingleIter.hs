@@ -1,7 +1,7 @@
 module Benchmarks.SingleIter where
 
-import           Benchmarks.Environments
 import           Criterion.Main
+import           Environments
 import           GenericTree.Cata
 import           GenericTree.Main
 import           Generics.Data.Digest.CRC32

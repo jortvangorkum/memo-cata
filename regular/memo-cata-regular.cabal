@@ -46,11 +46,13 @@ library
 executable memo-cata-regular-memory
   main-is: Main.hs
   other-modules:
+      Environments
+      Utils
       Benchmarks.MultiIter
       Benchmarks.SingleIter
-      Utils
       Paths_memo_cata_regular
   hs-source-dirs:
+      benchmarks/main
       benchmarks/memory
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
@@ -71,12 +73,13 @@ executable memo-cata-regular-memory
 executable memo-cata-regular-time
   main-is: Main.hs
   other-modules:
-      Benchmarks.Environments
+      Environments
+      Utils
       Benchmarks.MultiIter
       Benchmarks.SingleIter
-      Utils
       Paths_memo_cata_regular
   hs-source-dirs:
+      benchmarks/main
       benchmarks/time
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:

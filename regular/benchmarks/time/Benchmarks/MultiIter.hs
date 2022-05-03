@@ -1,9 +1,9 @@
 module Benchmarks.MultiIter where
 
-import           Benchmarks.Environments
 import           Control.Monad              (replicateM)
 import           Criterion.Main
 import qualified Data.Map                   as M
+import           Environments
 import           GenericTree.Cata
 import           GenericTree.Main
 import           Generics.Data.Digest.CRC32

@@ -31,7 +31,9 @@ library:
 executables:
   memo-cata-regular-time:
     main: Main.hs
-    source-dirs: benchmarks/time
+    source-dirs:
+      - benchmarks/main
+      - benchmarks/time
     ghc-options:
       - -threaded
       - -rtsopts
@@ -43,7 +45,9 @@ executables:
 
   memo-cata-regular-memory:
     main: Main.hs
-    source-dirs: benchmarks/memory
+    source-dirs:
+      - benchmarks/main
+      - benchmarks/memory
     ghc-options:
       - -threaded
       - -rtsopts
