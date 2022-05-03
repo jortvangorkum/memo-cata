@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module Benchmarks.MultiIter
   ( multiIterBenches
   ) where
