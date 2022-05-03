@@ -24,7 +24,7 @@ setupDirs n = sequence [generate genDir | _ <- [0 .. n]]
   where
     genDir = elements [Up, Dwn, Dwn', Lft, Rght, Bttm, Bttm']
 
-setupIter :: ConfigIter -> IO (EnvIter)
+setupIter :: ConfigIter -> IO EnvIter
 setupIter (ConfigIter {..}) =
   do cs <- genCS
      mt <- setupMerkleTree nNodes
@@ -52,13 +52,13 @@ benchIter (ConfigIter {nNodes = n}) f = bench (show n) . nf (applyChanges M.empt
         (z, m') = f m t'
         y       = z `seq` applyChanges m' (EnvIter cs t')
 
-benchCataIter :: ConfigIter -> IO (EnvIter) -> Benchmark
+benchCataIter :: ConfigIter -> IO EnvIter -> Benchmark
 benchCataIter config cs = env cs $ benchIter config (\_ t -> (cataInt t, undefined))
 
-benchGenCataIter :: ConfigIter -> IO (EnvIter) -> Benchmark
+benchGenCataIter :: ConfigIter -> IO EnvIter -> Benchmark
 benchGenCataIter config cs = env cs $ benchIter config (\_ t -> cataSum t)
 
-benchIncCataIter :: ConfigIter -> IO (EnvIter) -> Benchmark
+benchIncCataIter :: ConfigIter -> IO EnvIter -> Benchmark
 benchIncCataIter config cs = env cs $ benchIter config cataSumMap
 
 multiIterBenches :: ConfigIter -> Benchmark
