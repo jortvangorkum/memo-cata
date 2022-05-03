@@ -4,7 +4,6 @@ module MultiIter
   ( multiIterBenches
   ) where
 
-import           Control.DeepSeq
 import           Control.Monad              (replicateM)
 import           Criterion.Main
 import qualified Data.Map                   as M
@@ -14,27 +13,7 @@ import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
 import           Test.QuickCheck
-
--- TYPES
-type Changes = [Change]
-data Change  = Change
-  { newTree    :: MerklePF (Tree Int)
-  , directions :: Dirs
-  }
-
-data ConfigIter = ConfigIter
-  { nIters :: Int
-  , nNodes :: Int
-  , nDirs  :: Int
-  }
-
-data EnvIter = EnvIter
-  { changes :: Changes
-  , curTree :: MerklePF (Tree Int)
-  }
-
-instance NFData EnvIter where
-  rnf (EnvIter c t) = c `seq` t `seq` ()
+import           Utils
 
 -- ENVIRONMENTS
 setupMerkleTree :: Int -> IO (MerklePF (Tree Int))
@@ -93,8 +72,9 @@ multiIterBenches config = bgroup "Multi Iter"
                           ]
   where
     its = nIters config
-    n = fromIntegral (nNodes config)
-    f i = round ((n ** (1 / (n / 5))) ^ i)
+    n = nNodes config
+    n' = fromIntegral n
+    f i = round ((10 ** (1 / (n' / 5))) ^ i)
     is = [f i | i <- [0 .. n]]
 
     configs = map (ConfigIter 10 10) is

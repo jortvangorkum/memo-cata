@@ -48,6 +48,7 @@ executable memo-cata-regular-memory
   other-modules:
       MultiIter
       SingleIter
+      Utils
       Paths_memo_cata_regular
   hs-source-dirs:
       benchmarks/memory

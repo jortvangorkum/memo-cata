@@ -37,4 +37,4 @@ singleIterBenches n = bgroup "Single Iter"
                         ]
   where
     n'  = fromIntegral n
-    f i = round ((n' ** (1 / (n' / 5))) ^ i)
+    f i = round ((10 ** (1 / (n' / 5))) ^ i)
