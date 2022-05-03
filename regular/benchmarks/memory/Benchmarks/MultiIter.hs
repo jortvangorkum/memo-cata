@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module MultiIter
+module Benchmarks.MultiIter
   ( multiIterBenches
   ) where
 
@@ -62,12 +62,12 @@ benchIncCataIter :: ConfigIter -> IO (EnvIter) -> Benchmark
 benchIncCataIter config cs = env cs $ benchIter config cataSumMap
 
 multiIterBenches :: ConfigIter -> Benchmark
-multiIterBenches config = bgroup "Multi Iter"
-                          [ bgroup ("Iterations " ++ show its ++ " - Cata Sum Without Cache") $
+multiIterBenches config = bgroup ("Multi Iterations " ++ show its)
+                          [ bgroup "Cata Sum Without Cache" $
                             zipWith benchCataIter configs envs
-                          , bgroup ("Iterations " ++ show its ++ " - Cata Sum Only Empty Cache") $
+                          , bgroup "Cata Sum Only Empty Cache" $
                             zipWith benchGenCataIter configs envs
-                          , bgroup ("Iterations " ++ show its ++ " - Incremental Cata Sum") $
+                          , bgroup "Incremental Cata Sum" $
                             zipWith benchIncCataIter configs envs
                           ]
   where

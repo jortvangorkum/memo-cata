@@ -1,8 +1,8 @@
 module Main where
 
+import           Benchmarks.MultiIter
+import           Benchmarks.SingleIter
 import           Criterion.Main
-import           MultiIter
-import           SingleIter
 import           Utils
 
 -- MAIN

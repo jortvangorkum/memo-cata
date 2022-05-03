@@ -1,4 +1,4 @@
-module SingleIter
+module Benchmarks.SingleIter
   ( singleIterBenches
   ) where
 
@@ -27,7 +27,7 @@ benchIncrementalComputeMap n = bench (show n) $ nf incCataSum n
     mt = merkle $ Leaf 69
 
 singleIterBenches :: Int -> Benchmark
-singleIterBenches n = bgroup "Single Iter"
+singleIterBenches n = bgroup "Single Iteration"
                         [ bgroup "Cata Sum"
                           [benchCataInt (f i) | i <- [0 .. n]]
                         , bgroup "Generic Cata Sum"
