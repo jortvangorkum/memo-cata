@@ -1,13 +1,22 @@
 #!/bin/bash
 
 run_memory_benchmark () {
-    name="benchmarks/data/memory/run"
+    path="benchmarks/data/memory/run"
     i=0
-    while [[ -e $name-$i.txt || -L $name-$i.txt ]] ; do
+    while [[ -e $path-$i.txt || -L $path-$i.txt ]] ; do
         let i++
     done
-    name=$name-$i
-    stack run memo-cata-regular-memory -- --regress="allocated:iters" +RTS -T > "${name}.txt"
+    path=$path-$i
+
+    benchmarks=$(stack run memo-cata-regular-memory -- --list)
+    readarray -t y <<< $benchmarks
+    
+    for benchmark in "${y[@]}"
+    do
+        dir="$(dirname "$path/$benchmark.txt")"
+        mkdir -p "$dir"
+        stack run memo-cata-regular-memory -- --match glob "$benchmark" +RTS -t --machine-readable 2> "$path/$benchmark.txt"
+    done
 }
 
 run_time_benchmark () {
@@ -20,5 +29,5 @@ run_time_benchmark () {
     stack run memo-cata-regular-time -- --csv="${name}.csv" 
 }
 
-run_time_benchmark
+# run_time_benchmark
 run_memory_benchmark
