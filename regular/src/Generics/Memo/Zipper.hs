@@ -9,7 +9,6 @@
 
 module Generics.Memo.Zipper
   ( Loc(..)
-  , Ctx(..)
   , Zipper(..)
   , Dir(..), Dirs
   , enter, leave, on
@@ -28,19 +27,7 @@ import           Generics.Regular.Base
 import           Prelude                    hiding (last)
 
 data Loc :: * -> * where
-  Loc :: (Zipper a) => Merkle a -> [Ctx (a :*: K Digest) (Merkle a)] -> Loc (Merkle a)
-
-data family Ctx (f :: * -> *) :: * -> *
-
-data instance Ctx (K a)     r
-data instance Ctx U         r
-data instance Ctx (f :+: g) r = CL (Ctx f r)
-                              | CR (Ctx g r)
-data instance Ctx (f :*: g) r = C1 (Ctx f r) (g r)
-                              | C2 (f r) (Ctx g r)
-data instance Ctx I         r = CId
-data instance Ctx (C c f)   r = CC (Ctx f r)
-data instance Ctx (S s f)   r = CS (Ctx f r)
+  Loc :: (Regular a, Zipper (PF a)) => a -> [Ctx (PF a) a] -> Loc a
 
 instance Zipper f => Functor (Ctx f) where
   fmap = cmap
@@ -52,12 +39,16 @@ instance Zipper f => Functor (Ctx f) where
 -- below are more user-friendly.
 
 class Functor f => Zipper f where
+  data Ctx (f :: * -> *) :: * -> *
+
   cmap        :: (a -> b) -> Ctx f a -> Ctx f b
   fill        :: Ctx f a -> a -> f a
   first, last :: f a -> Maybe (a, Ctx f a)
   next, prev  :: Ctx f a -> a -> Maybe (a, Ctx f a)
 
 instance Zipper I where
+  data Ctx I r = CId
+
   cmap  f CId = CId
   fill  CId   = I
   first (I x) = Just (x, CId)
@@ -66,6 +57,8 @@ instance Zipper I where
   prev  CId x = Nothing
 
 instance Zipper (K a) where
+  data Ctx (K a) r
+
   cmap f = impossible
   fill void x = impossible void
   first (K a) = Nothing
@@ -74,6 +67,8 @@ instance Zipper (K a) where
   prev  void x = impossible void
 
 instance Zipper U where
+  data Ctx U r
+
   cmap f = impossible
   fill void x = impossible void
   first U      = Nothing
@@ -82,6 +77,8 @@ instance Zipper U where
   prev  void x = impossible void
 
 instance (Zipper f, Zipper g) => Zipper (f :+: g) where
+  data Ctx (f :+: g) r = CL (Ctx f r) | CR (Ctx g r)
+
   cmap f (CL c) = CL (cmap f c)
   cmap f (CR c) = CR (cmap f c)
   fill (CL c) x = L (fill c x)
@@ -96,6 +93,8 @@ instance (Zipper f, Zipper g) => Zipper (f :+: g) where
   prev  (CR c) x = prev c x >>= return . fmap CR
 
 instance (Zipper f, Zipper g) => Zipper (f :*: g) where
+  data Ctx (f :*: g) r = C1 (Ctx f r) (g r) | C2 (f r) (Ctx g r)
+
   cmap f (C1 c y) = C1 (cmap f c) (fmap f y)
   cmap f (C2 x c) = C2 (fmap f x) (cmap f c)
   fill (C1 c y) x = fill c x :*: y
@@ -112,6 +111,8 @@ instance (Zipper f, Zipper g) => Zipper (f :*: g) where
                     `mplus` (fmap (`C1` fill c z) <$> last x)
 
 instance (Zipper f) => Zipper (C c f) where
+  data Ctx (C c f) r = CC (Ctx f r)
+
   cmap f (CC c)   = CC (cmap f c)
   fill   (CC c) x = C (fill c x)
   first  (C x)    = first  x >>= return . fmap CC
@@ -120,6 +121,8 @@ instance (Zipper f) => Zipper (C c f) where
   prev   (CC c) x = prev c x >>= return . fmap CC
 
 instance (Zipper f) => Zipper (S s f) where
+  data Ctx (S s f) r = CS (Ctx f r)
+
   cmap f (CS c)   = CS (cmap f c)
   fill   (CS c) x = S (fill c x)
   first  (S x)    = first  x >>= return . fmap CS
@@ -174,17 +177,17 @@ instance NFData Dir where
 -- focus is the root.
 up :: Loc a -> Maybe (Loc a)
 up (Loc x [])     = Nothing
-up (Loc x (c:cs)) = Just (Loc (In (fill c x)) cs)
+up (Loc x (c:cs)) = Just (Loc (to (fill c x)) cs)
 
 -- | Move down to the leftmost child. Returns 'Nothing' if the
 -- current focus is a leaf.
 down :: Loc a -> Maybe (Loc a)
-down (Loc x cs) = first (out x) >>= \(a,c) -> return (Loc a (c:cs))
+down (Loc x cs) = first (from x) >>= \(a,c) -> return (Loc a (c:cs))
 
 -- | Move down to the rightmost child. Returns 'Nothing' if the
 -- current focus is a leaf.
 down' :: Loc a -> Maybe (Loc a)
-down' (Loc x cs) = last (out x) >>= \(a,c) -> return (Loc a (c:cs))
+down' (Loc x cs) = last (from x) >>= \(a,c) -> return (Loc a (c:cs))
 
 -- | Move to the right sibling. Returns 'Nothing' if the current
 -- focus is the rightmost sibling.
