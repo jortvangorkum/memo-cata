@@ -3,7 +3,7 @@
 run_memory_benchmark () {
     path="benchmarks/data/memory/run"
     i=0
-    while [[ -e $path-$i.txt || -L $path-$i.txt ]] ; do
+    while [[ -e $path-$i.txt || -L $path-$i.txt || -d $path-$i ]] ; do
         let i++
     done
     path=$path-$i
@@ -13,7 +13,7 @@ run_memory_benchmark () {
     
     for benchmark in "${y[@]}"
     do
-        dir="$(dirname "$path/$benchmark.txt")"
+        dir="$(dirname "$path/$benchmark")"
         mkdir -p "$dir"
         stack run memo-cata-regular-memory -- --match glob "$benchmark" +RTS -t --machine-readable 2> "$path/$benchmark.txt"
     done

@@ -26,7 +26,7 @@ singleIterBenches n = bgroup "Single Iteration"
                           [benchCataInt (f i) | i <- [0 .. n]]
                         , bgroup "Generic Cata Sum"
                           [benchGenCataSum (f i) | i <- [0 .. n]]
-                        , bgroup "Incremental Compute Map"
+                        , bgroup "Incremental Cata Sum"
                           [benchIncrementalComputeMap (f i) | i <- [0 .. n]]
                         ]
   where
