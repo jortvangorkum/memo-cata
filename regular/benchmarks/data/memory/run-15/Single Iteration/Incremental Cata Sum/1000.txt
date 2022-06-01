@@ -1,0 +1,27 @@
+memo-cata-regular-0.1.0.0: unregistering (local file changes: benchmarks/memory/Main.hs)
+memo-cata-regular> build (lib + exe)
+Preprocessing library memo-cata-regular-0.1.0.0...
+In-place registering memo-cata-regular-0.1.0.0...
+Preprocessing executable 'memo-cata-regular-memory' for
+memo-cata-regular-0.1.0.0...
+[5 of 5] Compiling Main             ( benchmarks/memory/Main.hs, .stack-work/dist/x86_64-linux-tinfo6/Cabal-1.22.5.0/build/memo-cata-regular-memory/memo-cata-regular-memory-tmp/Main.o )
+Linking .stack-work/dist/x86_64-linux-tinfo6/Cabal-1.22.5.0/build/memo-cata-regular-memory/memo-cata-regular-memory ...
+memo-cata-regular> copy/register
+Installing library in
+/home/jort/Documents/Github/memo-cata/regular/.stack-work/install/x86_64-linux-tinfo6/893b35320eed0eda983c205906ddb52faa881f9b5ff88f114168c27adf5121ed/7.10.3/lib/x86_64-linux-ghc-7.10.3/memo-cata-regular-0.1.0.0-GAUX7FXrNVkL3N8iZthsw9
+Installing executable(s) in
+/home/jort/Documents/Github/memo-cata/regular/.stack-work/install/x86_64-linux-tinfo6/893b35320eed0eda983c205906ddb52faa881f9b5ff88f114168c27adf5121ed/7.10.3/bin
+Registering memo-cata-regular-0.1.0.0...
+ [("bytes allocated", "22205549584")
+ ,("num_GCs", "28026")
+ ,("average_bytes_used", "922644")
+ ,("max_bytes_used", "2257304")
+ ,("num_byte_usage_samples", "7")
+ ,("peak_megabytes_allocated", "12")
+ ,("init_cpu_seconds", "0.009")
+ ,("init_wall_seconds", "0.004")
+ ,("mutator_cpu_seconds", "11.444")
+ ,("mutator_wall_seconds", "5.620")
+ ,("GC_cpu_seconds", "18.022")
+ ,("GC_wall_seconds", "1.045")
+ ]

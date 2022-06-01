@@ -22,15 +22,9 @@ benchIncrementalComputeMap n = env (setupMapInt n) (bench (show n) . nf (\(m, t)
     mt :: MerklePF (Tree Int)
     mt = merkle $ Leaf 69
 
-singleIterBenches :: Int -> Benchmark
-singleIterBenches n = bgroup "Single Iteration"
-                        [ bgroup "Cata Sum"
-                          [benchCataInt (f i) | i <- [0 .. n]]
-                        , bgroup "Generic Cata Sum"
-                          [benchGenCataSum (f i) | i <- [0 .. n]]
-                        , bgroup "Incremental Cata Sum"
-                          [benchIncrementalComputeMap (f i) | i <- [0 .. n]]
+singleIterBenches :: [Int] -> Benchmark
+singleIterBenches ns = bgroup "Single Iteration"
+                        [ bgroup "Cata Sum" $ map benchCataInt ns
+                        , bgroup "Generic Cata Sum" $ map benchGenCataSum ns
+                        , bgroup "Incremental Cata Sum" $ map benchIncrementalComputeMap ns
                         ]
-  where
-    n'  = fromIntegral n
-    f i = round ((10 ** (1 / (n' / 6))) ^ i)
