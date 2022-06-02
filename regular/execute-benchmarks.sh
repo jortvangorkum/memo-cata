@@ -30,4 +30,4 @@ run_time_benchmark () {
 }
 
 run_time_benchmark
-run_memory_benchmark
+# run_memory_benchmark

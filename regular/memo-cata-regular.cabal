@@ -47,8 +47,8 @@ executable memo-cata-regular-memory
   main-is: Main.hs
   other-modules:
       Environments
+      MultiIter
       Utils
-      Benchmarks.MultiIter
       Benchmarks.SingleIter
       Paths_memo_cata_regular
   hs-source-dirs:
@@ -74,8 +74,8 @@ executable memo-cata-regular-time
   main-is: Main.hs
   other-modules:
       Environments
+      MultiIter
       Utils
-      Benchmarks.MultiIter
       Benchmarks.SingleIter
       Paths_memo_cata_regular
   hs-source-dirs:

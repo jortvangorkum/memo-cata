@@ -10,6 +10,7 @@ import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
+import           Generics.Regular.Base
 import           Test.QuickCheck
 import           Utils
 
@@ -21,18 +22,33 @@ setupMapInt n = do t <- setupMerkleTree n
                    let m = snd $ cataSum t
                    return (m, t)
 
-setupDirs :: Int -> IO Dirs
-setupDirs n = sequence [generate genDir | _ <- [0 .. n]]
+setupWorstCase :: Int -> Int -> IO EnvIter
+setupWorstCase nIters n = do mt <- setupMerkleTree n
+                             return (EnvIter mt cs)
   where
-    genDir = elements [Up, Dwn, Dwn', Lft, Rght, Bttm, Bttm']
+    cs :: Changes
+    cs = [Change [Bttm] (const (merkle (Leaf i))) | i <- [1..nIters]]
 
-setupIter :: ConfigIter -> IO EnvIter
-setupIter (ConfigIter {..}) =
-  do cs <- genCS
-     mt <- setupMerkleTree nNodes
-     return (EnvIter cs mt)
+setupAverageCase :: Int -> Int -> IO EnvIter
+setupAverageCase nIters n = do mt <- setupMerkleTree n
+                               return (EnvIter mt cs)
   where
-    genCS = replicateM nIters $
-      do ds <- setupDirs nDirs
-         rt <- setupMerkleTree 1
-         return (Change rt ds)
+    cs :: Changes
+    cs = [Change (replicate na Dwn) (const (merkle (Leaf i))) | i <- [1..nIters]]
+    na :: Int
+    na = round ((logBase 2.0 (fromIntegral n)) / 2.0)
+
+setupBestCase :: Int -> Int -> IO EnvIter
+setupBestCase nIters n = do mt <- setupMerkleTree n
+                            return (EnvIter mt cs)
+  where
+    cs :: Changes
+    cs = [Change [] (removeRightSide i) | i <- [1..nIters]]
+    removeRightSide :: Int -> MerklePF (Tree Int) -> MerklePF (Tree Int)
+    removeRightSide i (In ((R (C (I l :*: K x :*: I r))) :*: K h)) = (In ((R (C (I l :*: K x :*: I (merkle (Leaf i))))) :*: K h))
+
+setupIter :: ConfigEnv -> IO EnvIter
+setupIter (ConfigEnv {..}) = case scenario of
+  Worst   -> setupWorstCase nIters nNodes
+  Average -> setupAverageCase nIters nNodes
+  Best    -> setupBestCase nIters nNodes
