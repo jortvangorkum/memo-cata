@@ -4,6 +4,8 @@ module Environments where
 
 import           Control.Monad              (replicateM)
 import           Criterion.Main
+import           Data.ByteString            (ByteString)
+import qualified Data.HashMap.Strict        as H
 import qualified Data.Map                   as M
 import           GenericTree.Cata
 import           GenericTree.Main
@@ -17,38 +19,29 @@ import           Utils
 setupMerkleTree :: Int -> IO (MerklePF (Tree Int))
 setupMerkleTree = return . merkle . generateTree
 
-setupMapInt :: Int -> IO (M.Map Digest Int, MerklePF (Tree Int))
+setupMapInt :: Int -> IO (H.HashMap ByteString Int, MerklePF (Tree Int))
 setupMapInt n = do t <- setupMerkleTree n
                    let m = snd $ cataSum t
                    return (m, t)
 
-setupWorstCase :: Int -> Int -> IO EnvIter
-setupWorstCase nIters n = do mt <- setupMerkleTree n
-                             return (EnvIter mt cs)
-  where
-    cs :: Changes
-    cs = [Change [Bttm] (const (merkle (Leaf i))) | i <- [1..nIters]]
+setupWorstCase :: Int -> Changes
+setupWorstCase nIters = [Change [Bttm] (const (merkle (Leaf i))) | i <- [1..nIters]]
 
-setupAverageCase :: Int -> Int -> IO EnvIter
-setupAverageCase nIters n = do mt <- setupMerkleTree n
-                               return (EnvIter mt cs)
+setupAverageCase :: Int -> Int -> Changes
+setupAverageCase nIters n = [Change (replicate na Dwn) (const (merkle (Leaf i))) | i <- [1..nIters]]
   where
-    cs :: Changes
-    cs = [Change (replicate na Dwn) (const (merkle (Leaf i))) | i <- [1..nIters]]
     na :: Int
     na = round ((logBase 2.0 (fromIntegral n)) / 2.0)
 
-setupBestCase :: Int -> Int -> IO EnvIter
-setupBestCase nIters n = do mt <- setupMerkleTree n
-                            return (EnvIter mt cs)
-  where
-    cs :: Changes
-    cs = [Change [] (removeRightSide i) | i <- [1..nIters]]
-    removeRightSide :: Int -> MerklePF (Tree Int) -> MerklePF (Tree Int)
-    removeRightSide i (In ((R (C (I l :*: K x :*: I r))) :*: K h)) = (In ((R (C (I l :*: K x :*: I (merkle (Leaf i))))) :*: K h))
+setupBestCase :: Int -> Changes
+setupBestCase nIters = [Change [Dwn'] (const (merkle (Leaf i))) | i <- [1..nIters]]
 
 setupIter :: ConfigEnv -> IO EnvIter
-setupIter (ConfigEnv {..}) = case scenario of
-  Worst   -> setupWorstCase nIters nNodes
-  Average -> setupAverageCase nIters nNodes
-  Best    -> setupBestCase nIters nNodes
+setupIter (ConfigEnv {..}) = do mt <- setupMerkleTree nNodes
+                                let m = snd $ cataSum mt
+                                return (EnvIter mt m cs)
+  where
+    cs = case scenario of
+      Worst   -> setupWorstCase nIters
+      Average -> setupAverageCase nIters nNodes
+      Best    -> setupBestCase nIters

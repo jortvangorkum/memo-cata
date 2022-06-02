@@ -23,6 +23,7 @@ library
       Generics.Data.Digest.CRC32
       Generics.Memo.Cata.Main
       Generics.Memo.Cata.RemoveUnused
+      Generics.Memo.Container
       Generics.Memo.Main
       Generics.Memo.Zipper
       GenericTree.Cata
@@ -41,6 +42,7 @@ library
     , regular
     , template-haskell
     , transformers
+    , unordered-containers
   default-language: Haskell2010
 
 executable memo-cata-regular-memory
@@ -68,6 +70,7 @@ executable memo-cata-regular-memory
     , regular
     , template-haskell
     , transformers
+    , unordered-containers
   default-language: Haskell2010
 
 executable memo-cata-regular-time
@@ -95,6 +98,7 @@ executable memo-cata-regular-time
     , regular
     , template-haskell
     , transformers
+    , unordered-containers
   default-language: Haskell2010
 
 test-suite memo-cata-regular-test
@@ -122,4 +126,5 @@ test-suite memo-cata-regular-test
     , regular
     , template-haskell
     , transformers
+    , unordered-containers
   default-language: Haskell2010

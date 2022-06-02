@@ -1,6 +1,8 @@
 module Utils where
 
 import           Control.DeepSeq
+import           Data.ByteString      (ByteString)
+import qualified Data.HashMap.Strict  as H
 import           GenericTree.Cata
 import           GenericTree.Main
 import           Generics.Memo.Main
@@ -26,12 +28,13 @@ data ConfigEnv = ConfigEnv
   , nNodes   :: Int
   }
 data EnvIter = EnvIter
-  { curTree :: MerklePF (Tree Int)
-  , changes :: Changes
+  { curTree      :: MerklePF (Tree Int)
+  , curContainer :: H.HashMap ByteString Int
+  , changes      :: Changes
   }
 
 instance NFData EnvIter where
-  rnf (EnvIter c t) = c `seq` t `seq` ()
+  rnf (EnvIter t c cs) = cs `seq` c `seq` t `seq` ()
 
 log10 :: Floating a => a -> a
 log10 = logBase 10

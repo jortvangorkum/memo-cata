@@ -3,6 +3,8 @@
 
 module GenericTree.Cata where
 
+import           Data.ByteString            (ByteString)
+import qualified Data.HashMap.Strict        as H
 import qualified Data.Map                   as M
 import           GenericTree.Main
 import           Generics.Data.Digest.CRC32
@@ -28,14 +30,14 @@ cataHashes = cata f
       L _                       -> [h]
       R (C (I l :*: _ :*: I r)) -> h : l ++ r
 
-cataSum :: MerklePF (Tree Int) -> (Int, M.Map Digest Int)
+cataSum :: MerklePF (Tree Int) -> (Int, H.HashMap ByteString Int)
 cataSum = cataMerkle
   (\case
     L (C (K x))                 -> x
     R (C (I l :*: K x :*: I r)) -> l + x + r
   )
 
-cataSumMap :: M.Map Digest Int -> MerklePF (Tree Int) -> (Int, M.Map Digest Int)
+cataSumMap :: H.HashMap ByteString Int -> MerklePF (Tree Int) -> (Int, H.HashMap ByteString Int)
 cataSumMap = cataMerkleMap
   (\case
     L (C (K x))                 -> x

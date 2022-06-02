@@ -26,7 +26,7 @@ run_time_benchmark () {
         let i++
     done
     name=$name-$i
-    stack run memo-cata-regular-time -- --csv="${name}.csv" 
+    stack run memo-cata-regular-time -- --csv="${name}.csv"
 }
 
 run_time_benchmark
