@@ -15,7 +15,7 @@ data Change  = Change
   , newTree    :: MerklePF (Tree Int) -> MerklePF (Tree Int)
   }
 
-data Case = Worst | Average | Best deriving (Enum)
+data Case = Worst | Average | Best deriving (Enum, Show)
 data ConfigIter = ConfigIter
   { confNIters   :: Int
   , confScenario :: Case

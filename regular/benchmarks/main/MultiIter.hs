@@ -47,7 +47,7 @@ benchIncCataIter :: Int -> IO EnvIter -> Benchmark
 benchIncCataIter n cs = env cs $ benchIter n cataSumMap
 
 multiIterBenches :: ConfigIter -> Benchmark
-multiIterBenches (ConfigIter {..}) = bgroup ("Multi Iterations " ++ show confNIters)
+multiIterBenches (ConfigIter {..}) = bgroup ("Multi Iterations/" ++ show confScenario ++ "/" ++ show confNIters)
                                      [ bgroup "Cata Sum" $
                                        zipWith benchCataIter nodes envs
                                      , bgroup "Generic Cata Sum" $

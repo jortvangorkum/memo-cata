@@ -9,5 +9,7 @@ import           Utils
 main :: IO ()
 main = defaultMain
   [ -- singleIterBenches $ range (10 ^ 3) (10 ^ 6) 10
-   multiIterBenches (ConfigIter { confNIters = 100, nodes = range (10 ^ 2) (10 ^ 5) 10, confScenario = Worst })
+    multiIterBenches (ConfigIter { confNIters = 10, nodes = range (10 ^ 2) (10 ^ 5) 10, confScenario = Best })
+  , multiIterBenches (ConfigIter { confNIters = 10, nodes = range (10 ^ 2) (10 ^ 5) 10, confScenario = Average })
+  , multiIterBenches (ConfigIter { confNIters = 10, nodes = range (10 ^ 2) (10 ^ 5) 10, confScenario = Worst })
   ]
