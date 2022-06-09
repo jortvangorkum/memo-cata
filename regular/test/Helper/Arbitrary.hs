@@ -2,6 +2,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Helper.Arbitrary where
 
+import           Data.ByteString            (ByteString)
+import qualified Data.HashMap.Strict        as H
 import qualified Data.Map                   as M
 import           GenericTree.Cata
 import           GenericTree.Main
@@ -20,7 +22,7 @@ instance Arbitrary (Merkle (PFTree Int)) where
 instance Arbitrary Dir where
   arbitrary = elements [Up, Dwn, Dwn', Lft, Rght, Bttm, Bttm']
 
-cataIter :: Int -> Gen ((Int, M.Map Digest Int), MerklePF (Tree Int))
+cataIter :: Int -> Gen ((Int, H.HashMap ByteString Int), MerklePF (Tree Int))
 cataIter 0 = do (t :: MerklePF (Tree Int))  <- arbitrary
                 (rt :: MerklePF (Tree Int)) <- arbitrary
                 (ds :: Dirs)                <- arbitrary

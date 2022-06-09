@@ -1,4 +1,6 @@
 {-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE TypeFamilies         #-}
 {-# LANGUAGE TypeOperators        #-}
 {-# LANGUAGE UndecidableInstances #-}
 
@@ -36,6 +38,10 @@ instance Hashable U where
 
 type MerklePF f = Merkle (PF f)
 type Merkle f = Fix (f :*: K Digest)
+type instance PF (Merkle f) = f :*: K Digest
+instance Regular (Merkle f) where
+  from = out
+  to   = In
 
 merkle :: (Regular a, Hashable (PF a), Functor (PF a)) => a -> Merkle (PF a)
 merkle = In . merkleG . fmap merkle . from
