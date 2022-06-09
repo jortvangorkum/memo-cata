@@ -4,23 +4,23 @@ module MultiIter
   ( multiIterBenches
   ) where
 
-import           Control.Monad              (replicateM)
+import           Control.Monad           (replicateM)
 import           Criterion.Main
-import           Data.ByteString            (ByteString)
-import qualified Data.HashMap.Strict        as H
-import qualified Data.Map                   as M
+import           Data.ByteString         (ByteString)
+import qualified Data.HashMap.Strict     as H
+import qualified Data.Map                as M
 import           Environments
 import           GenericTree.Cata
 import           GenericTree.Main
-import           Generics.Data.Digest.CRC32
-import qualified Generics.Memo.Container    as C
+import           Generics.Data.Digest
+import qualified Generics.Memo.Container as C
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
 import           Test.QuickCheck
 import           Utils
 
 -- MEMORY USAGE
-type Cache   = H.HashMap ByteString Int
+type Cache   = H.HashMap Digest Int
 type CataSum = Cache -> MerklePF (Tree Int) -> (Int, Cache)
 
 benchIter :: Int -> CataSum -> EnvIter -> Benchmark

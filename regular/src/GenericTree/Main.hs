@@ -7,8 +7,8 @@
 module GenericTree.Main where
 
 import           Control.DeepSeq
-import qualified Data.Map                   as M
-import           Generics.Data.Digest.CRC32
+import qualified Data.Map              as M
+import           Generics.Data.Digest
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 import           Generics.Regular.TH

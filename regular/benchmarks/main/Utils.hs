@@ -5,6 +5,7 @@ import           Data.ByteString      (ByteString)
 import qualified Data.HashMap.Strict  as H
 import           GenericTree.Cata
 import           GenericTree.Main
+import           Generics.Data.Digest
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
 
@@ -29,7 +30,7 @@ data ConfigEnv = ConfigEnv
   }
 data EnvIter = EnvIter
   { curTree      :: MerklePF (Tree Int)
-  , curContainer :: H.HashMap ByteString Int
+  , curContainer :: H.HashMap Digest Int
   , changes      :: Changes
   }
 

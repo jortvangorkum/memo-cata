@@ -2,14 +2,14 @@
 
 module Environments where
 
-import           Control.Monad              (replicateM)
+import           Control.Monad         (replicateM)
 import           Criterion.Main
-import           Data.ByteString            (ByteString)
-import qualified Data.HashMap.Strict        as H
-import qualified Data.Map                   as M
+import           Data.ByteString       (ByteString)
+import qualified Data.HashMap.Strict   as H
+import qualified Data.Map              as M
 import           GenericTree.Cata
 import           GenericTree.Main
-import           Generics.Data.Digest.CRC32
+import           Generics.Data.Digest
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
 import           Generics.Regular.Base
@@ -19,7 +19,7 @@ import           Utils
 setupMerkleTree :: Int -> IO (MerklePF (Tree Int))
 setupMerkleTree = return . merkle . generateTree
 
-setupMapInt :: Int -> IO (H.HashMap ByteString Int, MerklePF (Tree Int))
+setupMapInt :: Int -> IO (H.HashMap Digest Int, MerklePF (Tree Int))
 setupMapInt n = do t <- setupMerkleTree n
                    let m = snd $ cataSum t
                    return (m, t)

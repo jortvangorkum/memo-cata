@@ -7,8 +7,8 @@ module Generics.Memo.Cata.Main
   ) where
 
 import           Control.Monad.State
-import           Generics.Data.Digest.CRC32
-import qualified Generics.Memo.Container    as C
+import           Generics.Data.Digest
+import qualified Generics.Memo.Container as C
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 

@@ -18,13 +18,13 @@ module Generics.Memo.Zipper
   ) where
 
 import           Control.DeepSeq
-import           Control.Monad              (mplus)
+import           Control.Monad         (mplus)
 import           Data.Maybe
 import           GenericTree.Main
-import           Generics.Data.Digest.CRC32
+import           Generics.Data.Digest
 import           Generics.Memo.Main
 import           Generics.Regular.Base
-import           Prelude                    hiding (last)
+import           Prelude               hiding (last)
 
 data Loc :: * -> * where
   Loc :: (Regular a, Zipper (PF a)) => a -> [Ctx (PF a) a] -> Loc a
