@@ -17,8 +17,9 @@ import           Data.Hashable
 import           Data.LargeWord          (LargeKey (..), Word128)
 import           Data.List               (foldl')
 import           Data.Word               (Word64)
+import           Unsafe.Coerce
 
-newtype Digest = Digest { getDigest :: Word128 }
+newtype Digest = Digest { getDigest :: Word64 }
   deriving (Eq, Show, Ord)
 
 instance NFData Digest where
@@ -37,10 +38,10 @@ toByteString :: Show a => a -> ByteString
 toByteString = toStrict . toLazyByteString . stringUtf8 . show
 
 digest :: Show a => a -> Digest
-digest = Digest . cityHash128 . toByteString
+digest = Digest . cityHash64 . toByteString
 
 combineDigest :: Digest -> Digest -> Digest
-combineDigest d1 d2 = Digest $ cityHash128WithSeed (w128ToBs (getDigest d1)) (getDigest d2)
+combineDigest d1 d2 = Digest $ cityHash64WithSeed (w64ToBs (getDigest d1)) (getDigest d2)
 
 digestConcat :: [Digest] -> Digest
 digestConcat []     = error "No Empty List for digestConcat"
@@ -56,12 +57,12 @@ w128ToBs (LargeKey first64 next64) =
 w64ToBs :: Word64 -> ByteString
 w64ToBs w64 =
     pack
-    [ fromIntegral (w64 `shiftR` 56 .&. 255)
-    , fromIntegral (w64 `shiftR` 48 .&. 255)
-    , fromIntegral (w64 `shiftR` 40 .&. 255)
-    , fromIntegral (w64 `shiftR` 32 .&. 255)
-    , fromIntegral (w64 `shiftR` 24 .&. 255)
-    , fromIntegral (w64 `shiftR` 16 .&. 255)
-    , fromIntegral (w64 `shiftR` 8 .&. 255)
-    , fromIntegral (w64 .&. 255)
+    [ unsafeCoerce (w64 `shiftR` 56 .&. 255)
+    , unsafeCoerce (w64 `shiftR` 48 .&. 255)
+    , unsafeCoerce (w64 `shiftR` 40 .&. 255)
+    , unsafeCoerce (w64 `shiftR` 32 .&. 255)
+    , unsafeCoerce (w64 `shiftR` 24 .&. 255)
+    , unsafeCoerce (w64 `shiftR` 16 .&. 255)
+    , unsafeCoerce (w64 `shiftR` 8 .&. 255)
+    , unsafeCoerce (w64 .&. 255)
     ]
