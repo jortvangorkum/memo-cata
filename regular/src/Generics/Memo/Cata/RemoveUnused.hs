@@ -1,5 +1,3 @@
-{-# LANGUAGE TypeOperators #-}
-
 module Generics.Memo.Cata.RemoveUnused where
 
 import           Control.Applicative

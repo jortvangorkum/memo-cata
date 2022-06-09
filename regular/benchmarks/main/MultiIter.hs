@@ -24,7 +24,7 @@ type Cache   = H.HashMap ByteString Int
 type CataSum = Cache -> MerklePF (Tree Int) -> (Int, Cache)
 
 benchIter :: Int -> CataSum -> EnvIter -> Benchmark
-benchIter n f envIter = bench (show n) . nf (\cs -> fst (applyChanges (curContainer envIter) (curTree envIter) cs)) $ changes envIter
+benchIter n f envIter = bench (show n) . nf (fst . applyChanges (curContainer envIter) (curTree envIter)) $ changes envIter
   where
     applyChanges :: Cache -> MerklePF (Tree Int) -> Changes -> (Int, Cache)
     applyChanges m t [Change ds rt] = y

@@ -31,7 +31,7 @@ setupAverageCase :: Int -> Int -> Changes
 setupAverageCase nIters n = [Change (replicate na Dwn) (const (merkle (Leaf i))) | i <- [1..nIters]]
   where
     na :: Int
-    na = round ((logBase 2.0 (fromIntegral n)) / 2.0)
+    na = round (logBase 2.0 (fromIntegral n) / 2.0)
 
 setupBestCase :: Int -> Changes
 setupBestCase nIters = [Change [Dwn'] (const (merkle (Leaf i))) | i <- [1..nIters]]
