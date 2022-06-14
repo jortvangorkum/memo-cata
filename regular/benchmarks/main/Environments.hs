@@ -25,21 +25,22 @@ setupMapInt n = do t <- setupMerkleTree n
                    return (m, t)
 
 setupWorstCase :: Int -> Changes
-setupWorstCase nIters = [Change [Bttm] (const (merkle (Leaf i))) | i <- [1..nIters]]
+setupWorstCase nIters = [Change [Bttm] (Leaf i) | i <- [1..nIters]]
 
 setupAverageCase :: Int -> Int -> Changes
-setupAverageCase nIters n = [Change (replicate na Dwn) (const (merkle (Leaf i))) | i <- [1..nIters]]
+setupAverageCase nIters n = [Change (replicate na Dwn) (Leaf i) | i <- [1..nIters]]
   where
     na :: Int
     na = round (logBase 2.0 (fromIntegral n) / 2.0)
 
 setupBestCase :: Int -> Changes
-setupBestCase nIters = [Change [Dwn'] (const (merkle (Leaf i))) | i <- [1..nIters]]
+setupBestCase nIters = [Change [Dwn'] (Leaf i) | i <- [1..nIters]]
 
 setupIter :: ConfigEnv -> IO EnvIter
-setupIter (ConfigEnv {..}) = do mt <- setupMerkleTree nNodes
+setupIter (ConfigEnv {..}) = do let t = generateTree nNodes
+                                let mt = merkle t
                                 let m = snd $ cataSum mt
-                                return (EnvIter mt m cs)
+                                return (EnvIter t m cs)
   where
     cs = case scenario of
       Worst   -> setupWorstCase nIters

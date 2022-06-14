@@ -13,7 +13,7 @@ import           Generics.Memo.Zipper
 type Changes = [Change]
 data Change  = Change
   { directions :: Dirs
-  , newTree    :: MerklePF (Tree Int) -> MerklePF (Tree Int)
+  , newTree    :: Tree Int
   }
 
 data Case = Worst | Average | Best deriving (Enum, Show)
@@ -29,7 +29,7 @@ data ConfigEnv = ConfigEnv
   , nNodes   :: Int
   }
 data EnvIter = EnvIter
-  { curTree      :: MerklePF (Tree Int)
+  { curTree      :: Tree Int
   , curContainer :: H.HashMap Digest Int
   , changes      :: Changes
   }
