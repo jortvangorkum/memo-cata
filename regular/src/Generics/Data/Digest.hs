@@ -1,5 +1,4 @@
-{-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Generics.Data.Digest
   ( Digest(..)
@@ -26,13 +25,13 @@ instance NFData Digest where
   rnf (Digest bs) = rnf bs
 
 instance Hashable Digest where
-  hashWithSalt s x = hashWithSalt s . getDigest $ x
+  hashWithSalt s = hashWithSalt s . getDigest
 
 instance NFData Word128 where
   rnf (LargeKey w1 w2) = rnf w1 `seq` rnf w2
 
 instance Hashable Word128 where
-  hashWithSalt s (LargeKey w1 w2) = s + (hash w1) + (hash w2)
+  hashWithSalt s (LargeKey w1 w2) = s + hash w1 + hash w2
 
 toByteString :: Show a => a -> ByteString
 toByteString = toStrict . toLazyByteString . stringUtf8 . show

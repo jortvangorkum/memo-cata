@@ -22,11 +22,11 @@ leave (x, _) = x
 -- Traversal
 
 down :: Zipper a -> Maybe (Zipper a)
-down (Node l x r, cs) = Just (l, (L x r):cs)
+down (Node l x r, cs) = Just (l, L x r:cs)
 down _                = Nothing
 
 down' :: Zipper a -> Maybe (Zipper a)
-down' (Node l x r, cs) = Just (r, (R x l):cs)
+down' (Node l x r, cs) = Just (r, R x l:cs)
 down' _                = Nothing
 
 up :: Zipper a -> Maybe (Zipper a)
