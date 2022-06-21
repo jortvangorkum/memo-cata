@@ -40,6 +40,7 @@ library
     , containers
     , deepseq
     , digest
+    , extra
     , hashable
     , largeword
     , mtl
@@ -70,6 +71,7 @@ executable memo-cata-regular-memory
     , criterion
     , deepseq
     , digest
+    , extra
     , hashable
     , largeword
     , memo-cata-regular
@@ -101,6 +103,7 @@ executable memo-cata-regular-time
     , criterion
     , deepseq
     , digest
+    , extra
     , hashable
     , largeword
     , memo-cata-regular
@@ -131,6 +134,7 @@ test-suite memo-cata-regular-test
     , containers
     , deepseq
     , digest
+    , extra
     , hashable
     , hspec
     , largeword

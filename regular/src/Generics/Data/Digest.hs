@@ -18,14 +18,14 @@ import           Data.List               (foldl')
 import           Data.Word               (Word64)
 import           Unsafe.Coerce
 
-newtype Digest = Digest { getDigest :: Word64 }
+newtype Digest = Digest { getWord :: Word64 }
   deriving (Eq, Show, Ord)
 
 instance NFData Digest where
   rnf (Digest bs) = rnf bs
 
 instance Hashable Digest where
-  hashWithSalt s = hashWithSalt s . getDigest
+  hashWithSalt s = hashWithSalt s . getWord
 
 instance NFData Word128 where
   rnf (LargeKey w1 w2) = rnf w1 `seq` rnf w2
@@ -40,7 +40,7 @@ digest :: Show a => a -> Digest
 digest = Digest . cityHash64 . toByteString
 
 combineDigest :: Digest -> Digest -> Digest
-combineDigest d1 d2 = Digest $ cityHash64WithSeed (w64ToBs (getDigest d1)) (getDigest d2)
+combineDigest d1 d2 = Digest $ cityHash64WithSeed (w64ToBs (getWord d1)) (getWord d2)
 
 digestConcat :: [Digest] -> Digest
 digestConcat []     = error "No Empty List for digestConcat"

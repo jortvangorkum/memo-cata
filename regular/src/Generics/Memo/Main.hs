@@ -8,46 +8,68 @@ module Generics.Memo.Main where
 
 import           Control.DeepSeq
 import           Data.Functor.Classes
+import           Data.Tuple.Extra      ((&&&))
 import           Generics.Data.Digest
 import           Generics.Regular.Base
 
-class Hashable f where
-  hash :: f (Fix (g :*: K Digest)) -> Digest
+data MemoInfo = MemoInfo { getDigest :: Digest, getHeight :: Int }
+  deriving (Show, Eq)
 
-instance (Show a) => Hashable (K a) where
-  hash (K x) = digestConcat [digest "K", digest x]
+class Merkelize f where
+  merkelize :: f (Fix (g :*: K MemoInfo)) -> MemoInfo
 
-instance Hashable I where
-  hash (I x) = digestConcat [digest "I", getDigest x]
+instance (Show a) => Merkelize (K a) where
+  merkelize (K x) = MemoInfo d h
     where
-      getDigest :: Fix (f :*: K Digest) -> Digest
-      getDigest (In (_ :*: K h)) = h
+      d = digestConcat [digest "K", digest x]
+      h = 1
 
-instance (Hashable f, Hashable g) => Hashable (f :+: g) where
-  hash (L x) = digestConcat [digest "L", hash x]
-  hash (R x) = digestConcat [digest "R", hash x]
+instance Merkelize I where
+  merkelize (I (In (_ :*: K (MemoInfo pd ph)))) = MemoInfo d h
+    where
+      d = digestConcat [digest "I", pd]
+      h = 1 + ph
 
-instance (Hashable f, Hashable g) => Hashable (f :*: g) where
-  hash (x :*: y) = digestConcat [digest "P", hash x, hash y]
+instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
+  merkelize (L x) = MemoInfo d ph
+    where
+      (MemoInfo pd ph) = merkelize x
+      d = digestConcat [digest "L", pd]
+  merkelize (R x) = MemoInfo d ph
+    where
+      (MemoInfo pd ph) = merkelize x
+      d = digestConcat [digest "R", pd]
 
-instance (Hashable f) => Hashable (C c f) where
-  hash (C x) = digestConcat [digest "C", hash x]
+instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
+  merkelize (x :*: y) = MemoInfo d h
+    where
+      (MemoInfo pd1 ph1) = merkelize x
+      (MemoInfo pd2 ph2) = merkelize y
+      d = digestConcat [digest "P", pd1, pd2]
+      h = max ph1 ph2
 
-instance Hashable U where
-  hash _ = digest "U"
+instance (Merkelize f) => Merkelize (C c f) where
+  merkelize (C x) = MemoInfo d ph
+    where
+      (MemoInfo pd ph) = merkelize x
+      d = digestConcat [digest "C", pd]
+
+instance Merkelize U where
+  merkelize _ = MemoInfo (digest "U") 1
 
 type MerklePF f = Merkle (PF f)
-type Merkle f = Fix (f :*: K Digest)
-type instance PF (Merkle f) = f :*: K Digest
+type Merkle f = Fix (f :*: K MemoInfo)
+type instance PF (Merkle f) = f :*: K MemoInfo
 instance Regular (Merkle f) where
   from = out
   to   = In
 
-merkle :: (Regular a, Hashable (PF a), Functor (PF a)) => a -> Merkle (PF a)
+merkleG :: Merkelize f => f (Fix (g :*: K MemoInfo)) -> (f :*: K MemoInfo) (Fix (g :*: K MemoInfo))
+merkleG f = f :*: K (merkelize f)
+
+merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Fix (PF a :*: K MemoInfo)
 merkle = In . merkleG . fmap merkle . from
 
-merkleG :: Hashable f => f (Fix (g :*: K Digest)) -> (f :*: K Digest) (Fix (g :*: K Digest))
-merkleG f = f :*: K (hash f)
 
 -- Generic Foldable
 -- https://github.com/blamario/grampa/blob/f4b97674161c6bd5e45c20226b5fb3458f942ff4/rank2classes/src/Rank2.hs#L307
@@ -188,6 +210,9 @@ rwhnf = (`seq` ())
 
 instance NFData (f (Fix f)) => NFData (Fix f) where
   rnf (In x) = rnf x
+
+instance NFData MemoInfo where
+  rnf (MemoInfo d h) = rnf d `seq` rnf h
 
 instance NFData r => NFData (I r) where
   rnf = rnf1

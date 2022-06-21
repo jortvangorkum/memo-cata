@@ -16,7 +16,7 @@ cata :: Functor f => (f a -> a) -> Fix f -> a
 cata alg t = alg (fmap (cata alg) (out t))
 
 cataMerkleState :: (Functor f, Traversable f, C.Container c)
-                => (f a -> a) -> Fix (f :*: K Digest) -> State (c a) a
+                => (f a -> a) -> Fix (f :*: K MemoInfo) -> State (c a) a
 cataMerkleState alg (In (x :*: K h))
   = do m <- get
        case C.lookup h m of
@@ -26,10 +26,10 @@ cataMerkleState alg (In (x :*: K h))
                        modify (C.insert h r) >> return r
 
 cataMerkle :: (Functor f, Traversable f, C.Container c)
-           => (f a -> a) -> Fix (f :*: K Digest) -> (a, c a)
+           => (f a -> a) -> Fix (f :*: K MemoInfo) -> (a, c a)
 cataMerkle alg t = runState (cataMerkleState alg t) C.empty
 
 cataMerkleMap :: (Functor f, Traversable f, C.Container c)
-              => (f a -> a) -> c a -> Fix (f :*: K Digest) -> (a, c a)
+              => (f a -> a) -> c a -> Fix (f :*: K MemoInfo) -> (a, c a)
 cataMerkleMap alg m t = runState (cataMerkleState alg t) m
 

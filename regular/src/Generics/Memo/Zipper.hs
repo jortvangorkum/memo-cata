@@ -205,17 +205,17 @@ top _          = False
 modify :: (a -> a) -> Loc a -> Loc a
 modify f (Loc x cs) = Loc (f x) cs
 
-updateLoc :: Hashable a => (Merkle a -> Merkle a) -> Loc (Merkle a) -> Loc (Merkle a)
+updateLoc :: Merkelize a => (Merkle a -> Merkle a) -> Loc (Merkle a) -> Loc (Merkle a)
 updateLoc f loc = if   top loc'
                   then loc'
                   else updateParents $ expectJust "Exception: Cannot go up" (up loc')
   where
     loc' = modify f loc
 
-    updateDigest :: Hashable a => Merkle a -> Merkle a
+    updateDigest :: Merkelize a => Merkle a -> Merkle a
     updateDigest (In (x :*: _)) = In (merkleG x)
 
-    updateParents :: Hashable a => Loc (Merkle a) -> Loc (Merkle a)
+    updateParents :: Merkelize a => Loc (Merkle a) -> Loc (Merkle a)
     updateParents (Loc x []) = Loc (updateDigest x) []
     updateParents (Loc x cs) = updateParents
                              $ expectJust "Exception: Cannot go up"
@@ -238,7 +238,7 @@ applyDirs dirs x = foldl (\y d -> y >>= applyDir d) (Just x) dirs
 applyDirs' :: Dirs -> Loc a -> Loc a
 applyDirs' dirs x = foldl (\y d -> fromJust (applyDir d y)) x dirs
 
-update :: (Zipper a, Hashable a)
+update :: (Zipper a, Merkelize a)
         => (Merkle a -> Merkle a)
         -> Dirs
         -> Merkle a
@@ -247,7 +247,7 @@ update f dirs m = leave $ updateLoc f loc'
   where
     loc' = expectJust "Cannot apply given directions" $ applyDirs dirs (enter m)
 
-update' :: (Zipper a, Hashable a)
+update' :: (Zipper a, Merkelize a)
         => (Merkle a -> Merkle a)
         -> Dirs
         -> Merkle a
