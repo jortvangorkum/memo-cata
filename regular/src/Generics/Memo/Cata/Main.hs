@@ -12,19 +12,23 @@ import qualified Generics.Memo.Container as C
 import           Generics.Memo.Main
 import           Generics.Regular.Base
 
+minHeight :: Int
+minHeight = 5
+
 cata :: Functor f => (f a -> a) -> Fix f -> a
 cata alg t = alg (fmap (cata alg) (out t))
 
 cataMerkleState :: (Functor f, Traversable f, C.Container c)
                 => (f a -> a) -> Fix (f :*: K MemoInfo) -> State (c a) a
-cataMerkleState alg (In (x :*: K h))
+cataMerkleState alg (In (x :*: K (MemoInfo d h)))
   = do m <- get
-       case C.lookup h m of
+       case C.lookup d m of
          Just a -> return a
          Nothing -> do y <- mapM (cataMerkleState alg) x
                        let r = alg y
-                       modify (C.insert h r) >> return r
-
+                       if minHeight <= h
+                         then modify (C.insert d r) >> return r
+                       else return r
 cataMerkle :: (Functor f, Traversable f, C.Container c)
            => (f a -> a) -> Fix (f :*: K MemoInfo) -> (a, c a)
 cataMerkle alg t = runState (cataMerkleState alg t) C.empty

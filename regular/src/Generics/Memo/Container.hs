@@ -9,15 +9,15 @@ import           Generics.Memo.Main
 
 class Container c where
   empty  :: c a
-  insert :: MemoInfo -> a -> c a -> c a
-  lookup :: MemoInfo -> c a -> Maybe a
+  insert :: Digest -> a -> c a -> c a
+  lookup :: Digest -> c a -> Maybe a
 
 instance Container (M.Map Digest) where
   empty  = M.empty
-  insert = M.insert . getDigest
-  lookup = M.lookup . getDigest
+  insert = M.insert
+  lookup = M.lookup
 
 instance Container (H.HashMap Digest) where
   empty  = H.empty
-  insert = H.insert . getDigest
-  lookup = H.lookup . getDigest
+  insert = H.insert
+  lookup = H.lookup
