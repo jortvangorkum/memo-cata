@@ -18,13 +18,14 @@ module Generics.Memo.Zipper
   ) where
 
 import           Control.DeepSeq
-import           Control.Monad              (mplus)
+import           Control.Monad         (mplus)
 import           Data.Maybe
 import           GenericTree.Main
-import           Generics.Data.Digest.CRC32
+import           Generics.Data.Digest
+import           Generics.Data.Dirs
 import           Generics.Memo.Main
 import           Generics.Regular.Base
-import           Prelude                    hiding (last)
+import           Prelude               hiding (last)
 
 data Loc :: * -> * where
   Loc :: (Regular a, Zipper (PF a)) => a -> [Ctx (PF a) a] -> Loc a
@@ -152,27 +153,6 @@ on (Loc x _) = x
 
 -- ** Navigation
 
-type Dirs = [Dir]
-data Dir = Lft
-         | Rght
-         | Up
-         | Bttm
-         | Bttm'
-         | Dwn
-         | Dwn'
-
-instance Show Dir where
-  show Lft   = "Left"
-  show Rght  = "Right"
-  show Up    = "Up"
-  show Bttm  = "Bottom"
-  show Bttm' = "Bottom'"
-  show Dwn   = "Down"
-  show Dwn'  = "Down'"
-
-instance NFData Dir where
-  rnf x = x `seq` ()
-
 -- | Move up to the parent. Returns 'Nothing' if the current
 -- focus is the root.
 up :: Loc a -> Maybe (Loc a)
@@ -256,7 +236,7 @@ applyDirs dirs x = foldl (\y d -> y >>= applyDir d) (Just x) dirs
 
 -- | The given directions are applied on the location, if the direction fails it returns the current location
 applyDirs' :: Dirs -> Loc a -> Loc a
-applyDirs' dirs x = foldl (\y d -> fromMaybe y (applyDir d y)) x dirs
+applyDirs' dirs x = foldl (\y d -> fromJust (applyDir d y)) x dirs
 
 update :: (Zipper a, Hashable a)
         => (Merkle a -> Merkle a)

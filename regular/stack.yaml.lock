@@ -18,6 +18,20 @@ packages:
       sha256: 9ddc6a9b87b7213cd83afce2dd0bbbedd1a43c666cd9ffed465cbfb2e4f2cb83
   original:
     hackage: digest-0.0.1.3
+- completed:
+    hackage: cityhash-0.3.0.1@sha256:167bf8e41f0e765da551d0c7c3eafb8a6b5496cddd11dc9608bd5ccb9cfa689a,2102
+    pantry-tree:
+      size: 657
+      sha256: 975b854d58d5194d3f4967e003f57d6398fe558206f183fd88d4b9f6d8f7719f
+  original:
+    hackage: cityhash-0.3.0.1
+- completed:
+    hackage: largeword-1.2.5@sha256:0866fec80712e88475c6915ad88277c7646a57bc456f4c69ae00934ec12ef3e9,1498
+    pantry-tree:
+      size: 225
+      sha256: 72e8afbb12bfa20c33da22a8f324574362f7e9ec17c498eed423d9d49a42c588
+  original:
+    hackage: largeword-1.2.5
 snapshots:
 - completed:
     size: 428787

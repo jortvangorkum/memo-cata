@@ -8,7 +8,7 @@ module Generics.Memo.Main where
 
 import           Control.DeepSeq
 import           Data.Functor.Classes
-import           Generics.Data.Digest.CRC32
+import           Generics.Data.Digest
 import           Generics.Regular.Base
 
 class Hashable f where

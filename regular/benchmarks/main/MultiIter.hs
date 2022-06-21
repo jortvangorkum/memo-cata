@@ -4,41 +4,58 @@ module MultiIter
   ( multiIterBenches
   ) where
 
-import           Control.Monad              (replicateM)
+import           Control.DeepSeq
+import           Control.Monad           (replicateM)
 import           Criterion.Main
-import           Data.ByteString            (ByteString)
-import qualified Data.HashMap.Strict        as H
-import qualified Data.Map                   as M
+import           Data.ByteString         (ByteString)
+import qualified Data.HashMap.Strict     as H
+import qualified Data.Map                as M
 import           Environments
 import           GenericTree.Cata
 import           GenericTree.Main
-import           Generics.Data.Digest.CRC32
-import qualified Generics.Memo.Container    as C
+import           GenericTree.Zipper      as TZ
+import           Generics.Data.Digest
+import           Generics.Data.Dirs
+import qualified Generics.Memo.Container as C
 import           Generics.Memo.Main
-import           Generics.Memo.Zipper
+import           Generics.Memo.Zipper    as GZ
 import           Test.QuickCheck
 import           Utils
 
 -- MEMORY USAGE
-type Cache   = H.HashMap ByteString Int
+type Cache   = H.HashMap Digest Int
 type CataSum = Cache -> MerklePF (Tree Int) -> (Int, Cache)
 
+benchApplyCataIter :: Int -> EnvIter -> Benchmark
+benchApplyCataIter n envIter = bench (show n) . nf (applyChanges (curTree envIter)) $ changes envIter
+  where
+    applyChanges :: Tree Int -> Changes -> Int
+    applyChanges t [Change ds rt] = y
+      where
+        y = cataSumTree t'
+        t' = TZ.update (const rt) ds t
+    applyChanges t ((Change ds rt):cs) = y
+      where
+        t' = TZ.update (const rt) ds t
+        z = cataSumTree t'
+        y = z `seq` applyChanges t' cs
+
 benchIter :: Int -> CataSum -> EnvIter -> Benchmark
-benchIter n f envIter = bench (show n) . nf (fst . applyChanges (curContainer envIter) (curTree envIter)) $ changes envIter
+benchIter n f envIter = bench (show n) . nf (fst . applyChanges (curContainer envIter) (merkle (curTree envIter))) $ changes envIter
   where
     applyChanges :: Cache -> MerklePF (Tree Int) -> Changes -> (Int, Cache)
     applyChanges m t [Change ds rt] = y
       where
         y  = f m t'
-        t' = update rt ds t
-    applyChanges m t ((Change ds rt):cs) = y'
+        t' = GZ.update (const (merkle rt)) ds t
+    applyChanges m t ((Change ds rt):cs) = y
       where
-        t'        = update rt ds t
-        y@(z, m') = f m t'
-        y'        = applyChanges m' t' cs
+        t'      = GZ.update (const (merkle rt)) ds t
+        (z, m') = f m t'
+        y       = z `seq` applyChanges m' t' cs
 
 benchCataIter :: Int -> IO EnvIter -> Benchmark
-benchCataIter n cs = env cs $ benchIter n (\_ t -> (cataInt t, H.empty))
+benchCataIter n cs = env cs $ benchApplyCataIter n
 
 benchGenCataIter :: Int -> IO EnvIter -> Benchmark
 benchGenCataIter n cs = env cs $ benchIter n (\_ t -> cataSum t)

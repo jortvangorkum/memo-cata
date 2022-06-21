@@ -20,14 +20,15 @@ source-repository head
 
 library
   exposed-modules:
-      Generics.Data.Digest.CRC32
+      Generics.Data.Digest
+      Generics.Data.Dirs
       Generics.Memo.Cata.Main
-      Generics.Memo.Cata.RemoveUnused
       Generics.Memo.Container
       Generics.Memo.Main
       Generics.Memo.Zipper
       GenericTree.Cata
       GenericTree.Main
+      GenericTree.Zipper
   other-modules:
       Paths_memo_cata_regular
   hs-source-dirs:
@@ -35,9 +36,12 @@ library
   build-depends:
       base >=4.7 && <5
     , bytestring
+    , cityhash
     , containers
     , deepseq
     , digest
+    , hashable
+    , largeword
     , mtl
     , regular
     , template-haskell
@@ -61,10 +65,13 @@ executable memo-cata-regular-memory
       QuickCheck
     , base >=4.7 && <5
     , bytestring
+    , cityhash
     , containers
     , criterion
     , deepseq
     , digest
+    , hashable
+    , largeword
     , memo-cata-regular
     , mtl
     , regular
@@ -89,10 +96,13 @@ executable memo-cata-regular-time
       QuickCheck
     , base >=4.7 && <5
     , bytestring
+    , cityhash
     , containers
     , criterion
     , deepseq
     , digest
+    , hashable
+    , largeword
     , memo-cata-regular
     , mtl
     , regular
@@ -117,10 +127,13 @@ test-suite memo-cata-regular-test
       QuickCheck
     , base >=4.7 && <5
     , bytestring
+    , cityhash
     , containers
     , deepseq
     , digest
+    , hashable
     , hspec
+    , largeword
     , memo-cata-regular
     , mtl
     , regular

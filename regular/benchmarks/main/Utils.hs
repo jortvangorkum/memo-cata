@@ -5,6 +5,7 @@ import           Data.ByteString      (ByteString)
 import qualified Data.HashMap.Strict  as H
 import           GenericTree.Cata
 import           GenericTree.Main
+import           Generics.Data.Digest
 import           Generics.Memo.Main
 import           Generics.Memo.Zipper
 
@@ -12,7 +13,7 @@ import           Generics.Memo.Zipper
 type Changes = [Change]
 data Change  = Change
   { directions :: Dirs
-  , newTree    :: MerklePF (Tree Int) -> MerklePF (Tree Int)
+  , newTree    :: Tree Int
   }
 
 data Case = Worst | Average | Best deriving (Enum, Show)
@@ -28,8 +29,8 @@ data ConfigEnv = ConfigEnv
   , nNodes   :: Int
   }
 data EnvIter = EnvIter
-  { curTree      :: MerklePF (Tree Int)
-  , curContainer :: H.HashMap ByteString Int
+  { curTree      :: Tree Int
+  , curContainer :: H.HashMap Digest Int
   , changes      :: Changes
   }
 
