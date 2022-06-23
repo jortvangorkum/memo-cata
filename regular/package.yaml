@@ -28,7 +28,6 @@ dependencies:
   - cityhash
   - largeword
   - hashable
-  - extra
 
 library:
   source-dirs: src

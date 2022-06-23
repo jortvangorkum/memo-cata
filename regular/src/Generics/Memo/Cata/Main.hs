@@ -15,12 +15,12 @@ import           Generics.Regular.Base
 minHeight :: Int
 minHeight = 5
 
-cata :: Functor f => (f a -> a) -> Fix f -> a
-cata alg t = alg (fmap (cata alg) (out t))
+cata :: Functor f => (f a -> a) -> AFix f b -> a
+cata alg t = alg (fmap (cata alg) (unAFix t))
 
 cataMerkleState :: (Functor f, Traversable f, C.Container c)
-                => (f a -> a) -> Fix (f :*: K MemoInfo) -> State (c a) a
-cataMerkleState alg (In (x :*: K (MemoInfo d h)))
+                => (f a -> a) -> AFix f MemoInfo -> State (c a) a
+cataMerkleState alg (AFix x (MemoInfo d h))
   = do m <- get
        case C.lookup d m of
          Just a -> return a
@@ -30,10 +30,10 @@ cataMerkleState alg (In (x :*: K (MemoInfo d h)))
                          then modify (C.insert d r) >> return r
                        else return r
 cataMerkle :: (Functor f, Traversable f, C.Container c)
-           => (f a -> a) -> Fix (f :*: K MemoInfo) -> (a, c a)
+           => (f a -> a) -> AFix f MemoInfo -> (a, c a)
 cataMerkle alg t = runState (cataMerkleState alg t) C.empty
 
 cataMerkleMap :: (Functor f, Traversable f, C.Container c)
-              => (f a -> a) -> c a -> Fix (f :*: K MemoInfo) -> (a, c a)
+              => (f a -> a) -> c a -> AFix f MemoInfo -> (a, c a)
 cataMerkleMap alg m t = runState (cataMerkleState alg t) m
 

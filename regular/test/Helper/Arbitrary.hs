@@ -26,10 +26,10 @@ cataIter :: Int -> Gen ((Int, H.HashMap Digest Int), MerklePF (Tree Int))
 cataIter 0 = do (t :: MerklePF (Tree Int))  <- arbitrary
                 (rt :: MerklePF (Tree Int)) <- arbitrary
                 (ds :: Dirs)                <- arbitrary
-                let t' = update' (const rt) ds t
+                let t' = update'' (const rt) ds t
                 return (cataSum t', t')
 cataIter n = do ((_, m), t) <- cataIter (n - 1)
                 (rt :: MerklePF (Tree Int)) <- arbitrary
                 (ds :: Dirs)                <- arbitrary
-                let t' = update' (const rt) ds t
+                let t' = update'' (const rt) ds t
                 return (cataSumMap m t', t')

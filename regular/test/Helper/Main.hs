@@ -6,7 +6,7 @@ import           Generics.Memo.Main
 import           Generics.Regular.Base
 
 merkleTreeSize :: MerklePF (Tree a) -> Int
-merkleTreeSize (In (x :*: _)) = case x of
+merkleTreeSize (AFix x _) = case x of
   L _                       -> 1
   R (C (I l :*: _ :*: I r)) -> 1 + lh + rh
     where

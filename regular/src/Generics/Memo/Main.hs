@@ -8,68 +8,73 @@ module Generics.Memo.Main where
 
 import           Control.DeepSeq
 import           Data.Functor.Classes
-import           Data.Tuple.Extra      ((&&&))
 import           Generics.Data.Digest
 import           Generics.Regular.Base
+
+data AFix f a = AFix { unAFix :: f (AFix f a), getAnnotation :: a }
 
 data MemoInfo = MemoInfo { getDigest :: Digest, getHeight :: Int }
   deriving (Show, Eq)
 
-class Merkelize f where
-  merkelize :: f (Fix (g :*: K MemoInfo)) -> MemoInfo
+class Hashable f where
+  hash :: f (AFix g MemoInfo) -> Digest
 
-instance (Show a) => Merkelize (K a) where
-  merkelize (K x) = MemoInfo d h
-    where
-      d = digestConcat [digest "K", digest x]
-      h = 1
+instance (Show a) => Hashable (K a) where
+  hash (K x) = digestConcat [digest "K", digest x]
 
-instance Merkelize I where
-  merkelize (I (In (_ :*: K (MemoInfo pd ph)))) = MemoInfo d h
+instance Hashable I where
+  hash (I x) = digestConcat [digest "I", pd]
     where
-      d = digestConcat [digest "I", pd]
-      h = 1 + ph
+      pd = getDigest . getAnnotation $ x
 
-instance (Merkelize f, Merkelize g) => Merkelize (f :+: g) where
-  merkelize (L x) = MemoInfo d ph
-    where
-      (MemoInfo pd ph) = merkelize x
-      d = digestConcat [digest "L", pd]
-  merkelize (R x) = MemoInfo d ph
-    where
-      (MemoInfo pd ph) = merkelize x
-      d = digestConcat [digest "R", pd]
+instance (Hashable f, Hashable g) => Hashable (f :+: g) where
+  hash (L x) = digestConcat [digest "L", hash x]
+  hash (R x) = digestConcat [digest "R", hash x]
 
-instance (Merkelize f, Merkelize g) => Merkelize (f :*: g) where
-  merkelize (x :*: y) = MemoInfo d h
-    where
-      (MemoInfo pd1 ph1) = merkelize x
-      (MemoInfo pd2 ph2) = merkelize y
-      d = digestConcat [digest "P", pd1, pd2]
-      h = max ph1 ph2
+instance (Hashable f, Hashable g) => Hashable (f :*: g) where
+  hash (x :*: y) = digestConcat [digest "P", hash x, hash y]
 
-instance (Merkelize f) => Merkelize (C c f) where
-  merkelize (C x) = MemoInfo d ph
-    where
-      (MemoInfo pd ph) = merkelize x
-      d = digestConcat [digest "C", pd]
+instance (Hashable f) => Hashable (C c f) where
+  hash (C x) = digestConcat [digest "C", hash x]
 
-instance Merkelize U where
-  merkelize _ = MemoInfo (digest "U") 1
+instance Hashable U where
+  hash _ = digest "U"
 
 type MerklePF f = Merkle (PF f)
-type Merkle f = Fix (f :*: K MemoInfo)
+type Merkle f = AFix f MemoInfo
 type instance PF (Merkle f) = f :*: K MemoInfo
 instance Regular (Merkle f) where
-  from = out
-  to   = In
+  from x            = (unAFix x) :*: K (getAnnotation x)
+  to   (pf :*: K x) = AFix pf x
 
-merkleG :: Merkelize f => f (Fix (g :*: K MemoInfo)) -> (f :*: K MemoInfo) (Fix (g :*: K MemoInfo))
-merkleG f = f :*: K (merkelize f)
+class Height f where
+  height :: f (AFix g MemoInfo) -> Int
 
-merkle :: (Regular a, Merkelize (PF a), Functor (PF a)) => a -> Fix (PF a :*: K MemoInfo)
-merkle = In . merkleG . fmap merkle . from
+instance Height (K a) where
+  height _ = 1
 
+instance Height U where
+  height _ = 0
+
+instance Height I where
+  height (I x) = let ph = getHeight (getAnnotation x) in 1 + ph
+
+instance (Height f, Height g) => Height (f :+: g) where
+  height (L x) = height x
+  height (R x) = height x
+
+instance (Height f, Height g) => Height (f :*: g) where
+  height (x :*: y) = max (height x) (height y)
+
+instance (Height f) => Height (C c f) where
+  height (C x) = height x
+
+merkle :: (Regular a, Hashable (PF a), Height (PF a), Functor (PF a)) => a -> AFix (PF a) MemoInfo
+merkle x = AFix py (MemoInfo d h)
+  where
+    py = fmap merkle $ from x
+    d  = hash py
+    h  = height py
 
 -- Generic Foldable
 -- https://github.com/blamario/grampa/blob/f4b97674161c6bd5e45c20226b5fb3458f942ff4/rank2classes/src/Rank2.hs#L307
@@ -117,6 +122,9 @@ instance Traversable U where
 instance Eq (f (Fix f)) => Eq (Fix f) where
   f == g = out f == out g
 
+instance (Eq (f (AFix f a)), Eq a) => Eq (AFix f a) where
+  x == y = unAFix x == unAFix y && getAnnotation x == getAnnotation y
+
 instance Eq a => Eq1 (K a) where
   eq1 (K x) (K y) = x == y
 
@@ -152,6 +160,9 @@ instance (Eq1 f, Eq r) => Eq (C c f r) where
 -- Generic Show
 instance Show (f (Fix f)) => Show (Fix f) where
   show = show . out
+
+instance (Show (f (AFix f a)), Show a) => Show (AFix f a) where
+  show x = show (unAFix x) ++ " " ++ show (getAnnotation x)
 
 instance Show a => Show1 (K a) where
   showsPrec1 n (K x) = showsPrec n x
@@ -210,6 +221,9 @@ rwhnf = (`seq` ())
 
 instance NFData (f (Fix f)) => NFData (Fix f) where
   rnf (In x) = rnf x
+
+instance (NFData (f (AFix f a)), NFData a) => NFData (AFix f a) where
+  rnf (AFix x ann) = rnf x `seq` rnf ann
 
 instance NFData MemoInfo where
   rnf (MemoInfo d h) = rnf d `seq` rnf h

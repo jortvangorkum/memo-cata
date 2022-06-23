@@ -16,11 +16,11 @@ cataSumTree :: Tree Int -> Int
 cataSumTree = sum
 
 cataInt :: MerklePF (Tree Int) -> Int
-cataInt = cata f
-  where
-    f (px :*: _) = case px of
-      L (C (K x))                 -> x
-      R (C (I l :*: K x :*: I r)) -> l + x + r
+cataInt = cata
+  (\case
+    L (C (K x))                 -> x
+    R (C (I l :*: K x :*: I r)) -> l + x + r
+  )
 
 cataSum :: MerklePF (Tree Int) -> (Int, H.HashMap Digest Int)
 cataSum = cataMerkle

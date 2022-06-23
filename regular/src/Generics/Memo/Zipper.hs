@@ -13,8 +13,8 @@ module Generics.Memo.Zipper
   , Dir(..), Dirs
   , enter, leave, on
   , up, down, down', left, right, bottom, bottom'
-  , modify, update, update'
-  , applyDir, applyDirs, applyDirs'
+  , modify, update, update', update''
+  , applyDir, applyDirs, applyDirs', applyDirs''
   ) where
 
 import           Control.DeepSeq
@@ -205,21 +205,21 @@ top _          = False
 modify :: (a -> a) -> Loc a -> Loc a
 modify f (Loc x cs) = Loc (f x) cs
 
-updateLoc :: Merkelize a => (Merkle a -> Merkle a) -> Loc (Merkle a) -> Loc (Merkle a)
+updateLoc :: (Hashable a, Height a) => (Merkle a -> Merkle a) -> Loc (Merkle a) -> Loc (Merkle a)
 updateLoc f loc = if   top loc'
                   then loc'
                   else updateParents $ expectJust "Exception: Cannot go up" (up loc')
   where
     loc' = modify f loc
 
-    updateDigest :: Merkelize a => Merkle a -> Merkle a
-    updateDigest (In (x :*: _)) = In (merkleG x)
+    updateAnnotation :: (Hashable a, Height a) => Merkle a -> Merkle a
+    updateAnnotation (AFix x _) = AFix x (MemoInfo (hash x) (height x))
 
-    updateParents :: Merkelize a => Loc (Merkle a) -> Loc (Merkle a)
-    updateParents (Loc x []) = Loc (updateDigest x) []
+    updateParents :: (Hashable a, Height a) => Loc (Merkle a) -> Loc (Merkle a)
+    updateParents (Loc x []) = Loc (updateAnnotation x) []
     updateParents (Loc x cs) = updateParents
                              $ expectJust "Exception: Cannot go up"
-                             $ up (Loc (updateDigest x) cs)
+                             $ up (Loc (updateAnnotation x) cs)
 
 applyDir :: Dir -> Loc a -> Maybe (Loc a)
 applyDir Lft   = left
@@ -234,20 +234,24 @@ applyDir Dwn'  = down'
 applyDirs :: Dirs -> Loc a -> Maybe (Loc a)
 applyDirs dirs x = foldl (\y d -> y >>= applyDir d) (Just x) dirs
 
--- | The given directions are applied on the location, if the direction fails it returns the current location
+-- | The given directions are applied on the location, if the direction fails it throws an error
 applyDirs' :: Dirs -> Loc a -> Loc a
 applyDirs' dirs x = foldl (\y d -> fromJust (applyDir d y)) x dirs
 
-update :: (Zipper a, Merkelize a)
-        => (Merkle a -> Merkle a)
-        -> Dirs
-        -> Merkle a
-        -> Merkle a
+-- | The given directions are applied on the location, if the direction fails return current location
+applyDirs'' :: Dirs -> Loc a -> Loc a
+applyDirs'' dirs x = foldl (\y d -> fromMaybe y (applyDir d y)) x dirs
+
+update :: (Zipper a, Hashable a, Height a)
+       => (Merkle a -> Merkle a)
+       -> Dirs
+       -> Merkle a
+       -> Merkle a
 update f dirs m = leave $ updateLoc f loc'
   where
     loc' = expectJust "Cannot apply given directions" $ applyDirs dirs (enter m)
 
-update' :: (Zipper a, Merkelize a)
+update' :: (Zipper a, Hashable a, Height a)
         => (Merkle a -> Merkle a)
         -> Dirs
         -> Merkle a
@@ -255,6 +259,15 @@ update' :: (Zipper a, Merkelize a)
 update' f dirs m = leave $ updateLoc f loc'
   where
     loc' = applyDirs' dirs (enter m)
+
+update'' :: (Zipper a, Hashable a, Height a)
+         => (Merkle a -> Merkle a)
+         -> Dirs
+         -> Merkle a
+         -> Merkle a
+update'' f dirs m =  leave $ updateLoc f loc'
+  where
+    loc' = applyDirs'' dirs (enter m)
 
 -- ** Utility
 
