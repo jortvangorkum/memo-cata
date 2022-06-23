@@ -44,7 +44,7 @@ type MerklePF f = Merkle (PF f)
 type Merkle f = AFix f MemoInfo
 type instance PF (Merkle f) = f :*: K MemoInfo
 instance Regular (Merkle f) where
-  from x            = (unAFix x) :*: K (getAnnotation x)
+  from x            = unAFix x :*: K (getAnnotation x)
   to   (pf :*: K x) = AFix pf x
 
 class Height f where
@@ -72,7 +72,7 @@ instance (Height f) => Height (C c f) where
 merkle :: (Regular a, Hashable (PF a), Height (PF a), Functor (PF a)) => a -> AFix (PF a) MemoInfo
 merkle x = AFix py (MemoInfo d h)
   where
-    py = fmap merkle $ from x
+    py = merkle <$> from x
     d  = hash py
     h  = height py
 

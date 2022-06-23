@@ -1,5 +1,4 @@
-{-# LANGUAGE LambdaCase    #-}
-{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE LambdaCase #-}
 
 module GenericTree.Cata where
 
