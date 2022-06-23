@@ -32,6 +32,10 @@ generateTree = generateTreeF
       else let i = (l + u) `div` 2
            in Node (generateBinTree l (i - 1)) i (generateBinTree (i + 1) u)
 
+generateTreeHeight :: Int -> Tree Int
+generateTreeHeight 1 = Leaf 1
+generateTreeHeight n = Node (generateTreeHeight (n - 1)) n (generateTreeHeight (n - 1))
+
 instance Foldable Tree where
   foldMap f (Leaf x)     = f x
   foldMap f (Node l x r) = f x `mappend` foldMap f l `mappend` foldMap f r

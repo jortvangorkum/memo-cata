@@ -1,0 +1,13 @@
+ [("bytes allocated", "10243945144")
+ ,("num_GCs", "18520")
+ ,("average_bytes_used", "277646")
+ ,("max_bytes_used", "376656")
+ ,("num_byte_usage_samples", "5")
+ ,("peak_megabytes_allocated", "8")
+ ,("init_cpu_seconds", "0.005")
+ ,("init_wall_seconds", "0.001")
+ ,("mutator_cpu_seconds", "16.180")
+ ,("mutator_wall_seconds", "5.597")
+ ,("GC_cpu_seconds", "19.584")
+ ,("GC_wall_seconds", "1.272")
+ ]

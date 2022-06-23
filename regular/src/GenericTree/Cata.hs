@@ -34,3 +34,10 @@ cataSumMap = cataMerkleMap
     L (C (K x))                 -> x
     R (C (I l :*: K x :*: I r)) -> l + x + r
   )
+
+cataHeight :: MerklePF (Tree Int) -> (Int, H.HashMap Digest Int)
+cataHeight = cataMerkle
+  (\case
+    L (C (K x))                 -> 1
+    R (C (I l :*: K x :*: I r)) -> 1 + max l r
+  )

@@ -54,7 +54,7 @@ instance Height (K a) where
   height _ = 1
 
 instance Height U where
-  height _ = 0
+  height _ = 1
 
 instance Height I where
   height (I x) = let ph = getHeight (getAnnotation x) in 1 + ph
